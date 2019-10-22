@@ -15,10 +15,10 @@ This folder contains everything you need for a project based on binary neurons
 Contains the brain class - the basis of the project
 
 ###### pch.h
-Contains the initial definition
+Contains the initial definitions
 
-###### rndmpg.h, rndmpg.cpp
-Contains the rndmpg class. Easy and fast random numbers.  
+###### random_put_get.h, random_put_get.cpp
+Contains the random_put_get class. Easy and fast random numbers.  
 First you put, then you get random numbers.
 
 ###### simple_math.h
