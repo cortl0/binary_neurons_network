@@ -117,9 +117,9 @@ void brain::binary::kill(brain &brn)
 void brain::binary::solve_body(union_storage *us)
 {
     static bool solve_tab[2][2][2][2] = {{{{1, 0}, {0, 0}},
-                                   {{1, 0}, {1, 1}}},
-                                  {{{0, 0}, {1, 0}},
-                                   {{1, 1}, {1, 0}}}};
+                                          {{1, 0}, {1, 1}}},
+                                         {{{0, 0}, {1, 0}},
+                                          {{1, 1}, {1, 0}}}};
     out_new = solve_tab[first_mem][second_mem]
             [us[first].neuron_.out_new][us[second].neuron_.out_new];
 }
@@ -150,13 +150,13 @@ void brain::binary::solve(brain &brn)
                 brn.rndm->put(out_new);
             if (motor_connect)
             {
-                if (0 == brn.rndm->get_ft(0, static_cast<_word>(simple_math::abs(motor_consensus))))
+                brn.us[motor].motor_.accumulator += (out_new * 2 - 1) * simple_math::sign0(motor_consensus);
+                if ((out_new ^ out_old) & (brn.us[motor].neuron_.out_new ^ brn.us[motor].neuron_.out_old))
                 {
-                    motor_consensus += (out_new * 2 - 1) * (brn.us[motor].neuron_.out_new * 2 - 1);
-                    if ((out_new * 2 - 1) * (brn.us[motor].neuron_.out_new * 2 - 1) * simple_math::sign0(motor_consensus) < 0)
+                    motor_consensus -= ((out_new ^ brn.us[motor].neuron_.out_new) * 2 - 1);
+                    if (((out_new ^ brn.us[motor].neuron_.out_new) * - 2 + 1) * simple_math::sign0(motor_consensus) < 0)
                         motor_consensus -= simple_math::sign0(motor_consensus);
                 }
-                brn.us[motor].motor_.accumulator += (out_new * 2 - 1) * simple_math::sign0(motor_consensus);
             }
             if (!brn.rndm->get(brn.quantity_of_neurons_in_bits))
                 kill(brn);
