@@ -29,6 +29,7 @@ struct brain_friend
     void resize(_word brainBits);
     brain_friend() = delete;
     brain_friend(brain &brain_) : brain_(brain_) {}
+    std::map<int, int> graphical_representation();
 };
 
 #endif // BRAIN_FRIEND_H

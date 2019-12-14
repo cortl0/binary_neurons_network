@@ -164,3 +164,20 @@ void brain_friend::resize(_word brainBits_)
     }
     brain_.mtx.unlock();
 }
+std::map<int, int> brain_friend::graphical_representation()
+{
+    std::vector<int> v;
+    std::map<int, int> m;
+    std::map<int, int>::iterator it;
+    for(_word i = 0; i < brain_.quantity_of_neurons; i++)
+        if(brain_.us[i].neuron_.get_type() == brain::neuron::neuron_type_binary)
+            if(brain_.us[i].binary_.get_type_binary() == brain::binary::neuron_binary_type_in_work)
+            {
+                it = m.find(static_cast<int>(brain_.us[i].binary_.level));
+                if (it == m.end())
+                    m.insert(std::make_pair(static_cast<int>(brain_.us[i].binary_.level), 1));
+                else
+                    it->second++;
+            }
+    return m;
+}

@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     int k=4;
-    deviceAI.reset(new DeviceAI(27, 4, 17, QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k), ui->preview->size(), nullptr, ui->preview));
+    deviceAI.reset(new DeviceAI(27, 6, 18, QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k), ui->preview->size(), nullptr, ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");
     ui->preview->load(QUrl(ui->lineEditAddress->text()));
     ui->preview->show();
@@ -43,10 +43,10 @@ void MainWindow::slotTimerAlarm()
     ui->qLabel->setPixmap((deviceAI->GetSensorPixmap()).GetPixmap());
     QPixmap qPixmap = ui->preview->grab(QRect(QPoint(0,0), ui->preview->size()));
     deviceAI->GetSensorPixmap().FillBinary(qPixmap, deviceAI->GetBrain());
-    deviceAI->brain_friend_->brain_get_state();
+    //deviceAI->brain_friend_->brain_get_state();
     ui->labelDebug->setText(deviceAI->brain_friend_->brain_get_state() + '\n' +
-                            "x=" + QString::number(deviceAI->GetSensorPixmap().x) +
-                            " y=" + QString::number(deviceAI->GetSensorPixmap().y) +
+                            "x=" + QString::number(static_cast<int>(deviceAI->GetSensorPixmap().x)) +
+                            " y=" + QString::number(static_cast<int>(deviceAI->GetSensorPixmap().y)) +
                             " zoom=" + QString::number(deviceAI->GetSensorPixmap().zoom));
     deviceAI->GetBrain().clock_cycle_completed = false;
     busy=false;
@@ -113,4 +113,31 @@ void MainWindow::on_pushButtonSave_clicked()
 void MainWindow::on_pushButtonAddress_clicked()
 {
     ui->preview->load(QUrl(ui->lineEditAddress->text()));
+}
+void MainWindow::on_pushButton_graphical_representation_pressed()
+{
+    deviceAI->brain_friend_->stop();
+    std::map<int, int> m = deviceAI->brain_friend_->graphical_representation();
+    QPixmap qPixmap;
+    qPixmap = QPixmap(QSize(64*4, 36*4));
+    QPainter qPainter(&qPixmap);
+    QRgb qRgb1 = QRgb(0);
+    qPainter.setPen(QPen(QColor(qRgb1),1,Qt::SolidLine));
+    qPainter.fillRect(qPixmap.rect(),QColor(255, 255, 255, 255));
+    int zoom = 1;
+    int max_level = 0;
+    std::for_each(m.begin(),m.end(),[&](std::pair<int, int> p)
+    {
+        if(p.first / zoom < qPixmap.size().width())
+            if(p.second / zoom < qPixmap.size().height())
+                qPainter.drawPoint(QPoint(p.first / zoom, p.second / zoom));
+        if (max_level < p.first)
+            max_level = p.first;
+    });
+    ui->qLabel->setPixmap(qPixmap);
+    ui->labelDebug->setText("max_level = " + QString::number(max_level));
+}
+void MainWindow::on_pushButton_graphical_representation_released()
+{
+    deviceAI->GetBrain().start();
 }

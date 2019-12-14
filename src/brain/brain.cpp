@@ -73,6 +73,7 @@ void brain::binary::init(_word j, _word k, union_storage *us)
     second_mem = us[k].neuron_.out_new;
     solve_body(us);
     out_old = out_new;
+    level = us[j].neuron_.level > us[k].neuron_.level ? us[j].neuron_.level + 1 : us[k].neuron_.level + 1;
 }
 bool brain::binary::create(brain &brn)
 {

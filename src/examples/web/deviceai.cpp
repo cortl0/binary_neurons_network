@@ -126,16 +126,6 @@ DeviceAI::DeviceAI(_word randomLength2PowBit, _word motorCount, _word brainBits,
 }
 void DeviceAI::Go (brain &brn)
 {
-    //    if(stepOld[0]!=array[0])
-    //    {
-    //        sensorPixmap.Zoom_in();
-    //        stepOld[0]=array[0];
-    //    }
-    //    if(stepOld[1]!=array[1])
-    //    {
-    //        sensorPixmap.Zoom_out();
-    //        stepOld[1]=array[1];
-    //    }
     if(stepOld[0]!= brn.get_out(0))
     {
         sensorPixmap->Y_minus();
@@ -159,5 +149,16 @@ void DeviceAI::Go (brain &brn)
         //        //QApplication::sendEvent(this, pe);
         //        QApplication::sendEvent(qobject_cast<QMainWindow*>(qApp->topLevelWidgets()[0])->centralWidget()->, pe);
     }
+    if(stepOld[4]!=brn.get_out(4))
+    {
+        sensorPixmap->Zoom_in();
+        stepOld[4]=brn.get_out(4);
+    }
+    if(stepOld[5]!=brn.get_out(5))
+    {
+        sensorPixmap->Zoom_out();
+        stepOld[5]=brn.get_out(5);
+    }
+
     sensorPixmap->PixmapNormalize();
 }

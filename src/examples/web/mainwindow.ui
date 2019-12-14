@@ -41,6 +41,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_graphical_representation">
+        <property name="text">
+         <string>Graphical representation of the network</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -186,7 +193,7 @@
      <x>0</x>
      <y>0</y>
      <width>1298</width>
-     <height>23</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>

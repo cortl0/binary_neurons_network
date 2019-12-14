@@ -24,7 +24,7 @@ class SensorPixmap
     QPixmap qPixmapSmall;
     QSize qSizeBig;
     double zoom_max = 1.0;
-    double zoom_min = 0.125;
+    double zoom_min = 0.5;
     double zoom_koef = 1.03125;
     double deltaXY = 1;
     double epsilon = 256;

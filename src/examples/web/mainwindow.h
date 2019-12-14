@@ -42,6 +42,8 @@ private slots:
     void on_pushButtonSave_clicked();
     void on_pushButtonAddress_clicked();
     void slotTimerAlarm();
+    void on_pushButton_graphical_representation_pressed();
+    void on_pushButton_graphical_representation_released();
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DeviceAI> deviceAI;
