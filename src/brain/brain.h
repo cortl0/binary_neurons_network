@@ -72,9 +72,9 @@ class brain
             neuron_binary_type_marked_to_kill = 2
         };
         neuron_binary_type neuron_binary_type_ = neuron_binary_type_free;
-        _word first;//input
-        _word second;//input
-        _word motor;
+        _word first;//input adress
+        _word second;//input adress
+        _word motor;//motor adress
         int motor_consensus;
         bool first_mem;
         bool second_mem;

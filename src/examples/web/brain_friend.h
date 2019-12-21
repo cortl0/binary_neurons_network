@@ -23,6 +23,7 @@ struct brain_friend
     brain &brain_;
     QString version = QString("0");
     QString brain_get_state();
+    QString brain_get_representation();
     void save();
     void load();
     void stop();

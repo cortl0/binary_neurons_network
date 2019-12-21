@@ -36,6 +36,29 @@ QString brain_friend::brain_get_state()
     qString += "\tcountGet=" + QString::number(brain_.rndm->debug_count_get);
     return qString;
 }
+QString brain_friend::brain_get_representation()
+{
+    QString qString;
+    _word s = brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
+    _word e = brain_.quantity_of_neurons_binary + brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
+    _word consensus = 0;
+    _word count = 0;
+    for (_word i = s; i < e; i++)
+    {
+        if (brain_.us[i].neuron_.get_type() == 2)
+            if (brain_.us[i].binary_.get_type_binary() == 1)
+                if (brain_.us[i].binary_.get_type_binary() == 1)
+                    if (brain_.us[i].binary_.motor_connect)
+                    {
+                        consensus += simple_math::abs(brain_.us[i].binary_.motor_consensus);
+                        count++;
+                    }
+    }
+    qString += "consensus=" + QString::number(consensus);
+    qString += "\ncount=" + QString::number(count);
+    qString += "\nc/c=" + QString::number((float)consensus / (float)count);
+    return qString;
+}
 void brain_friend::save()
 {
     QString fileName = QFileDialog::getSaveFileName(nullptr,

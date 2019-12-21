@@ -84,13 +84,13 @@
        <widget class="QLabel" name="labelDebug">
         <property name="minimumSize">
          <size>
-          <width>512</width>
+          <width>736</width>
           <height>144</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>512</width>
+          <width>736</width>
           <height>144</height>
          </size>
         </property>
@@ -127,18 +127,18 @@
          </layout>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonRight">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QPushButton" name="pushButtonZoomIncr">
             <property name="text">
              <string>zoom +</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonRight">
+            <property name="text">
+             <string>&gt;</string>
             </property>
            </widget>
           </item>
@@ -193,7 +193,7 @@
      <x>0</x>
      <y>0</y>
      <width>1298</width>
-     <height>19</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

@@ -155,8 +155,6 @@ void brain::binary::solve(brain &brn)
                 if ((out_new ^ out_old) & (brn.us[motor].neuron_.out_new ^ brn.us[motor].neuron_.out_old))
                 {
                     motor_consensus -= ((out_new ^ brn.us[motor].neuron_.out_new) * 2 - 1);
-                    if (((out_new ^ brn.us[motor].neuron_.out_new) * - 2 + 1) * simple_math::sign0(motor_consensus) < 0)
-                        motor_consensus -= simple_math::sign0(motor_consensus);
                 }
             }
             if (!brn.rndm->get(brn.quantity_of_neurons_in_bits))

@@ -43,7 +43,6 @@ void MainWindow::slotTimerAlarm()
     ui->qLabel->setPixmap((deviceAI->GetSensorPixmap()).GetPixmap());
     QPixmap qPixmap = ui->preview->grab(QRect(QPoint(0,0), ui->preview->size()));
     deviceAI->GetSensorPixmap().FillBinary(qPixmap, deviceAI->GetBrain());
-    //deviceAI->brain_friend_->brain_get_state();
     ui->labelDebug->setText(deviceAI->brain_friend_->brain_get_state() + '\n' +
                             "x=" + QString::number(static_cast<int>(deviceAI->GetSensorPixmap().x)) +
                             " y=" + QString::number(static_cast<int>(deviceAI->GetSensorPixmap().y)) +
@@ -135,7 +134,10 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
             max_level = p.first;
     });
     ui->qLabel->setPixmap(qPixmap);
-    ui->labelDebug->setText("max_level = " + QString::number(max_level));
+    QString qString;
+    qString += "max_level = " + QString::number(max_level) + "\n";
+    qString += deviceAI->brain_friend_->brain_get_representation();
+    ui->labelDebug->setText(qString);
 }
 void MainWindow::on_pushButton_graphical_representation_released()
 {
