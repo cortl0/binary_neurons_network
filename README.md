@@ -8,29 +8,25 @@ It is AI in the original meaning coinciding with the meanings of the following s
 - True artificial intelligence (True AI).
 
 ## Project directories
+
 #### ./src/brain/
 This folder contains everything you need for a project based on binary neurons
 
-###### brain.h, brain.cpp
+##### brain.h, brain.cpp
 Contains the brain class - the basis of the project
 
-###### pch.h
+##### pch.h
 Contains the initial definitions
 
-###### random_put_get.h, random_put_get.cpp
+##### random_put_get.h, random_put_get.cpp  
 Contains the random_put_get class. Easy and fast random numbers.  
 First you put, then you get random numbers.
 
-###### simple_math.h
+##### simple_math.h
 Contains the simple_math struct. Easy and fast matematics.
 
-#### ./src/examples/minimal/
-Contains minimal project for Qt
-
-#### ./src/examples/web/
-Project for Qt.  
-Requires an installed Qt WebEngine modul.  
-The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain.
+#### ./src/examples/
+Examples directory. See the [./src/examples/README.md](../blob/master/src/examples/README.md) file for details
 
 ## Author
 Ilya Shishkin  
