@@ -26,7 +26,7 @@ First you put, then you get random numbers.
 Contains the simple_math struct. Easy and fast matematics.
 
 #### ./src/examples/
-Examples directory. See the [./src/examples/README.md](../blob/master/src/examples/README.md) file for details
+Examples directory. See the [./src/examples/README.md](../master/src/examples/README.md) file for details
 
 ## Author
 Ilya Shishkin  
