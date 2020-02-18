@@ -16,7 +16,6 @@ brain::~brain()
     stop();
     delete [] world_input;
     delete [] world_output;
-    delete [] us;
 }
 brain::brain(_word random_array_length_in_bits,
              _word brain_bits,
@@ -33,7 +32,7 @@ brain::brain(_word random_array_length_in_bits,
     reaction_rate = quantity_of_neurons;
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw ("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
-    us = new union_storage[quantity_of_neurons];
+    us = std::vector<union_storage>(quantity_of_neurons);
     world_input = new bool[quantity_of_neurons_sensor];
     for (_word i = 0; i < quantity_of_neurons_sensor; i++)
     {
@@ -59,7 +58,7 @@ brain::binary::binary()
     neuron_type_ = neuron_type_binary;
     neuron_binary_type_ = neuron_binary_type_free;
 }
-void brain::binary::init(_word j, _word k, union_storage *us)
+void brain::binary::init(_word j, _word k, std::vector<union_storage> &us)
 {
     neuron_binary_type_ = neuron_binary_type_in_work;
     first = j;
@@ -115,7 +114,7 @@ void brain::binary::kill(brain &brn)
     }
     brn.debug_soft_kill++;
 }
-void brain::binary::solve_body(union_storage *us)
+void brain::binary::solve_body(std::vector<union_storage> &us)
 {
     static bool solve_tab[2][2][2][2] = {{{{1, 0}, {0, 0}},
                                           {{1, 0}, {1, 1}}},

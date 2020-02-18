@@ -142,8 +142,7 @@ void brain_friend::load()
         brain_.world_output = new bool[brain_.quantity_of_neurons_motor];
         for(_word i = 0; i < brain_.quantity_of_neurons_motor; i++)
             in >> brain_.world_output[i];
-        delete [] brain_.us;
-        brain_.us = new brain::union_storage[brain_.quantity_of_neurons];
+        brain_.us.resize(brain_.quantity_of_neurons);
         for(_word i = 0; i < brain_.quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
                 in >> brain_.us[i].words[j];
@@ -171,15 +170,13 @@ void brain_friend::resize(_word brainBits_)
     if(brainBits_ > brain_.quantity_of_neurons_in_bits)
     {
         _word quantity_of_neuron_end_temp = 1 << (brainBits_);
-        brain::union_storage* us_temp = new brain::union_storage[quantity_of_neuron_end_temp];
+        std::vector<brain::union_storage> us_temp = std::vector<brain::union_storage>(quantity_of_neuron_end_temp);
         for(_word i = 0; i < brain_.quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
                 us_temp[i].words[j] = brain_.us[i].words[j];
         for (_word i = brain_.quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
             us_temp[i].binary_ = brain::binary();
-        delete [] brain_.us;
-        brain_.us = us_temp;
-        us_temp = nullptr;
+        std::swap(brain_.us, us_temp);
         brain_.quantity_of_neurons_in_bits = brainBits_;
         brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
         brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;

@@ -45,7 +45,7 @@ class brain
     std::mutex mtx;
     std::unique_ptr<random_put_get> rndm;
     union union_storage;
-    union_storage *us;
+    std::vector<union_storage> us;
     struct neuron
     {
         enum neuron_type{
@@ -82,10 +82,10 @@ class brain
         char char_reserve_binary[1];//reserve
         binary();
         neuron_binary_type get_type_binary(){ return neuron_binary_type_; }
-        void init(_word j, _word k, union_storage *us);
+        void init(_word j, _word k, std::vector<union_storage> &us);
         bool create(brain &brn);
         void kill(brain &brn);
-        void solve_body(union_storage *us);
+        void solve_body(std::vector<union_storage> &us);
         void solve(brain &brn);
     };
     struct sensor : neuron
