@@ -39,8 +39,8 @@ class brain
     bool work = false;
     void (*clock_cycle_event)();
     static void thread_work(brain *brn);
-    bool *world_input;
-    bool *world_output;
+    std::vector<bool> world_input;
+    std::vector<bool> world_output;
     std::thread thrd;
     std::mutex mtx;
     std::unique_ptr<random_put_get> rndm;
@@ -92,7 +92,7 @@ class brain
     {
         _word world_input_address;
         char char_reserve_sensor[20];//reserve
-        sensor(bool *world_input, _word world_input_address);
+        sensor(std::vector<bool>& world_input, _word world_input_address);
         void solve(brain &brn);
     };
     struct motor : neuron
@@ -101,7 +101,7 @@ class brain
         _word slots_occupied = 0;
         int accumulator = 0;
         char char_reserve_motor[12];//reserve
-        motor(bool *world_output, _word world_output_address_);
+        motor(std::vector<bool>& world_output, _word world_output_address_);
         void solve(brain &brn, _word me);
     };
     union union_storage

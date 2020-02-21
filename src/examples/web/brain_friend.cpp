@@ -134,14 +134,19 @@ void brain_friend::load()
         in >> brain_.iteration;
         in >> brain_.quantity_of_initialized_neurons_binary;
         in >> brain_.debug_soft_kill;
-        delete [] brain_.world_input;
-        brain_.world_input = new bool[brain_.quantity_of_neurons_sensor];
+        brain_.world_input.resize(brain_.quantity_of_neurons_sensor);
+        bool b;
         for(_word i = 0; i < brain_.quantity_of_neurons_sensor; i++)
-            in >> brain_.world_input[i];
-        delete [] brain_.world_output;
-        brain_.world_output = new bool[brain_.quantity_of_neurons_motor];
+        {
+            in >> b;
+            brain_.world_input[i] = b;
+        }
+        brain_.world_output.resize(brain_.quantity_of_neurons_motor);
         for(_word i = 0; i < brain_.quantity_of_neurons_motor; i++)
-            in >> brain_.world_output[i];
+        {
+            in >> b;
+            brain_.world_output[i] = b;
+        }
         brain_.us.resize(brain_.quantity_of_neurons);
         for(_word i = 0; i < brain_.quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)

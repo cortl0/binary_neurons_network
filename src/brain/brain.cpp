@@ -14,8 +14,6 @@
 brain::~brain()
 {
     stop();
-    delete [] world_input;
-    delete [] world_output;
 }
 brain::brain(_word random_array_length_in_bits,
              _word brain_bits,
@@ -32,14 +30,14 @@ brain::brain(_word random_array_length_in_bits,
     reaction_rate = quantity_of_neurons;
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw ("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
-    us = std::vector<union_storage>(quantity_of_neurons);
-    world_input = new bool[quantity_of_neurons_sensor];
+    us.resize(quantity_of_neurons);
+    world_input.resize(quantity_of_neurons_sensor);
     for (_word i = 0; i < quantity_of_neurons_sensor; i++)
     {
         world_input[i] = rndm->get(1);
         us[i].sensor_ = sensor(world_input, i);
     }
-    world_output = new bool[quantity_of_neurons_motor];
+    world_output.resize(quantity_of_neurons_motor);
     for (uint i = 0; i < quantity_of_neurons_motor; i++)
     {
         world_output[i] = rndm->get(1);
@@ -173,7 +171,7 @@ void brain::binary::solve(brain &brn)
     }
     }
 }
-brain::sensor::sensor(bool *world_input, _word world_input_address_)
+brain::sensor::sensor(std::vector<bool>& world_input, _word world_input_address_)
 {
     neuron_type_ = neuron_type_sensor;
     world_input_address = world_input_address_;
@@ -185,7 +183,7 @@ void brain::sensor::solve(brain &brn)
     out_old = out_new;
     out_new = brn.world_input[world_input_address];
 }
-brain::motor::motor(bool *world_output, _word world_output_address_)
+brain::motor::motor(std::vector<bool>& world_output, _word world_output_address_)
 {
     neuron_type_ = neuron_type_motor;
     world_output_address = world_output_address_;
