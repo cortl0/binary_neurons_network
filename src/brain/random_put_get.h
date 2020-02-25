@@ -21,7 +21,7 @@ class random_put_get
     _word offset = 0;
     _word offset_in_word = 0;
     _word length;
-    _word* array;
+    std::vector<_word> array;
     std::mt19937 gen;
     std::uniform_int_distribution<> uid = std::uniform_int_distribution<>(0, 1);
 public:
@@ -34,7 +34,7 @@ public:
     _word get(_word bits) noexcept;
     _word get_ft(_word from, _word to) noexcept;
     _word get_length();
-    _word* get_array();
+    std::vector<_word>& get_array();
 };
 
 #endif // RANDOM_PUT_GET_H

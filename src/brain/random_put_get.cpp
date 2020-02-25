@@ -11,14 +11,11 @@
 
 #include "random_put_get.h"
 
-random_put_get::~random_put_get()
-{
-    delete [] array;
-}
+random_put_get::~random_put_get() { }
 random_put_get::random_put_get(_word array_length_in_bits)
 {
     length = (1 << (array_length_in_bits - 1)) / _word_bits;
-    array = new _word[length];
+    array.resize(length);
     for (_word i = 0; i < length; i++)
         for (_word j = 0; j < _word_bits; j++)
         {
@@ -82,7 +79,7 @@ _word random_put_get::get_length()
 {
     return length;
 }
-_word* random_put_get::get_array()
+std::vector<_word>& random_put_get::get_array()
 {
     return array;
 }
