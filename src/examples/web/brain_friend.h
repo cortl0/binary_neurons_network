@@ -33,4 +33,4 @@ struct brain_friend
     std::map<int, int> graphical_representation();
 };
 
-#endif // BRAIN_FRIEND_H
+#endif // !BRAIN_FRIEND_H

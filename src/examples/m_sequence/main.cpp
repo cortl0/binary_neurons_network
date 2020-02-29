@@ -13,8 +13,8 @@
 #include "../../brain/brain.h"
 #include "m_sequence.h"
 
-static _word random_array_length_in_bits = 27;
-static _word brain_bits = 15;
+static _word random_array_length_in_bits = 28;
+static _word brain_bits = 20;
 static const _word input_length = 31;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];

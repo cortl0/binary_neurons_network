@@ -28,4 +28,4 @@ public:
     }
 };
 
-#endif // MSEQUENCE_H
+#endif // !MSEQUENCE_H

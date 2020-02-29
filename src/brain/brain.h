@@ -129,4 +129,4 @@ public:
     void set_in(_word offset, bool value);
 };
 
-#endif // BRAIN_H
+#endif // !BRAIN_H

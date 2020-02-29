@@ -64,4 +64,4 @@ public:
     brain& GetBrain(){ return *brn.get(); }
 };
 
-#endif // DEVICEAI_H
+#endif // !DEVICEAI_H
