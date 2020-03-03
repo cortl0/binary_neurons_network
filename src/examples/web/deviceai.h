@@ -59,7 +59,13 @@ public:
     std::unique_ptr<brain_friend> brain_friend_;
     ~DeviceAI();
     DeviceAI() = delete;
-    DeviceAI(_word randomLength2PowBit, _word motorCount, _word brainBits, QSize qSize, QSize qSizeBig, void (*tick_web_engine)(), QWebEngineView* qwev_);
+    DeviceAI(_word random_array_length_in_power_of_two,
+             _word motorCount,
+             _word brainBits,
+             QSize qSize,
+             QSize qSizeBig,
+             void (*tick_web_engine)(),
+             QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
     brain& GetBrain(){ return *brn.get(); }
 };

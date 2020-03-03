@@ -14,7 +14,7 @@
 QString brain_friend::brain_get_state()
 {
     QString qString = "8iter=" + QString::number(brain_.iteration);
-    qString += "\t bits=" + QString::number(brain_.quantity_of_neurons_in_bits);
+    qString += "\t bits=" + QString::number(brain_.quantity_of_neurons_in_power_of_two);
     qString += "\t n_init=" + QString::number(brain_.quantity_of_initialized_neurons_binary);
     qString += "\nquantity_of_neuron_binary=" + QString::number(brain_.quantity_of_neurons_binary) + "\t";
     qString += "quantity_of_neuron_sensor=" + QString::number(brain_.quantity_of_neurons_sensor) + "\t";
@@ -41,8 +41,8 @@ QString brain_friend::brain_get_representation()
     QString qString;
     _word s = brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
     _word e = brain_.quantity_of_neurons_binary + brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
-    _word consensus = 0;
-    _word count = 0;
+    int consensus = 0;
+    int count = 0;
     for (_word i = s; i < e; i++)
     {
         if (brain_.us[i].neuron_.get_type() == 2)
@@ -56,7 +56,7 @@ QString brain_friend::brain_get_representation()
     }
     qString += "consensus=" + QString::number(consensus);
     qString += "\ncount=" + QString::number(count);
-    qString += "\nc/c=" + QString::number((float)consensus / (float)count);
+    qString += "\nc/c=" + QString::number((static_cast<double>(consensus) / static_cast<double>(count)));
     return qString;
 }
 void brain_friend::save()
@@ -78,7 +78,7 @@ void brain_friend::save()
         QDataStream out(&file);
         out.setVersion(QDataStream::Qt_4_5);
         out << version;
-        out << brain_.quantity_of_neurons_in_bits;
+        out << brain_.quantity_of_neurons_in_power_of_two;
         out << brain_.quantity_of_neurons;
         out << brain_.quantity_of_neurons_binary;
         out << brain_.quantity_of_neurons_sensor;
@@ -125,7 +125,7 @@ void brain_friend::load()
             QMessageBox::information(nullptr, "Version mismatch", "Version mismatch");
             return;
         }
-        in >> brain_.quantity_of_neurons_in_bits;
+        in >> brain_.quantity_of_neurons_in_power_of_two;
         in >> brain_.quantity_of_neurons;
         in >> brain_.quantity_of_neurons_binary;
         in >> brain_.quantity_of_neurons_sensor;
@@ -172,7 +172,7 @@ void brain_friend::resize(_word brainBits_)
     brain_.mtx.unlock();
     usleep(200);
     brain_.mtx.lock();
-    if(brainBits_ > brain_.quantity_of_neurons_in_bits)
+    if(brainBits_ > brain_.quantity_of_neurons_in_power_of_two)
     {
         _word quantity_of_neuron_end_temp = 1 << (brainBits_);
         std::vector<brain::union_storage> us_temp = std::vector<brain::union_storage>(quantity_of_neuron_end_temp);
@@ -182,7 +182,7 @@ void brain_friend::resize(_word brainBits_)
         for (_word i = brain_.quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
             us_temp[i].binary_ = brain::binary();
         std::swap(brain_.us, us_temp);
-        brain_.quantity_of_neurons_in_bits = brainBits_;
+        brain_.quantity_of_neurons_in_power_of_two = brainBits_;
         brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
         brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;
         brain_.reaction_rate = brain_.quantity_of_neurons;

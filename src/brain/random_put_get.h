@@ -29,7 +29,7 @@ public:
     _word debug_count_get=0;
     ~random_put_get();
     random_put_get() = delete;
-    random_put_get(_word array_length_in_bits);
+    random_put_get(_word random_array_length_in_power_of_two);
     void put(bool i) noexcept;
     _word get(_word bits) noexcept;
     _word get_ft(_word from, _word to) noexcept;

@@ -68,16 +68,12 @@ void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, brain &brn)
             for(int k=0;k<gradation_bit;k++)
             {
                 if (black_white)
-                    brn.set_in((j*qImage.size().width()+i)*gradation_bit+k, ((r + g + b)/3/kgr)&(k+1));
-                    //array[(j*qImage.size().width()+i)*gradation_bit+k]=((r + g + b)/3/kgr)&(k+1);
+                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*gradation_bit+k), ((r + g + b)/3/kgr)&(k+1));
                 else
                 {
-                    brn.set_in((j*qImage.size().width()+i)*3*gradation_bit+k, (r/kgr)&(k+1));
-                    //array[(j*qImage.size().width()+i)*3*gradation_bit+k]=(r/kgr)&(k+1);
-                    brn.set_in((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit, (g/kgr)&(k+1));
-                    //array[(j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit]=(g/kgr)&(k+1);
-                    brn.set_in((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2, (b/kgr)&(k+1));
-                    //array[(j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2]=(b/kgr)&(k+1);
+                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k), (r/kgr)&(k+1));
+                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit), (g/kgr)&(k+1));
+                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2), (b/kgr)&(k+1));
                 }
             }
         }
@@ -110,7 +106,12 @@ DeviceAI::~DeviceAI()
 {
     delete [] stepOld;
 }
-DeviceAI::DeviceAI(_word randomLength2PowBit, _word motorCount, _word brainBits, QSize qSize, QSize qSizeBig, void (*tick_web_engine)(), QWebEngineView* qwev_)
+DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
+                   _word motorCount,
+                   _word quantity_of_neurons_in_power_of_two,
+                   QSize qSize, QSize qSizeBig,
+                   void (*tick_web_engine)(),
+                   QWebEngineView* qwev_)
 {
     qwev = qwev_;
     stepOld_count = motorCount;
@@ -119,9 +120,17 @@ DeviceAI::DeviceAI(_word randomLength2PowBit, _word motorCount, _word brainBits,
         stepOld[i] = 0;
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)
-        brn.reset(new brain(randomLength2PowBit, brainBits, static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit), motorCount, /*ping_pong,*/ tick_web_engine));
+        brn.reset(new brain(random_array_length_in_power_of_two,
+                            quantity_of_neurons_in_power_of_two,
+                            static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
+                            motorCount,
+                            tick_web_engine));
     else
-        brn.reset(new brain(randomLength2PowBit, brainBits, static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3), motorCount, /*ping_pong,*/ tick_web_engine));
+        brn.reset(new brain(random_array_length_in_power_of_two,
+                            quantity_of_neurons_in_power_of_two,
+                            static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
+                            motorCount,
+                            tick_web_engine));
     brain_friend_.reset(new brain_friend(*brn.get()));
 }
 void DeviceAI::Go (brain &brn)

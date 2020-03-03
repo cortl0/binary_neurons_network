@@ -12,9 +12,9 @@
 #include "random_put_get.h"
 
 random_put_get::~random_put_get() { }
-random_put_get::random_put_get(_word array_length_in_bits)
+random_put_get::random_put_get(_word random_array_length_in_power_of_two)
 {
-    length = (1 << array_length_in_bits) / _word_bits;
+    length = (1 << random_array_length_in_power_of_two) / _word_bits;
     array.resize(length);
     for (_word i = 0; i < length; i++)
         for (_word j = 0; j < _word_bits; j++)

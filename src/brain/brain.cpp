@@ -15,18 +15,18 @@ brain::~brain()
 {
     stop();
 }
-brain::brain(_word random_array_length_in_bits,
-             _word brain_bits,
+brain::brain(_word random_array_length_in_power_of_two,
+             _word quantity_of_neurons_in_power_of_two,
              _word input_length,
              _word output_length,
              void (*clock_cycle_event_)())
-    : quantity_of_neurons_in_bits(brain_bits),
+    : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
       quantity_of_neurons_motor(output_length),
       clock_cycle_event(clock_cycle_event_)
 {
-    rndm.reset(new random_put_get(random_array_length_in_bits));
-    quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_bits);
+    rndm.reset(new random_put_get(random_array_length_in_power_of_two));
+    quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
     reaction_rate = quantity_of_neurons;
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw ("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
@@ -74,8 +74,8 @@ void brain::binary::init(_word j, _word k, std::vector<union_storage> &us)
 }
 bool brain::binary::create(brain &brn)
 {
-    _word j = brn.rndm->get(brn.quantity_of_neurons_in_bits);
-    _word k = brn.rndm->get(brn.quantity_of_neurons_in_bits);
+    _word j = brn.rndm->get(brn.quantity_of_neurons_in_power_of_two);
+    _word k = brn.rndm->get(brn.quantity_of_neurons_in_power_of_two);
     if (j == k)
         return false;
     if (&(this->char_reserve_neuron) == &(brn.us[j].neuron_.char_reserve_neuron))
@@ -154,7 +154,7 @@ void brain::binary::solve(brain &brn)
                     motor_consensus -= ((out_new ^ brn.us[motor].neuron_.out_new) * 2 - 1);
                 }
             }
-            if (!brn.rndm->get(brn.quantity_of_neurons_in_bits))
+            if (!brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
                 kill(brn);
         }
         break;
@@ -202,7 +202,7 @@ void brain::motor::solve(brain &brn, _word me)
     accumulator += (brn.rndm->get(1) << 1) - 1;
     if (brn.rndm->get_ft(0, slots_occupied))
         return;
-    _word i = brn.rndm->get(brn.quantity_of_neurons_in_bits);
+    _word i = brn.rndm->get(brn.quantity_of_neurons_in_power_of_two);
     if(brn.us[i].neuron_.get_type()==brain::neuron::neuron_type_binary)
         if(brn.us[i].binary_.get_type_binary()==brain::binary::neuron_binary_type_in_work)
             if(!brn.us[i].binary_.motor_connect)
@@ -230,7 +230,7 @@ void brain::thread_work(brain *brn)
                 brn->clock_cycle_event();
         }
         brn->reaction_rate--;
-        _word j = brn->rndm->get(brn->quantity_of_neurons_in_bits);
+        _word j = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two);
         switch (brn->us[j].neuron_.get_type())
         {
         case brain::neuron::neuron_type_binary:

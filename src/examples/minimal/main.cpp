@@ -16,14 +16,14 @@
 //#define second_option_communication
 //#define third_option_communication
 
-static _word random_array_length_in_bits = 27;
-static _word brain_bits = 15;
+static _word random_array_length_in_power_of_two = 28;
+static _word quantity_of_neurons_in_power_of_two = 18;
 static const _word input_length = 64;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
 void clock_cycle_event();
-static brain brn(random_array_length_in_bits,
-                 brain_bits,
+static brain brn(random_array_length_in_power_of_two,
+                 quantity_of_neurons_in_power_of_two,
                  input_length,
                  output_length,
                  clock_cycle_event);

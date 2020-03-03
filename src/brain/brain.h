@@ -26,7 +26,7 @@ class brain
 #ifdef BRAIN_FRIEND_H
     friend struct brain_friend;
 #endif
-    _word quantity_of_neurons_in_bits;
+    _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons;
     _word quantity_of_neurons_binary;
     _word quantity_of_neurons_sensor;
@@ -60,7 +60,7 @@ class brain
         bool buzy = false;
         bool out_new;
         bool out_old;
-        char char_reserve_neuron[1];//reserve
+        char char_reserve_neuron[1]; // reserve
         neuron();
         neuron_type get_type(){ return neuron_type_; }
     };
@@ -72,14 +72,14 @@ class brain
             neuron_binary_type_marked_to_kill = 2
         };
         neuron_binary_type neuron_binary_type_ = neuron_binary_type_free;
-        _word first;//input adress
-        _word second;//input adress
-        _word motor;//motor adress
+        _word first;  // input adress
+        _word second; // input adress
+        _word motor;  // motor adress
         int motor_consensus;
         bool first_mem;
         bool second_mem;
         bool motor_connect = false;
-        char char_reserve_binary[1];//reserve
+        char char_reserve_binary[1]; // reserve
         binary();
         neuron_binary_type get_type_binary(){ return neuron_binary_type_; }
         void init(_word j, _word k, std::vector<union_storage> &us);
@@ -91,7 +91,7 @@ class brain
     struct sensor : neuron
     {
         _word world_input_address;
-        char char_reserve_sensor[20];//reserve
+        char char_reserve_sensor[20]; // reserve
         sensor(std::vector<bool>& world_input, _word world_input_address);
         void solve(brain &brn);
     };
@@ -100,7 +100,7 @@ class brain
         _word world_output_address;
         _word slots_occupied = 0;
         int accumulator = 0;
-        char char_reserve_motor[12];//reserve
+        char char_reserve_motor[12]; // reserve
         motor(std::vector<bool>& world_output, _word world_output_address_);
         void solve(brain &brn, _word me);
     };
@@ -110,7 +110,7 @@ class brain
         binary binary_;
         sensor sensor_;
         motor motor_;
-        _word words[10]; // sizeof(Binary) / sizeof(_word) = 10
+        _word words[sizeof(binary) / sizeof(_word)];
         union_storage(){}
         ~union_storage(){}
     };
@@ -119,8 +119,8 @@ public:
     volatile bool clock_cycle_completed;
     ~brain();
     brain() = delete;
-    brain(_word random_array_length_in_bits,
-          _word brain_bits,
+    brain(_word random_array_length_in_power_of_two,
+          _word quantity_of_neurons_in_power_of_two,
           _word input_length,
           _word output_length,
           void (*clock_cycle_event)());
