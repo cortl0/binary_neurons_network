@@ -6,10 +6,27 @@ Requires an installed Qt WebEngine modul.
 The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain.
 
 #### ./minimal/  
-Contains minimal project for Qt
+Contains minimal project
+
+###### For Qt ./minimal.pro
+
+###### Build
+make all
+make install  
+
+make clean
+make uninstall
 
 #### ./m_sequence/  
-Contains project for Qt. The m-sequence is fed to the input of the network of binary neurons
+The m-sequence is fed to the input of the network of binary neurons
+###### For Qt (./m_sequence.pro).
+
+###### Build
+make all
+make install  
+
+make clean
+make uninstall
 
 ## Author
 Ilya Shishkin  

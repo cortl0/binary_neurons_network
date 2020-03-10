@@ -25,6 +25,11 @@ First you put, then you get random numbers.
 ##### simple_math.h
 Contains the simple_math struct. Easy and fast matematics.
 
+###### Build
+make
+make all
+make clean
+
 #### ./src/examples/
 Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
 
