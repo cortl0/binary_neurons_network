@@ -8,24 +8,26 @@ The input to the brain is a picture from the browser, and the output is the move
 #### ./minimal/  
 Contains minimal project
 
-###### For Qt ./minimal.pro
+###### For Qt  
+./minimal.pro
 
 ###### Build
-make all
+make all  
 make install  
-
-make clean
+  
+make clean  
 make uninstall
 
 #### ./m_sequence/  
 The m-sequence is fed to the input of the network of binary neurons
-###### For Qt (./m_sequence.pro).
+###### For Qt  
+./m_sequence.pro
 
 ###### Build
-make all
+make all  
 make install  
-
-make clean
+  
+make clean  
 make uninstall
 
 ## Author

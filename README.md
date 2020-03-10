@@ -26,8 +26,9 @@ First you put, then you get random numbers.
 Contains the simple_math struct. Easy and fast matematics.
 
 ###### Build
-make
-make all
+make  
+make all  
+  
 make clean
 
 #### ./src/examples/
