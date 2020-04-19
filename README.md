@@ -1,5 +1,5 @@
 ![](img.png)
-# Network of binary neurons
+# Binary neurons network
 This is an attempt to create AI but not AI in the modern sense of the word.  
 It is AI in the original meaning coinciding with the meanings of the following synonyms:  
 - Artificial general intelligence (AGI);  
@@ -10,7 +10,7 @@ It is AI in the original meaning coinciding with the meanings of the following s
 ## Project directories
 
 #### ./src/brain/
-This folder contains everything you need for a project based on binary neurons
+This folder contains everything you need for a project based on binary neurons network
 
 ##### brain.h, brain.cpp
 Contains the brain class - the basis of the project
@@ -25,14 +25,18 @@ First you put, then you get random numbers.
 ##### simple_math.h
 Contains the simple_math struct. Easy and fast matematics.
 
-###### Build
-make  
-make all  
-  
-make clean
-
 #### ./src/examples/
 Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
+
+###### Build
+using a makefile:  
+make  
+make all  
+make clean  
+if available:  
+make install  
+make uninstall  
+also if available QT build
 
 ## Author
 Ilya Shishkin  
@@ -42,7 +46,7 @@ mailto:cortl@8iter.ru
 [http://8iter.ru/ai.html](http://8iter.ru/ai.html "google translator to help!")
 
 ## GitHub reference
-https://github.com/cortl0/network_of_binary_neurons_cpp
+https://github.com/cortl0/binary_neurons_network
 
 ## License
 This project is licensed under the GPL v3.0 - see the LICENSE file for details

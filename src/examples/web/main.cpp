@@ -1,10 +1,10 @@
 //*************************************************************//
 //                                                             //
-//   network of binary neurons                                 //
+//   binary neurons network                                    //
 //   created by Ilya Shishkin                                  //
 //   cortl@8iter.ru                                            //
 //   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/network_of_binary_neurons_cpp   //
+//   https://github.com/cortl0/binary_neurons_network          //
 //   licensed by GPL v3.0                                      //
 //                                                             //
 //*************************************************************//
