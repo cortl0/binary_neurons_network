@@ -9,8 +9,8 @@
 //                                                             //
 //*************************************************************//
 
-#ifndef SIMPLE_MATH_H
-#define SIMPLE_MATH_H
+#ifndef SIMPLE_MATH_HPP
+#define SIMPLE_MATH_HPP
 
 #include "pch.h"
 
@@ -22,4 +22,4 @@ struct simple_math
     inline static int abs(int i) noexcept { if (i < 0) return (-i); else return (i); }
 };
 
-#endif // !SIMPLE_MATH_H
+#endif // SIMPLE_MATH_HPP

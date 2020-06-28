@@ -37,4 +37,4 @@ public:
     std::vector<_word>& get_array();
 };
 
-#endif // !RANDOM_PUT_GET_H
+#endif // RANDOM_PUT_GET_H

@@ -64,7 +64,6 @@ public:
              _word brainBits,
              QSize qSize,
              QSize qSizeBig,
-             void (*tick_web_engine)(),
              QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
     brain& GetBrain(){ return *brn.get(); }

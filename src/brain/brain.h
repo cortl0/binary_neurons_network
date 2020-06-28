@@ -37,8 +37,9 @@ class brain
     _word debug_soft_kill = 0;
     _word debug_quantity_of_solve_binary = 0;
     bool work = false;
-    void (*clock_cycle_event)();
-    static void thread_work(brain *brn);
+    void* owner;
+    void (*clock_cycle_handler)(void* owner);
+    static void thread_work(brain* brn);
     std::vector<bool> world_input;
     std::vector<bool> world_output;
     std::thread thrd;
@@ -123,10 +124,11 @@ public:
           _word quantity_of_neurons_in_power_of_two,
           _word input_length,
           _word output_length,
-          void (*clock_cycle_event)());
-    void start(bool detach = true);
+          void (*clock_cycle_handler)(void* owner));
+    void start(void* owner, bool detach = true);
     bool get_out(_word offset);
+    _word get_output_length();
     void set_in(_word offset, bool value);
 };
 
-#endif // !BRAIN_H
+#endif // BRAIN_H

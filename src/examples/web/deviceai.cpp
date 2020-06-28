@@ -110,7 +110,6 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
                    _word motorCount,
                    _word quantity_of_neurons_in_power_of_two,
                    QSize qSize, QSize qSizeBig,
-                   void (*tick_web_engine)(),
                    QWebEngineView* qwev_)
 {
     qwev = qwev_;
@@ -124,13 +123,13 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
                             quantity_of_neurons_in_power_of_two,
                             static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
                             motorCount,
-                            tick_web_engine));
+                            nullptr));
     else
         brn.reset(new brain(random_array_length_in_power_of_two,
                             quantity_of_neurons_in_power_of_two,
                             static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
                             motorCount,
-                            tick_web_engine));
+                            nullptr));
     brain_friend_.reset(new brain_friend(*brn.get()));
 }
 void DeviceAI::Go (brain &brn)

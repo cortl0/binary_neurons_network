@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     int k=4;
     deviceAI.reset(new DeviceAI(27, 6, 18,
                                 QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k),
-                                ui->preview->size(), nullptr, ui->preview));
+                                ui->preview->size(), ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");
     ui->preview->load(QUrl(ui->lineEditAddress->text()));
     ui->preview->show();
@@ -99,7 +99,7 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonStart->setText("Stop");
         ui->pushButtonLoad->setEnabled(false);
         ui->pushButtonSave->setEnabled(false);
-        deviceAI->GetBrain().start();
+        deviceAI->GetBrain().start(&deviceAI);
     }
     ft=!ft;
 }
@@ -143,5 +143,5 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
 }
 void MainWindow::on_pushButton_graphical_representation_released()
 {
-    deviceAI->GetBrain().start();
+    deviceAI->GetBrain().start(&deviceAI);
 }

@@ -19,4 +19,4 @@
 //#define _word unsigned long long int
 //#define _word_bits 64
 
-#endif // !PCH_H
+#endif // PCH_H

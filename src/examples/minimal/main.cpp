@@ -21,12 +21,12 @@ static _word quantity_of_neurons_in_power_of_two = 18;
 static const _word input_length = 64;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
-void clock_cycle_event();
+void clock_cycle_handler(void* owner);
 static brain brn(random_array_length_in_power_of_two,
                  quantity_of_neurons_in_power_of_two,
                  input_length,
                  output_length,
-                 clock_cycle_event);
+                 clock_cycle_handler);
 
 // this method will be performed on every beat of the brain
 void communication()
@@ -53,7 +53,7 @@ void communication()
     std::cout << c << std::endl;
 }
 
-void clock_cycle_event()
+void clock_cycle_handler(void* owner)
 {
 #ifdef first_option_communication
     communication();
@@ -64,12 +64,12 @@ int main()
 {
 #ifdef first_option_communication
     bool detach = false;
-    brn.start(detach);
+    brn.start(&brn, detach);
     return 0;
 #endif
 
 #ifdef second_option_communication
-    brn.start();
+    brn.start(nullptr);
     while(1)
         if (brn.clock_cycle_completed == true)
         {
@@ -79,7 +79,7 @@ int main()
 #endif
 
 #ifdef third_option_communication
-    brn.start();
+    brn.start(nullptr);
     while(1)
         communication();
 #endif

@@ -19,11 +19,11 @@ brain::brain(_word random_array_length_in_power_of_two,
              _word quantity_of_neurons_in_power_of_two,
              _word input_length,
              _word output_length,
-             void (*clock_cycle_event_)())
+             void (*clock_cycle_event)(void* owner))
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
       quantity_of_neurons_motor(output_length),
-      clock_cycle_event(clock_cycle_event_)
+      clock_cycle_handler(clock_cycle_event)
 {
     rndm.reset(new random_put_get(random_array_length_in_power_of_two));
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
@@ -213,7 +213,7 @@ void brain::motor::solve(brain &brn, _word me)
                 brn.us[i].binary_.motor = me;
             }
 }
-void brain::thread_work(brain *brn)
+void brain::thread_work(brain* brn)
 {
     while(true)
     {
@@ -226,8 +226,8 @@ void brain::thread_work(brain *brn)
             brn->debug_quantity_of_solve_binary = 0;
             if(!brn->clock_cycle_completed)
                 brn->clock_cycle_completed = true;
-            if(nullptr != brn->clock_cycle_event)
-                brn->clock_cycle_event();
+            if(nullptr != brn->clock_cycle_handler)
+                brn->clock_cycle_handler(brn->owner);
         }
         brn->reaction_rate--;
         _word j = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two);
@@ -247,7 +247,7 @@ void brain::thread_work(brain *brn)
         }
     }
 }
-void brain::start(bool detach)
+void brain::start(void* owner_, bool detach)
 {
     if(work)
     {
@@ -255,6 +255,7 @@ void brain::start(bool detach)
     }
     clock_cycle_completed = false;
     thrd = std::thread(thread_work, this);
+    owner = owner_;
     work = true;
     if(detach)
         thrd.detach();
@@ -271,7 +272,11 @@ void brain::stop()
 }
 bool brain::get_out(_word offset)
 {
-    return  world_output[offset];
+    return world_output[offset];
+}
+_word brain::get_output_length()
+{
+    return quantity_of_neurons_motor;
 }
 void brain::set_in(_word offset, bool value)
 {
