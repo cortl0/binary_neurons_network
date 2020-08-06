@@ -278,6 +278,10 @@ _word brain::get_output_length()
 {
     return quantity_of_neurons_motor;
 }
+_word brain::get_input_length()
+{
+    return quantity_of_neurons_sensor;
+}
 void brain::set_in(_word offset, bool value)
 {
     world_input[offset] = value;

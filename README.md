@@ -28,7 +28,10 @@ Contains the simple_math struct. Easy and fast matematics.
 #### ./src/examples/
 Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
 
-###### Build
+#### Example project
+https://github.com/cortl0/device
+
+## Build
 using a makefile:  
 make  
 make all  
@@ -36,14 +39,16 @@ make clean
 if available:  
 make install  
 make uninstall  
-also if available QT build
+also if available QT build  
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DPXPWAL9BQD8Q)  
 
 ## Author
 Ilya Shishkin  
 mailto:cortl@8iter.ru
 
 ## Home page
-[http://8iter.ru/ai.html](http://8iter.ru/ai.html "google translator to help!")
+http://8iter.ru/ai.html
 
 ## GitHub reference
 https://github.com/cortl0/binary_neurons_network

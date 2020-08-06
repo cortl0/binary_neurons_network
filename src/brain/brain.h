@@ -128,6 +128,7 @@ public:
     void start(void* owner, bool detach = true);
     bool get_out(_word offset);
     _word get_output_length();
+    _word get_input_length();
     void set_in(_word offset, bool value);
 };
 
