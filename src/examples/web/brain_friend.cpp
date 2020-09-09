@@ -11,6 +11,9 @@
 
 #include "brain_friend.h"
 
+namespace bnn
+{
+
 QString brain_friend::brain_get_state()
 {
     QString qString = "8iter=" + QString::number(brain_.iteration);
@@ -206,3 +209,5 @@ std::map<int, int> brain_friend::graphical_representation()
             }
     return m;
 }
+
+} // !namespace bnn

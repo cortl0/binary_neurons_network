@@ -1,3 +1,11 @@
+#
+#   binary neurons network
+#   created by Ilya Shishkin
+#   cortl@8iter.ru
+#   https://github.com/cortl0/binary_neurons_network
+#   licensed by GPL v3.0
+#
+
 TARGET = brain.o
 OBJ_DIR = ../brain_obj
 

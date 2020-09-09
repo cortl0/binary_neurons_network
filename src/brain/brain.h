@@ -21,6 +21,9 @@
 #include "simple_math.h"
 #include "random_put_get.h"
 
+namespace bnn
+{
+
 class brain
 {
 #ifdef BRAIN_FRIEND_H
@@ -131,5 +134,7 @@ public:
     _word get_input_length();
     void set_in(_word offset, bool value);
 };
+
+} // !namespace bnn
 
 #endif // BRAIN_H

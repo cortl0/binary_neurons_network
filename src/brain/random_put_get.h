@@ -16,6 +16,9 @@
 
 #include "pch.h"
 
+namespace bnn
+{
+
 class random_put_get
 {
     _word offset = 0;
@@ -36,5 +39,7 @@ public:
     _word get_length();
     std::vector<_word>& get_array();
 };
+
+} // !namespace bnn
 
 #endif // RANDOM_PUT_GET_H

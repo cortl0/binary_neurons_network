@@ -44,7 +44,7 @@ public:
     void Y_minus();
     QPixmap& GetPixmap(){ return qPixmapSmall; }
     void PixmapNormalize();
-    void FillBinary(QPixmap &qPixmapWeb, brain &brn);
+    void FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn);
 };
 
 class DeviceAI
@@ -52,11 +52,11 @@ class DeviceAI
 public:
     bool* stepOld = nullptr;
     _word stepOld_count = 0;
-    void Go (brain &brn);
+    void Go (bnn::brain &brn);
     QWebEngineView* qwev;
     std::unique_ptr<SensorPixmap> sensorPixmap;
-    std::unique_ptr<brain> brn;
-    std::unique_ptr<brain_friend> brain_friend_;
+    std::unique_ptr<bnn::brain> brn;
+    std::unique_ptr<bnn::brain_friend> brain_friend_;
     ~DeviceAI();
     DeviceAI() = delete;
     DeviceAI(_word random_array_length_in_power_of_two,
@@ -66,7 +66,7 @@ public:
              QSize qSizeBig,
              QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
-    brain& GetBrain(){ return *brn.get(); }
+    bnn::brain& GetBrain(){ return *brn.get(); }
 };
 
 #endif // !DEVICEAI_H

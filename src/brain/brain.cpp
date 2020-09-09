@@ -11,6 +11,9 @@
 
 #include "brain.h"
 
+namespace bnn
+{
+
 brain::~brain()
 {
     stop();
@@ -286,3 +289,5 @@ void brain::set_in(_word offset, bool value)
 {
     world_input[offset] = value;
 }
+
+} // !namespace bnn

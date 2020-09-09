@@ -35,7 +35,7 @@ void SensorPixmap::PixmapNormalize()
     if(y-qPixmapSmall.size().height()/zoom/2<0 + epsilon)
         y=qPixmapSmall.size().height()/zoom/2 + epsilon;
 }
-void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, brain &brn)
+void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
 {
     QPainter qPainter(&qPixmapSmall);
     QImage qImageWeb = qPixmapWeb.toImage();
@@ -119,20 +119,20 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
         stepOld[i] = 0;
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)
-        brn.reset(new brain(random_array_length_in_power_of_two,
+        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
                             quantity_of_neurons_in_power_of_two,
                             static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
                             motorCount,
                             nullptr));
     else
-        brn.reset(new brain(random_array_length_in_power_of_two,
+        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
                             quantity_of_neurons_in_power_of_two,
                             static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
                             motorCount,
                             nullptr));
-    brain_friend_.reset(new brain_friend(*brn.get()));
+    brain_friend_.reset(new bnn::brain_friend(*brn.get()));
 }
-void DeviceAI::Go (brain &brn)
+void DeviceAI::Go (bnn::brain &brn)
 {
     if(stepOld[0]!= brn.get_out(0))
     {

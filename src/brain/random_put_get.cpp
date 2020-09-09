@@ -11,6 +11,9 @@
 
 #include "random_put_get.h"
 
+namespace bnn
+{
+
 random_put_get::~random_put_get() { }
 random_put_get::random_put_get(_word random_array_length_in_power_of_two)
 {
@@ -83,3 +86,5 @@ std::vector<_word>& random_put_get::get_array()
 {
     return array;
 }
+
+} // !namespace bnn

@@ -18,9 +18,12 @@
 
 #include "../../brain/brain.h"
 
+namespace bnn
+{
+
 struct brain_friend
 {
-    brain &brain_;
+    bnn::brain &brain_;
     QString version = QString("0");
     QString brain_get_state();
     QString brain_get_representation();
@@ -29,8 +32,10 @@ struct brain_friend
     void stop();
     void resize(_word brainBits);
     brain_friend() = delete;
-    brain_friend(brain &brain_) : brain_(brain_) {}
+    brain_friend(bnn::brain &brain_) : brain_(brain_) {}
     std::map<int, int> graphical_representation();
 };
+
+} // !namespace bnn
 
 #endif // !BRAIN_FRIEND_H
