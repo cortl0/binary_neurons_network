@@ -16,7 +16,7 @@ Ilya Shishkin
 mailto:cortl@8iter.ru
 
 ## Home page
-[http://8iter.ru/ai.html](http://8iter.ru/ai.html "google translator to help!")
+http://8iter.ru/ai.html
 
 ## GitHub reference
 https://github.com/cortl0/binary_neurons_network

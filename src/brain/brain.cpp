@@ -129,7 +129,25 @@ void brain::binary::solve(brain &brn)
     switch (neuron_binary_type_)
     {
     case brain::binary::neuron_binary_type_free:
-        create(brn);
+
+#define creating_condition 4
+
+#if(creating_condition == 0)
+#elif(creating_condition == 1)
+        if (brn.quantity_of_neurons_binary > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
+                brn.quantity_of_initialized_neurons_binary)
+#elif(creating_condition == 2)
+        if (-brn.quantity_of_neurons_binary > (brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) - brn.quantity_of_neurons_binary) *
+                (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+#elif(creating_condition == 3)
+        if (brn.quantity_of_neurons_binary < brn.rndm->get_ft(0, brn.quantity_of_neurons_binary) *
+                (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+#elif(creating_condition == 4)
+        if (brn.quantity_of_neurons < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
+                (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+#endif
+            create(brn);
+
         break;
     case brain::binary::neuron_binary_type_in_work:
     {
@@ -157,8 +175,23 @@ void brain::binary::solve(brain &brn)
                     motor_consensus -= ((out_new ^ brn.us[motor].neuron_.out_new) * 2 - 1);
                 }
             }
+
+#define killing_condition 3
+
+#if(killing_condition == 0)
             if (!brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+#elif(killing_condition == 1)
+            if (brn.quantity_of_neurons_binary > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
+                    (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+#elif(killing_condition == 2)
+            if (brn.quantity_of_neurons_binary > brn.rndm->get_ft(0, brn.quantity_of_neurons_binary) *
+                    (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+#elif(killing_condition == 3)
+            if (brn.quantity_of_neurons > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
+                    (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+#endif
                 kill(brn);
+
         }
         break;
     }
