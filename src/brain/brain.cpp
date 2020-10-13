@@ -130,20 +130,37 @@ void brain::binary::solve(brain &brn)
     {
     case brain::binary::neuron_binary_type_free:
 
-#define creating_condition 4
+#define creating_condition 1
 
 #if(creating_condition == 0)
+        // Does not work without conditions
 #elif(creating_condition == 1)
+        // Well and completely in line with theory
+        // But required calculations with high bit number
+        if (brn.quantity_of_neurons < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
+                (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+        // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+#elif(creating_condition == 2)
+        // Well and completely in line with theory
+        // But slowly (required operation division), inaccurate due to rounding with integers
+        if (brn.quantity_of_neurons / (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary)
+                < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+        // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+#elif(creating_condition == 3)
+        // Well and quickly
+        // But not completely in line with theory         ???        to do
+        if (brn.quantity_of_initialized_neurons_binary < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+#elif(creating_condition == 4)
+        // ??
         if (brn.quantity_of_neurons_binary > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
                 brn.quantity_of_initialized_neurons_binary)
-#elif(creating_condition == 2)
+#elif(creating_condition == 5)
+        // ??
         if (-brn.quantity_of_neurons_binary > (brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) - brn.quantity_of_neurons_binary) *
                 (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-#elif(creating_condition == 3)
+#elif(creating_condition == 6)
+        // ??
         if (brn.quantity_of_neurons_binary < brn.rndm->get_ft(0, brn.quantity_of_neurons_binary) *
-                (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-#elif(creating_condition == 4)
-        if (brn.quantity_of_neurons < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
                 (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
 #endif
             create(brn);
@@ -176,18 +193,33 @@ void brain::binary::solve(brain &brn)
                 }
             }
 
-#define killing_condition 3
+#define killing_condition 1
 
 #if(killing_condition == 0)
-            if (!brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+            // Does not work without conditions
 #elif(killing_condition == 1)
+            // Well and completely in line with theory
+            // But required calculations with high bit number
+            if (brn.quantity_of_neurons > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
+                    (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+            // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+#elif(killing_condition == 2)
+            // Well and completely in line with theory
+            // But slowly (required operation division), inaccurate due to rounding with integers
+            if (brn.quantity_of_neurons / (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary)
+                > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+            // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+#elif(killing_condition == 3)
+            // Well and quickly
+            // But not completely in line with theory
+            if (!brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+#elif(killing_condition == 4)
+            // ??
             if (brn.quantity_of_neurons_binary > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
                     (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-#elif(killing_condition == 2)
+#elif(killing_condition == 5)
+            // ??
             if (brn.quantity_of_neurons_binary > brn.rndm->get_ft(0, brn.quantity_of_neurons_binary) *
-                    (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-#elif(killing_condition == 3)
-            if (brn.quantity_of_neurons > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
                     (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
 #endif
                 kill(brn);
