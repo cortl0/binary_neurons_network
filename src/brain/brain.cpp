@@ -130,7 +130,7 @@ void brain::binary::solve(brain &brn)
     {
     case brain::binary::neuron_binary_type_free:
 
-#define creating_condition 1
+#define creating_condition 3
 
 #if(creating_condition == 0)
         // Does not work without conditions
@@ -148,7 +148,6 @@ void brain::binary::solve(brain &brn)
         // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
 #elif(creating_condition == 3)
         // Well and quickly
-        // But not completely in line with theory         ???        to do
         if (brn.quantity_of_initialized_neurons_binary < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
 #elif(creating_condition == 4)
         // ??
@@ -193,7 +192,7 @@ void brain::binary::solve(brain &brn)
                 }
             }
 
-#define killing_condition 1
+#define killing_condition 3
 
 #if(killing_condition == 0)
             // Does not work without conditions
@@ -211,7 +210,6 @@ void brain::binary::solve(brain &brn)
             // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
 #elif(killing_condition == 3)
             // Well and quickly
-            // But not completely in line with theory
             if (!brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
 #elif(killing_condition == 4)
             // ??
