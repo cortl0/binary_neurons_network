@@ -9,23 +9,27 @@
 //                                                             //
 //*************************************************************//
 
-#ifndef MSEQUENCE_H
-#define MSEQUENCE_H
+#ifndef M_SEQUENCE_H
+#define M_SEQUENCE_H
 
-class MSequence
+#include <stdexcept>
+
+namespace bnn
 {
-    int triggers = 1;
+
+class m_sequence
+{
+    unsigned int triggers = 1;
 public:
-    int length;
-    MSequence();
-    MSequence(int triggersLength);
-    bool Next();
-    bool GetAt(int future);
-    int GetRegisters();
-    void SetTriggersLength(int triggersLength)
-    {
-        length = triggersLength;
-    }
+    unsigned int length;
+    m_sequence();
+    m_sequence(unsigned int triggers_length);
+    bool next();
+    bool get_at(unsigned int future);
+    unsigned int get_registers();
+    void set_triggers_length(unsigned int triggers_length);
 };
 
-#endif // !MSEQUENCE_H
+} // !namespace bnn
+
+#endif // !M_SEQUENCE_H

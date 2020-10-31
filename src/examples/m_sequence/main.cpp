@@ -11,20 +11,24 @@
 
 #include <iostream>
 #include "../../brain/brain.h"
-#include "m_sequence.h"
 
 static _word random_array_length_in_power_of_two = 24;
-static _word quantity_of_neurons_in_power_of_two = 16;
-static const _word input_length = 31;
+static _word random_max_value_to_fill_in_power_of_two = 31;
+static _word quantity_of_neurons_in_power_of_two = 14;
+static const _word input_length = sizeof (int) * 8 - 1;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
 void clock_cycle_event(void* owner);
 static bnn::brain brn(random_array_length_in_power_of_two,
+                 random_max_value_to_fill_in_power_of_two,
                  quantity_of_neurons_in_power_of_two,
                  input_length,
                  output_length,
                  clock_cycle_event);
-static MSequence mSequence(input_length);
+
+// M-sequence only demonstrates the workable of the algorithm
+// don't expect a wow effect without using real data
+static bnn::m_sequence m_seq(input_length);
 
 // this method will be performed on every beat of the brain
 void communication()
@@ -34,12 +38,13 @@ void communication()
     c[count++] = 'n';
     c[count++] = '=';
     bool value;
-    mSequence.Next();
+    m_seq.next();
     for (_word i = 0; i < input_length; i++)
     {
-        value = mSequence.GetRegisters() & (1 << i);
+        value = m_seq.get_registers() & (1 << i);
         c[count++] = value + 48;
-        brn.set_in(i, value); // Put data in the brain
+        // Put data in the brain
+        brn.set_in(i, value);
     }
     c[count++] = ' ';
     c[count++] = 'o';
@@ -47,7 +52,8 @@ void communication()
     c[count++] = 't';
     c[count++] = '=';
     for (_word i = 0; i < output_length; i++)
-        c[count++] = brn.get_out(i) + 48; // Get data from the brain
+        // Get data from the brain
+        c[count++] = brn.get_out(i) + 48;
     c[count++] = '\0';
     std::cout << c << std::endl;
 }

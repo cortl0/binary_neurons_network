@@ -12,23 +12,34 @@
 #include <iostream>
 #include "../../brain/brain.h"
 
+// pick one
 #define first_option_communication
 //#define second_option_communication
 //#define third_option_communication
 
 static _word random_array_length_in_power_of_two = 24;
+static _word random_max_value_in_power_of_two = 31;
 static _word quantity_of_neurons_in_power_of_two = 16;
 static const _word input_length = 64;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
 void clock_cycle_handler(void* owner);
 static bnn::brain brn(random_array_length_in_power_of_two,
-                 quantity_of_neurons_in_power_of_two,
-                 input_length,
-                 output_length,
-                 clock_cycle_handler);
+                      random_max_value_in_power_of_two,
+                      quantity_of_neurons_in_power_of_two,
+                      input_length,
+                      output_length,
+                      clock_cycle_handler);
 
+#ifdef first_option_communication
 // this method will be performed on every beat of the brain
+#endif
+#ifdef second_option_communication
+// this method will be performed on every beat of the brain
+#endif
+#ifdef third_option_communication
+// this method will be performed on every cycle of the "while(1) communication();" (see below)
+#endif
 void communication()
 {
     int count = 0;
@@ -38,9 +49,12 @@ void communication()
     bool value;
     for (_word i = 0; i < input_length; i++)
     {
+// random numbers only demonstrates the workable of the algorithm
+// don't expect a wow effect without using real data
         value = rand()%2;
         c[count++] = value + 48;
-        brn.set_in(i, value); // Put data in the brain
+        // Put data in the brain
+        brn.set_in(i, value);
     }
     c[count++] = ' ';
     c[count++] = 'o';
@@ -48,7 +62,8 @@ void communication()
     c[count++] = 't';
     c[count++] = '=';
     for (_word i = 0; i < output_length; i++)
-        c[count++] = brn.get_out(i) + 48; // Get data from the brain
+        // Get data from the brain
+        c[count++] = brn.get_out(i) + 48;
     c[count++] = '\0';
     std::cout << c << std::endl;
 }
@@ -74,6 +89,7 @@ int main()
         if (brn.clock_cycle_completed == true)
         {
             communication();
+            // this unsafe
             brn.clock_cycle_completed = false;
         }
 #endif

@@ -19,6 +19,7 @@ brain::~brain()
     stop();
 }
 brain::brain(_word random_array_length_in_power_of_two,
+             _word random_max_value_to_fill_in_power_of_two,
              _word quantity_of_neurons_in_power_of_two,
              _word input_length,
              _word output_length,
@@ -28,7 +29,7 @@ brain::brain(_word random_array_length_in_power_of_two,
       quantity_of_neurons_motor(output_length),
       clock_cycle_handler(clock_cycle_event)
 {
-    rndm.reset(new random_put_get(random_array_length_in_power_of_two));
+    rndm.reset(new random_put_get(random_array_length_in_power_of_two, random_max_value_to_fill_in_power_of_two));
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
     reaction_rate = quantity_of_neurons;
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
@@ -49,6 +50,34 @@ brain::brain(_word random_array_length_in_power_of_two,
     quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
     for (uint i = quantity_of_neurons_sensor + quantity_of_neurons_motor; i < quantity_of_neurons; i++)
         us[i].binary_ = binary();
+
+//    uint i = quantity_of_neurons_sensor + quantity_of_neurons_motor;
+//    uint j = 0;
+//    while((i < quantity_of_neurons - 4) && (j < quantity_of_neurons_sensor + quantity_of_neurons_motor - 1))
+//    {
+//        for(int n = 0; n < 1; n++)
+//        {
+//            us[j].neuron_.out_new = 0;
+//            us[j + 1].neuron_.out_new = 1;
+//            us[i + n].binary_.init(j, j + 1, us);
+
+//            us[j].neuron_.out_new = 1;
+//            us[j + 1].neuron_.out_new = 0;
+//            us[i + n + 4].binary_.init(j, j + 1, us);
+
+//            us[j].neuron_.out_new = 1;
+//            us[j + 1].neuron_.out_new = 1;
+//            us[i + n + 8].binary_.init(j, j + 1, us);
+
+//            us[j].neuron_.out_new = 0;
+//            us[j + 1].neuron_.out_new = 0;
+//            us[i + n + 12].binary_.init(j, j + 1, us);
+
+//            quantity_of_initialized_neurons_binary += 4;
+//        }
+//        j++;
+//        i += 4;
+//    }
 }
 brain::neuron::neuron()
 {
@@ -139,13 +168,13 @@ void brain::binary::solve(brain &brn)
         // But required calculations with high bit number
         if (brn.quantity_of_neurons < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
                 (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-        // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+            // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
 #elif(creating_condition == 2)
         // Well and completely in line with theory
         // But slowly (required operation division), inaccurate due to rounding with integers
         if (brn.quantity_of_neurons / (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary)
                 < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
-        // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+            // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
 #elif(creating_condition == 3)
         // Well and quickly
         if (brn.quantity_of_initialized_neurons_binary < brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
@@ -201,13 +230,13 @@ void brain::binary::solve(brain &brn)
             // But required calculations with high bit number
             if (brn.quantity_of_neurons > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two) *
                     (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-            // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+                // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
 #elif(killing_condition == 2)
             // Well and completely in line with theory
             // But slowly (required operation division), inaccurate due to rounding with integers
             if (brn.quantity_of_neurons / (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary)
-                > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
-            // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
+                    > brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))
+                // ?? brn.quantity_of_neurons <-> brn.quantity_of_neurons_binary ??
 #elif(killing_condition == 3)
             // Well and quickly
             if (!brn.rndm->get(brn.quantity_of_neurons_in_power_of_two))

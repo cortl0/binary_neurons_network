@@ -11,32 +11,46 @@
 
 #include "m_sequence.h"
 
-MSequence::MSequence()
+namespace bnn
+{
+
+m_sequence::m_sequence()
 {
     length = 3;
 }
 
-MSequence::MSequence(int triggersLength)
+m_sequence::m_sequence(unsigned int triggers_length)
 {
-    if((triggersLength < 2)||(triggersLength > 31))
-        throw ("error");
-    length = triggersLength;
+    if((triggers_length < 2)||(triggers_length > sizeof (int) * 8 - 1))
+        throw std::runtime_error("error");
+
+    length = triggers_length;
 }
 
-bool MSequence::Next()
+bool m_sequence::next()
 {
-    int returnValue = triggers & 1;
+    unsigned int return_value = triggers & 1;
+
     triggers >>= 1;
-    triggers |= ((triggers & 1) ^ returnValue) << (length-1);
-    return returnValue;
+
+    triggers |= ((triggers & 1) ^ return_value) << (length - 1);
+
+    return return_value;
 }
 
-bool MSequence::GetAt(int future)
+bool m_sequence::get_at(unsigned int future)
 {
     return ((triggers >> future) & 1);
 }
 
-int MSequence::GetRegisters()
+unsigned int m_sequence::get_registers()
 {
     return triggers;
 }
+
+void m_sequence::set_triggers_length(unsigned int triggers_length)
+{
+    length = triggers_length;
+}
+
+} // !namespace bnn

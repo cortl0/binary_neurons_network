@@ -107,6 +107,7 @@ DeviceAI::~DeviceAI()
     delete [] stepOld;
 }
 DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
+                   _word random_max_value_to_fill_in_power_of_two,
                    _word motorCount,
                    _word quantity_of_neurons_in_power_of_two,
                    QSize qSize, QSize qSizeBig,
@@ -120,16 +121,18 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)
         brn.reset(new bnn::brain(random_array_length_in_power_of_two,
-                            quantity_of_neurons_in_power_of_two,
-                            static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
-                            motorCount,
-                            nullptr));
+                                 random_max_value_to_fill_in_power_of_two,
+                                 quantity_of_neurons_in_power_of_two,
+                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
+                                 motorCount,
+                                 nullptr));
     else
         brn.reset(new bnn::brain(random_array_length_in_power_of_two,
-                            quantity_of_neurons_in_power_of_two,
-                            static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
-                            motorCount,
-                            nullptr));
+                                 random_max_value_to_fill_in_power_of_two,
+                                 quantity_of_neurons_in_power_of_two,
+                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
+                                 motorCount,
+                                 nullptr));
     brain_friend_.reset(new bnn::brain_friend(*brn.get()));
 }
 void DeviceAI::Go (bnn::brain &brn)

@@ -124,6 +124,7 @@ public:
     ~brain();
     brain() = delete;
     brain(_word random_array_length_in_power_of_two,
+          _word random_max_value_to_fill_in_power_of_two,
           _word quantity_of_neurons_in_power_of_two,
           _word input_length,
           _word output_length,

@@ -20,14 +20,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         ../../brain/brain.cpp \
+        ../../brain/m_sequence.cpp \
         ../../brain/random_put_get.cpp \
         brain_friend.cpp \
+        deviceai.cpp \
         main.cpp \
-        mainwindow.cpp \
-        deviceai.cpp
+        mainwindow.cpp
 
 HEADERS += \
         ../../brain/brain.h \
+        ../../brain/m_sequence.h \
         ../../brain/random_put_get.h \
         ../../brain/simple_math.h \
         ../../brain/pch.h \

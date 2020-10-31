@@ -15,16 +15,32 @@ namespace bnn
 {
 
 random_put_get::~random_put_get() { }
-random_put_get::random_put_get(_word random_array_length_in_power_of_two)
+random_put_get::random_put_get(_word random_array_length_in_power_of_two, _word random_max_value_to_fill_in_power_of_two)
 {
     length = (1 << random_array_length_in_power_of_two) / _word_bits;
     array.resize(length);
+
+#define fill_from 2
+#if(fill_from == 0)
+    // fill the array with random numbers
     for (_word i = 0; i < length; i++)
         for (_word j = 0; j < _word_bits; j++)
-        {
-            //RndmPut(rand() % 2);
+            put(rand() % 2);
+#elif(fill_from == 1)
+    // fill the array with random numbers Mersenne Twister
+    std::mt19937 gen;
+    std::uniform_int_distribution<> uid = std::uniform_int_distribution<>(0, 1);
+    for (_word i = 0; i < length; i++)
+        for (_word j = 0; j < _word_bits; j++)
             put(uid(gen));
-        }
+#elif(fill_from == 2)
+    // fill the array with M-sequence
+    // no need to use random number algorithms
+    bnn::m_sequence m_seq(random_max_value_to_fill_in_power_of_two);
+    for (_word i = 0; i < length; i++)
+        for (_word j = 0; j < _word_bits; j++)
+            put(m_seq.next());
+#endif
 }
 void random_put_get::put(bool i) noexcept
 {

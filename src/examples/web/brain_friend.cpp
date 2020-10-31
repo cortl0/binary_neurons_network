@@ -157,7 +157,7 @@ void brain_friend::load()
         _word rndmLength;
         in >> rndmLength;
         if(rndmLength!=brain_.rndm->get_length())
-            brain_.rndm.reset(new random_put_get(rndmLength));
+            brain_.rndm.reset(new random_put_get(rndmLength, 3));
         for(_word i = 0; i < brain_.rndm->get_length(); i++)
             in >> brain_.rndm->get_array()[i];
         in >> brain_.rndm->debug_count_put;

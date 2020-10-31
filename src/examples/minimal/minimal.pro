@@ -18,11 +18,13 @@ CONFIG += console c++11
 
 SOURCES += \
         ../../brain/brain.cpp \
+        ../../brain/m_sequence.cpp \
         ../../brain/random_put_get.cpp \
         main.cpp
 
 HEADERS += \
         ../../brain/brain.h \
+        ../../brain/m_sequence.h \
         ../../brain/random_put_get.h \
         ../../brain/simple_math.h \
         ../../brain/pch.h
