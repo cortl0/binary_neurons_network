@@ -12,9 +12,9 @@
 TARGET   = minimal
 TEMPLATE = app
 
-QT       += core gui webenginewidgets
+#QT       += core gui webenginewidgets
 
-CONFIG += console c++11
+CONFIG += console c++17
 
 SOURCES += \
         ../../brain/brain.cpp \

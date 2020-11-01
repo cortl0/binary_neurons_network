@@ -15,7 +15,7 @@
 #include <random>
 
 #include "m_sequence.h"
-#include "pch.h"
+#include "config.h"
 
 namespace bnn
 {

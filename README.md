@@ -15,8 +15,11 @@ This folder contains everything you need for a project based on binary neurons n
 ##### brain.h, brain.cpp
 Contains the brain class - the basis of the project
 
-##### pch.h
-Contains the initial definitions
+##### config.h
+Contains configuration definitions
+
+##### m_sequence.h, m_sequence.cpp  
+M-sequence implementation for random_put_get instance initialization
 
 ##### random_put_get.h, random_put_get.cpp  
 Contains the random_put_get class. Easy and fast random numbers.  
@@ -28,18 +31,53 @@ Contains the simple_math struct. Easy and fast matematics.
 #### ./src/examples/
 Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
 
+## Example project
+https://github.com/cortl0/device
+
 ## Build
-using a makefile:  
 make  
-make all  
 make clean  
-if available:  
 make install  
 make uninstall  
-also if available QT build
+QT build
 
-#### Example project
-https://github.com/cortl0/device
+## Usage
+```
+#include "brain.h"
+
+void clock_cycle_handler(void*);
+
+static bnn::brain brn(24, // random_array_length_in_power_of_two,
+                      31, // random_max_value_to_fill_in_power_of_two,
+                      14, // quantity_of_neurons_in_power_of_two,
+                      31, // input_length,
+                      8,  // output_length,
+                      clock_cycle_handler);
+
+// This method will be performed on every beat of the brain
+void clock_cycle_handler(void*)
+{
+    for (_word i = 0; i < brn.get_input_length(); i++)
+    {
+        // Put your data here
+        bool value = true;
+        brn.set_in(i, value);
+    }
+
+    for (_word i = 0; i < brn.get_output_length(); i++)
+    {
+        // Get the result from the brain
+        bool value = brn.get_out(i);
+    }
+}
+
+int main()
+{
+    bool detach = false;
+    brn.start(nullptr, detach);
+    return 0;
+}
+```
 
 ## Author
 Ilya Shishkin  

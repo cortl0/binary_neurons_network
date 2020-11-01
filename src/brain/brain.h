@@ -17,7 +17,7 @@
 #include <mutex>
 #include <thread>
 
-#include "pch.h"
+#include "config.h"
 #include "simple_math.h"
 #include "random_put_get.h"
 

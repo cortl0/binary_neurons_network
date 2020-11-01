@@ -6,20 +6,30 @@
 #   licensed by GPL v3.0
 #
 
-TARGET = brain.o
-OBJ_DIR = ../brain_obj
+TARGET = brain
 
-.PHONY: all clean
+SRCS=brain.cpp random_put_get.cpp m_sequence.cpp
 
-all: $(TARGET)
+ifeq ($(PREFIX),)
+	PREFIX := /usr/local
+endif
+
+.PHONY: all clean install uninstall
+
+all: $(TARGET).so
+
+$(TARGET).so: $(SRCS)
+	g++ -std=c++17 -pthread -fPIC -shared -o $(TARGET).so $(SRCS)
 
 clean:
-	rm -rf $(OBJ_DIR)
+	rm -f $(TARGET).so
 
-$(TARGET): brain.cpp random_put_get.o
-	@if (!(test -d $(OBJ_DIR))); then mkdir $(OBJ_DIR); fi
-	gcc -c -std=c++11 -pthread -o $(OBJ_DIR)/$(TARGET) brain.cpp
+install: $(TARGET).so
+	install -d $(PREFIX)/lib/
+	install -m 644 $(TARGET).so $(PREFIX)/lib/$(TARGET).so
+	install -d $(PREFIX)/include/
+	install -m 644 $(TARGET).h $(PREFIX)/include/$(TARGET).h
 
-random_put_get.o: random_put_get.cpp
-	@if (!(test -d $(OBJ_DIR))); then mkdir $(OBJ_DIR); fi
-	gcc -c -std=c++11 -o $(OBJ_DIR)/random_put_get.o random_put_get.cpp
+uninstall:
+	rm -f $(PREFIX)/lib/$(TARGET).so
+	rm -f $(PREFIX)/include/$(TARGET).h

@@ -9,14 +9,14 @@
 //                                                             //
 //*************************************************************//
 
-#ifndef PCH_H
-#define PCH_H
+#ifndef BNN_CONFIG_H
+#define BNN_CONFIG_H
 
-//#define _word unsigned short int
-//#define _word_bits 16
+//#define _word uint16_t;
+//#define _word uint32_t;
+//#define _word uint64_t;
 #define _word unsigned int
-#define _word_bits 32
-//#define _word unsigned long long int
-//#define _word_bits 64
 
-#endif // PCH_H
+#define _word_bits (sizeof(_word)*8)
+
+#endif // BNN_CONFIG_H

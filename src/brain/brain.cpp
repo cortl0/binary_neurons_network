@@ -23,11 +23,11 @@ brain::brain(_word random_array_length_in_power_of_two,
              _word quantity_of_neurons_in_power_of_two,
              _word input_length,
              _word output_length,
-             void (*clock_cycle_event)(void* owner))
+             void (*clock_cycle_handler)(void* owner))
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
       quantity_of_neurons_motor(output_length),
-      clock_cycle_handler(clock_cycle_event)
+      clock_cycle_handler(clock_cycle_handler)
 {
     rndm.reset(new random_put_get(random_array_length_in_power_of_two, random_max_value_to_fill_in_power_of_two));
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);

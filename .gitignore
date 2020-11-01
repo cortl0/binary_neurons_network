@@ -1,4 +1,5 @@
 *.o
+*.out
 *.user
 src/brain_obj/*
 src/examples/build-*/*

@@ -23,7 +23,7 @@ static _word quantity_of_neurons_in_power_of_two = 16;
 static const _word input_length = 64;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
-void clock_cycle_handler(void* owner);
+static void clock_cycle_handler(void* owner);
 static bnn::brain brn(random_array_length_in_power_of_two,
                       random_max_value_in_power_of_two,
                       quantity_of_neurons_in_power_of_two,
@@ -40,7 +40,7 @@ static bnn::brain brn(random_array_length_in_power_of_two,
 #ifdef third_option_communication
 // this method will be performed on every cycle of the "while(1) communication();" (see below)
 #endif
-void communication()
+static void communication()
 {
     int count = 0;
     c[count++] = 'i';
@@ -68,7 +68,7 @@ void communication()
     std::cout << c << std::endl;
 }
 
-void clock_cycle_handler(void* owner)
+void clock_cycle_handler(void*)
 {
 #ifdef first_option_communication
     communication();

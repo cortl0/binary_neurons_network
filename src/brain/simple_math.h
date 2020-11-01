@@ -12,7 +12,7 @@
 #ifndef SIMPLE_MATH_HPP
 #define SIMPLE_MATH_HPP
 
-#include "pch.h"
+#include "config.h"
 
 namespace bnn
 {

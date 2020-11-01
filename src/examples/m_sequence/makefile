@@ -1,32 +1,25 @@
-TARGET = m_sequence_brain
-RELEASE_DIR = ../m_sequence_release
-BRAIN_DIR = ../../brain
-BRAIN_OBJ_DIR = ../../brain_obj
-PREFIX = /usr/local/bin
+#
+#   binary neurons network
+#   created by Ilya Shishkin
+#   cortl@8iter.ru
+#   https://github.com/cortl0/binary_neurons_network
+#   licensed by GPL v3.0
+#
 
-.PHONY: all clean install uninstall
+TARGET = m_sequence_brain.out
+BRAIN_DIR = ../../brain
+SRCS_BRAIN=brain.cpp random_put_get.cpp m_sequence.cpp
+OBJS_BRAIN=$(SRCS_BRAIN:.cpp=.o)
+
+SRCS=main.cpp $(BRAIN_DIR)/brain.o
+
+.PHONY: all clean
 
 all: $(TARGET)
 
 clean:
-	rm -rf $(RELEASE_DIR)
-	cd $(BRAIN_DIR); make clean;
+	rm -f $(TARGET)
 
-$(TARGET): main.o m_sequence.o
-	cd $(BRAIN_DIR); make all;
-	@if (!(test -d $(RELEASE_DIR))); then mkdir $(RELEASE_DIR); fi
-	g++ -std=c++11 -pthread -o $(RELEASE_DIR)/$(TARGET) $(RELEASE_DIR)/main.o $(RELEASE_DIR)/m_sequence.o $(BRAIN_OBJ_DIR)/brain.o $(BRAIN_OBJ_DIR)/random_put_get.o
-
-main.o: main.cpp
-	@if (!(test -d $(RELEASE_DIR))); then mkdir $(RELEASE_DIR); fi
-	gcc -c -std=c++11 -o $(RELEASE_DIR)/main.o main.cpp
-
-m_sequence.o: m_sequence.cpp
-	@if (!(test -d $(RELEASE_DIR))); then mkdir $(RELEASE_DIR); fi
-	gcc -c -std=c++11 -o $(RELEASE_DIR)/m_sequence.o m_sequence.cpp
-
-install:
-	install $(RELEASE_DIR)/$(TARGET) $(PREFIX)
-
-uninstall:
-	rm -rf $(PREFIX)/$(TARGET)
+$(TARGET): $(SRCS)
+	cd $(BRAIN_DIR); g++ -std=c++11 -pthread -c $(SRCS_BRAIN);
+	cd $(BRAIN_DIR); g++ -std=c++11 -pthread -o ../examples/m_sequence/$(TARGET) ../examples/m_sequence/main.cpp $(OBJS_BRAIN);
