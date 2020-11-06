@@ -9,33 +9,32 @@
 //                                                             //
 //*************************************************************//
 
-#ifndef BRAIN_FRIEND_H
-#define BRAIN_FRIEND_H
-
-#include <QString>
-#include <QFileDialog>
-#include <QMessageBox>
-
-#include "../../brain/brain.h"
+#include "../brain.h"
 
 namespace bnn
 {
 
-struct brain_friend
+brain::union_storage::neuron::neuron()
 {
-    bnn::brain &brain_;
-    QString version = QString("0");
-    QString brain_get_state();
-    QString brain_get_representation();
-    void save();
-    void load();
-    void stop();
-    void resize(_word brainBits);
-    brain_friend() = delete;
-    brain_friend(bnn::brain &brain_) : brain_(brain_) {}
-    std::map<int, int> graphical_representation();
-};
+    neuron_type_ = neuron_type_neuron;
+}
+
+void brain::union_storage::neuron::solve(brain &brn, _word me)
+{
+    switch (brn.us[me].neuron_.get_type())
+    {
+    case brain::union_storage::neuron::neuron_type_binary:
+        brn.us[me].binary_.solve(brn);
+        break;
+    case union_storage::neuron::neuron_type_sensor:
+        brn.us[me].sensor_.solve(brn);
+        break;
+    case union_storage::neuron::neuron_type_motor:
+        brn.us[me].motor_.solve(brn, me);
+        break;
+    default:
+        break;
+    }
+}
 
 } // namespace bnn
-
-#endif // BRAIN_FRIEND_H

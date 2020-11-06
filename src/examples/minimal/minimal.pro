@@ -19,6 +19,10 @@ CONFIG += console c++17
 SOURCES += \
         ../../brain/brain.cpp \
         ../../brain/m_sequence.cpp \
+        ../../brain/neurons/binary.cpp \
+        ../../brain/neurons/motor.cpp \
+        ../../brain/neurons/neuron.cpp \
+        ../../brain/neurons/sensor.cpp \
         ../../brain/random_put_get.cpp \
         main.cpp
 
@@ -27,4 +31,4 @@ HEADERS += \
         ../../brain/m_sequence.h \
         ../../brain/random_put_get.h \
         ../../brain/simple_math.h \
-        ../../brain/pch.h
+        ../../brain/config.h

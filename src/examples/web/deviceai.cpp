@@ -20,6 +20,7 @@ SensorPixmap::SensorPixmap(QSize qSize, QSize qSizeBig_, int gradation_bit_, boo
     gradation_bit = gradation_bit_;
     black_white = black_white_;
 }
+
 void SensorPixmap::PixmapNormalize()
 {
     if(zoom>zoom_max)
@@ -35,6 +36,7 @@ void SensorPixmap::PixmapNormalize()
     if(y-qPixmapSmall.size().height()/zoom/2<0 + epsilon)
         y=qPixmapSmall.size().height()/zoom/2 + epsilon;
 }
+
 void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
 {
     QPainter qPainter(&qPixmapSmall);
@@ -78,34 +80,42 @@ void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
             }
         }
 }
+
 void SensorPixmap::Zoom_in()
 {
     zoom*=zoom_koef;
 }
+
 void SensorPixmap::Zoom_out()
 {
     zoom/=zoom_koef;
 }
+
 void SensorPixmap::X_plus()
 {
     x+=deltaXY/zoom;
 }
+
 void SensorPixmap::X_minus()
 {
     x-=deltaXY/zoom;
 }
+
 void SensorPixmap::Y_plus()
 {
     y+=deltaXY/zoom;
 }
+
 void SensorPixmap::Y_minus()
 {
     y-=deltaXY/zoom;
 }
+
 DeviceAI::~DeviceAI()
 {
     delete [] stepOld;
 }
+
 DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
                    _word random_max_value_to_fill_in_power_of_two,
                    _word motorCount,
@@ -135,6 +145,7 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
                                  nullptr));
     brain_friend_.reset(new bnn::brain_friend(*brn.get()));
 }
+
 void DeviceAI::Go (bnn::brain &brn)
 {
     if(stepOld[0]!= brn.get_out(0))

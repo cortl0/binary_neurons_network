@@ -51,4 +51,4 @@ private:
     std::unique_ptr<QTimer> timer;
 };
 
-#endif // !MAINWINDOW_H
+#endif // MAINWINDOW_H

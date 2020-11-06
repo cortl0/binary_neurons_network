@@ -28,6 +28,9 @@ First you put, then you get random numbers.
 ##### simple_math.h
 Contains the simple_math struct. Easy and fast matematics.
 
+#### ./src/brain/neurons/*.cpp
+neuron source files: neuron(base), binary neuron, motor neuron, sensor neuron
+
 #### ./src/examples/
 Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
 

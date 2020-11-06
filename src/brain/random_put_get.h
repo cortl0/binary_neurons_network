@@ -39,6 +39,6 @@ public:
     std::vector<_word>& get_array();
 };
 
-} // !namespace bnn
+} // namespace bnn
 
 #endif // RANDOM_PUT_GET_H

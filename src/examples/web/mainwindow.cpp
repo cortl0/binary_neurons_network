@@ -29,10 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :
     timer.reset(new QTimer());
     connect(timer.get(), SIGNAL(timeout()), this, SLOT(slotTimerAlarm()));
 }
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 void MainWindow::slotTimerAlarm()
 {
     if (!deviceAI->GetBrain().clock_cycle_completed)
@@ -53,36 +55,43 @@ void MainWindow::slotTimerAlarm()
     busy=false;
     return;
 }
+
 void MainWindow::on_pushButtonZoomIncr_clicked()
 {
     deviceAI->GetSensorPixmap().Zoom_in();
     deviceAI->GetSensorPixmap().PixmapNormalize();
 }
+
 void MainWindow::on_pushButtonZoomDecr_clicked()
 {
     deviceAI->GetSensorPixmap().Zoom_out();
     deviceAI->GetSensorPixmap().PixmapNormalize();
 }
+
 void MainWindow::on_pushButtonUp_clicked()
 {
     deviceAI->GetSensorPixmap().Y_minus();
     deviceAI->GetSensorPixmap().PixmapNormalize();
 }
+
 void MainWindow::on_pushButtonDown_clicked()
 {
     deviceAI->GetSensorPixmap().Y_plus();
     deviceAI->GetSensorPixmap().PixmapNormalize();
 }
+
 void MainWindow::on_pushButtonLeft_clicked()
 {
     deviceAI->GetSensorPixmap().X_minus();
     deviceAI->GetSensorPixmap().PixmapNormalize();
 }
+
 void MainWindow::on_pushButtonRight_clicked()
 {
     deviceAI->GetSensorPixmap().X_plus();
     deviceAI->GetSensorPixmap().PixmapNormalize();
 }
+
 void MainWindow::on_pushButtonStart_clicked()
 {
     if(ft)
@@ -103,18 +112,22 @@ void MainWindow::on_pushButtonStart_clicked()
     }
     ft=!ft;
 }
+
 void MainWindow::on_pushButtonLoad_clicked()
 {
     deviceAI->brain_friend_->load();
 }
+
 void MainWindow::on_pushButtonSave_clicked()
 {
     deviceAI->brain_friend_->save();
 }
+
 void MainWindow::on_pushButtonAddress_clicked()
 {
     ui->preview->load(QUrl(ui->lineEditAddress->text()));
 }
+
 void MainWindow::on_pushButton_graphical_representation_pressed()
 {
     deviceAI->brain_friend_->stop();
@@ -141,6 +154,7 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
     qString += deviceAI->brain_friend_->brain_get_representation();
     ui->labelDebug->setText(qString);
 }
+
 void MainWindow::on_pushButton_graphical_representation_released()
 {
     deviceAI->GetBrain().start(&deviceAI);

@@ -53,4 +53,4 @@ void m_sequence::set_triggers_length(unsigned int triggers_length)
     length = triggers_length;
 }
 
-} // !namespace bnn
+} // namespace bnn

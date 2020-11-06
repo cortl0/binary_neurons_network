@@ -8,7 +8,7 @@
 
 TARGET = brain
 
-SRCS=brain.cpp random_put_get.cpp m_sequence.cpp
+SRCS=brain.cpp random_put_get.cpp m_sequence.cpp neurons/neuron.cpp neurons/binary.cpp neurons/motor.cpp neurons/sensor.cpp
 
 ifeq ($(PREFIX),)
 	PREFIX := /usr/local

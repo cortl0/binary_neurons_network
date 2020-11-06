@@ -25,6 +25,6 @@ struct simple_math
     inline static int abs(int i) noexcept { if (i < 0) return (-i); else return (i); }
 };
 
-} // !namespace bnn
+} // namespace bnn
 
 #endif // SIMPLE_MATH_HPP

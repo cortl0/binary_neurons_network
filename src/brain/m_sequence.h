@@ -30,6 +30,6 @@ public:
     void set_triggers_length(unsigned int triggers_length);
 };
 
-} // !namespace bnn
+} // namespace bnn
 
-#endif // !M_SEQUENCE_H
+#endif // M_SEQUENCE_H

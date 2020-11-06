@@ -12,11 +12,13 @@
 #ifndef BNN_CONFIG_H
 #define BNN_CONFIG_H
 
+#include <vector>
+
 //#define _word uint16_t;
 //#define _word uint32_t;
 //#define _word uint64_t;
 #define _word unsigned int
 
-#define _word_bits (sizeof(_word)*8)
+#define _word_bits (sizeof(_word) * 8)
 
 #endif // BNN_CONFIG_H

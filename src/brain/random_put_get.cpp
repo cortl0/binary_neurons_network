@@ -15,6 +15,7 @@ namespace bnn
 {
 
 random_put_get::~random_put_get() { }
+
 random_put_get::random_put_get(_word random_array_length_in_power_of_two, _word random_max_value_to_fill_in_power_of_two)
 {
     length = (1 << random_array_length_in_power_of_two) / _word_bits;
@@ -42,6 +43,7 @@ random_put_get::random_put_get(_word random_array_length_in_power_of_two, _word 
             put(m_seq.next());
 #endif
 }
+
 void random_put_get::put(bool i) noexcept
 {
     debug_count_put++;
@@ -55,6 +57,7 @@ void random_put_get::put(bool i) noexcept
             offset = 0;
     }
 }
+
 _word random_put_get::get(_word bits) noexcept
 {
     debug_count_get += bits;
@@ -82,6 +85,7 @@ _word random_put_get::get(_word bits) noexcept
     }
     return returnValue;
 }
+
 _word random_put_get::get_ft(_word from, _word to) noexcept
 {
     _word returnValue, i = 1, j = 2, tmf;
@@ -94,13 +98,15 @@ _word random_put_get::get_ft(_word from, _word to) noexcept
             return returnValue + from;
     }
 }
+
 _word random_put_get::get_length()
 {
     return length;
 }
+
 std::vector<_word>& random_put_get::get_array()
 {
     return array;
 }
 
-} // !namespace bnn
+} // namespace bnn

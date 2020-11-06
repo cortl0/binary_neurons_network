@@ -39,6 +39,7 @@ QString brain_friend::brain_get_state()
     qString += "\tcountGet=" + QString::number(brain_.rndm->debug_count_get);
     return qString;
 }
+
 QString brain_friend::brain_get_representation()
 {
     QString qString;
@@ -62,6 +63,7 @@ QString brain_friend::brain_get_representation()
     qString += "\nc/c=" + QString::number((static_cast<double>(consensus) / static_cast<double>(count)));
     return qString;
 }
+
 void brain_friend::save()
 {
     QString fileName = QFileDialog::getSaveFileName(nullptr,
@@ -104,6 +106,7 @@ void brain_friend::save()
         out << brain_.rndm->debug_count_get;
     }
 }
+
 void brain_friend::load()
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr,
@@ -164,10 +167,12 @@ void brain_friend::load()
         in >> brain_.rndm->debug_count_get;
     }
 }
+
 void brain_friend::stop()
 {
     brain_.stop();
 }
+
 void brain_friend::resize(_word brainBits_)
 {
     brain_.mtx.lock();
@@ -183,7 +188,7 @@ void brain_friend::resize(_word brainBits_)
             for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
                 us_temp[i].words[j] = brain_.us[i].words[j];
         for (_word i = brain_.quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
-            us_temp[i].binary_ = brain::binary();
+            us_temp[i].binary_ = brain::union_storage::binary();
         std::swap(brain_.us, us_temp);
         brain_.quantity_of_neurons_in_power_of_two = brainBits_;
         brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
@@ -192,14 +197,15 @@ void brain_friend::resize(_word brainBits_)
     }
     brain_.mtx.unlock();
 }
+
 std::map<int, int> brain_friend::graphical_representation()
 {
     std::vector<int> v;
     std::map<int, int> m;
     std::map<int, int>::iterator it;
     for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-        if(brain_.us[i].neuron_.get_type() == brain::neuron::neuron_type_binary)
-            if(brain_.us[i].binary_.get_type_binary() == brain::binary::neuron_binary_type_in_work)
+        if(brain_.us[i].neuron_.get_type() == brain::union_storage::neuron::neuron_type_binary)
+            if(brain_.us[i].binary_.get_type_binary() == bnn::brain::union_storage::binary::neuron_binary_type_in_work)
             {
                 it = m.find(static_cast<int>(brain_.us[i].binary_.level));
                 if (it == m.end())
@@ -210,4 +216,4 @@ std::map<int, int> brain_friend::graphical_representation()
     return m;
 }
 
-} // !namespace bnn
+} // namespace bnn
