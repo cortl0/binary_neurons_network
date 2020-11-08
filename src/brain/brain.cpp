@@ -48,9 +48,16 @@ brain::brain(_word random_array_length_in_power_of_two,
         world_output[i] = rndm->get(1);
         us[i + quantity_of_neurons_sensor].motor_ = union_storage::motor(world_output, i);
     }
+
     quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
     for (uint i = quantity_of_neurons_sensor + quantity_of_neurons_motor; i < quantity_of_neurons; i++)
         us[i].binary_ = union_storage::binary();
+
+    quantity_of_neurons_in_power_of_two_max = this->quantity_of_neurons_in_power_of_two;
+    this->quantity_of_neurons_in_power_of_two = 0;
+    quantity_of_neurons = quantity_of_neurons_sensor + quantity_of_neurons_motor;
+    quantity_of_neurons_binary = 0;
+    update_quantity();
 
     //    uint i = quantity_of_neurons_sensor + quantity_of_neurons_motor;
     //    uint j = 0;
@@ -96,6 +103,7 @@ void brain::thread_work(brain* brn)
                 brn->clock_cycle_completed = true;
             if(nullptr != brn->clock_cycle_handler)
                 brn->clock_cycle_handler(brn->owner);
+            brn->update_quantity();
         }
         brn->reaction_rate--;
         _word j = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two);
@@ -146,6 +154,22 @@ _word brain::get_input_length()
 void brain::set_in(_word offset, bool value)
 {
     world_input[offset] = value;
+}
+
+void brain::update_quantity()
+{
+    while((((_word)1 << quantity_of_neurons_in_power_of_two) < (quantity_of_neurons_sensor + quantity_of_neurons_motor + quantity_of_initialized_neurons_binary) * coefficient)
+          && quantity_of_neurons_in_power_of_two < quantity_of_neurons_in_power_of_two_max)
+    {
+        quantity_of_neurons_in_power_of_two++;
+
+        quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
+
+        if(quantity_of_neurons < quantity_of_neurons_sensor + quantity_of_neurons_motor)
+            quantity_of_neurons = quantity_of_neurons_sensor + quantity_of_neurons_motor;
+
+        quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
+    }
 }
 
 } // namespace bnn

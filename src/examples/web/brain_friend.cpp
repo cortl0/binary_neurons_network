@@ -49,9 +49,9 @@ QString brain_friend::brain_get_representation()
     int count = 0;
     for (_word i = s; i < e; i++)
     {
-        if (brain_.us[i].neuron_.get_type() == 2)
-            if (brain_.us[i].binary_.get_type_binary() == 1)
-                if (brain_.us[i].binary_.get_type_binary() == 1)
+        if (brain_.us[i].neuron_.get_type() == brain::union_storage::neuron::neuron_type::neuron_type_binary)
+            if (brain_.us[i].binary_.get_type_binary() == brain::union_storage::binary::neuron_binary_type::neuron_binary_type_in_work)
+                if (brain_.us[i].binary_.get_type_binary() == brain::union_storage::binary::neuron_binary_type::neuron_binary_type_in_work)
                     if (brain_.us[i].binary_.motor_connect)
                     {
                         consensus += simple_math::abs(brain_.us[i].binary_.motor_consensus);

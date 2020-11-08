@@ -103,6 +103,8 @@ struct brain
     std::vector<union_storage> us;
 
     _word quantity_of_neurons_in_power_of_two;
+    _word quantity_of_neurons_in_power_of_two_max;
+    _word coefficient = 3;
     _word quantity_of_neurons;
     _word quantity_of_neurons_binary;
     _word quantity_of_neurons_sensor;
@@ -122,6 +124,7 @@ struct brain
     std::mutex mtx;
     std::unique_ptr<random_put_get> rndm;
 
+    void update_quantity();
     void stop();
 public:
     volatile bool clock_cycle_completed;

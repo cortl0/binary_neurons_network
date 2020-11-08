@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     int k=4;
-    deviceAI.reset(new DeviceAI(24, 31, 6, 16,
+    deviceAI.reset(new DeviceAI(26, 31, 6, 18,
                                 QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k),
                                 ui->preview->size(), ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");

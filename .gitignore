@@ -1,6 +1,7 @@
 *.o
 *.out
 *.user
+*.autosave
 src/brain_obj/*
 src/examples/build-*/*
 src/examples/*_release/*
