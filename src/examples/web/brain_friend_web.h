@@ -9,21 +9,22 @@
 //                                                             //
 //*************************************************************//
 
-#ifndef BRAIN_FRIEND_H
-#define BRAIN_FRIEND_H
+#ifndef BRAIN_FRIEND_WEB_H
+#define BRAIN_FRIEND_WEB_H
+
+#include <fstream>
 
 #include <QString>
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "../../brain/brain.h"
+#include "../../brain_friend.h"
 
 namespace bnn
 {
 
-struct brain_friend
+struct brain_friend_web : brain_friend
 {
-    bnn::brain &brain_;
     QString version = QString("0");
     QString brain_get_state();
     QString brain_get_representation();
@@ -31,11 +32,11 @@ struct brain_friend
     void load();
     void stop();
     void resize(_word brainBits);
-    brain_friend() = delete;
-    brain_friend(bnn::brain &brain_) : brain_(brain_) {}
+    brain_friend_web() = delete;
+    brain_friend_web(bnn::brain &brain_);
     std::map<int, int> graphical_representation();
 };
 
 } // namespace bnn
 
-#endif // BRAIN_FRIEND_H
+#endif // BRAIN_FRIEND_WEB_H

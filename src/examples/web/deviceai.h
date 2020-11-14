@@ -17,7 +17,7 @@
 //#include <QKeyEvent>
 #include <QWebEngineView>
 
-#include "brain_friend.h"
+#include "brain_friend_web.h"
 
 class SensorPixmap
 {
@@ -56,7 +56,7 @@ public:
     QWebEngineView* qwev;
     std::unique_ptr<SensorPixmap> sensorPixmap;
     std::unique_ptr<bnn::brain> brn;
-    std::unique_ptr<bnn::brain_friend> brain_friend_;
+    std::unique_ptr<bnn::brain_friend_web> brain_friend_;
     ~DeviceAI();
     DeviceAI() = delete;
     DeviceAI(_word random_array_length_in_power_of_two,

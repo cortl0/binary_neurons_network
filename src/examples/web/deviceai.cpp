@@ -143,7 +143,7 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
                                  static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
                                  motorCount,
                                  nullptr));
-    brain_friend_.reset(new bnn::brain_friend(*brn.get()));
+    brain_friend_.reset(new bnn::brain_friend_web(*brn.get()));
 }
 
 void DeviceAI::Go (bnn::brain &brn)

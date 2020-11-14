@@ -31,6 +31,9 @@ Contains the simple_math struct. Easy and fast matematics.
 #### ./src/brain/neurons/*.cpp
 neuron source files: neuron(base), binary neuron, motor neuron, sensor neuron
 
+#### ./src/brain_friend.*
+Friendly class for debug, save, load, stop brain
+
 #### ./src/examples/
 Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
 

@@ -12,32 +12,38 @@
 TARGET   = web
 TEMPLATE = app
 QT       += core gui webenginewidgets
-CONFIG   += c++11
+CONFIG   += c++17
+CONFIG -= app_bundle
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+LIBS += -lstdc++fs
+LIBS += -pthread
+
 SOURCES += \
         ../../brain/brain.cpp \
+        ../../brain_friend.cpp \
         ../../brain/m_sequence.cpp \
         ../../brain/neurons/binary.cpp \
         ../../brain/neurons/motor.cpp \
         ../../brain/neurons/neuron.cpp \
         ../../brain/neurons/sensor.cpp \
         ../../brain/random_put_get.cpp \
-        brain_friend.cpp \
+        brain_friend_web.cpp \
         deviceai.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
         ../../brain/brain.h \
+        ../../brain_friend.h \
         ../../brain/m_sequence.h \
         ../../brain/random_put_get.h \
         ../../brain/simple_math.h \
         ../../brain/config.h \
-        brain_friend.h \
+        brain_friend_web.h \
         deviceai.h \
         mainwindow.h
 

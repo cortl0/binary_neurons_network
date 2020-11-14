@@ -9,12 +9,17 @@
 //                                                             //
 //*************************************************************//
 
-#include "brain_friend.h"
+#include "brain_friend_web.h"
 
 namespace bnn
 {
 
-QString brain_friend::brain_get_state()
+brain_friend_web::brain_friend_web(bnn::brain &brain_) : brain_friend(brain_)
+{
+
+}
+
+QString brain_friend_web::brain_get_state()
 {
     QString qString = "8iter=" + QString::number(brain_.iteration);
     qString += "\t bits=" + QString::number(brain_.quantity_of_neurons_in_power_of_two);
@@ -40,7 +45,7 @@ QString brain_friend::brain_get_state()
     return qString;
 }
 
-QString brain_friend::brain_get_representation()
+QString brain_friend_web::brain_get_representation()
 {
     QString qString;
     _word s = brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
@@ -64,7 +69,7 @@ QString brain_friend::brain_get_representation()
     return qString;
 }
 
-void brain_friend::save()
+void brain_friend_web::save()
 {
     QString fileName = QFileDialog::getSaveFileName(nullptr,
                                                     "Save Brain", "",
@@ -74,40 +79,14 @@ void brain_friend::save()
     else {
         if (fileName.split('.')[fileName.split('.').length() - 1] != "brn")
             fileName += ".brn";
-        QFile file(fileName);
-        if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::information(nullptr, "Unable to open file",
-                                     file.errorString());
-            return;
-        }
-        QDataStream out(&file);
-        out.setVersion(QDataStream::Qt_4_5);
-        out << version;
-        out << brain_.quantity_of_neurons_in_power_of_two;
-        out << brain_.quantity_of_neurons;
-        out << brain_.quantity_of_neurons_binary;
-        out << brain_.quantity_of_neurons_sensor;
-        out << brain_.quantity_of_neurons_motor;
-        out << brain_.work;
-        out << brain_.iteration;
-        out << brain_.quantity_of_initialized_neurons_binary;
-        out << brain_.debug_soft_kill;
-        for(_word i = 0; i < brain_.quantity_of_neurons_sensor; i++)
-            out << brain_.world_input[i];
-        for(_word i = 0; i < brain_.quantity_of_neurons_motor; i++)
-            out << brain_.world_output[i];
-        for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-            for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
-                out << brain_.us[i].words[j];
-        out << brain_.rndm->get_length();
-        for(_word i = 0; i < brain_.rndm->get_length(); i++)
-            out << brain_.rndm->get_array()[i];
-        out << brain_.rndm->debug_count_put;
-        out << brain_.rndm->debug_count_get;
+
+        std::ofstream out(fs::path(fileName.toStdString()), std::ios::binary);
+
+        brain_friend::save(out);
     }
 }
 
-void brain_friend::load()
+void brain_friend_web::load()
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr,
                                                     "Open Brain", "",
@@ -116,64 +95,18 @@ void brain_friend::load()
         return;
     else
     {
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::information(nullptr, "Unable to open file",
-                                     file.errorString());
-            return;
-        }
-        QDataStream in(&file);
-        in.setVersion(QDataStream::Qt_4_5);
-        QString versionTemp;
-        in >> versionTemp;
-        if(versionTemp!=version)
-        {
-            QMessageBox::information(nullptr, "Version mismatch", "Version mismatch");
-            return;
-        }
-        in >> brain_.quantity_of_neurons_in_power_of_two;
-        in >> brain_.quantity_of_neurons;
-        in >> brain_.quantity_of_neurons_binary;
-        in >> brain_.quantity_of_neurons_sensor;
-        in >> brain_.quantity_of_neurons_motor;
-        in >> brain_.work;
-        in >> brain_.iteration;
-        in >> brain_.quantity_of_initialized_neurons_binary;
-        in >> brain_.debug_soft_kill;
-        brain_.world_input.resize(brain_.quantity_of_neurons_sensor);
-        bool b;
-        for(_word i = 0; i < brain_.quantity_of_neurons_sensor; i++)
-        {
-            in >> b;
-            brain_.world_input[i] = b;
-        }
-        brain_.world_output.resize(brain_.quantity_of_neurons_motor);
-        for(_word i = 0; i < brain_.quantity_of_neurons_motor; i++)
-        {
-            in >> b;
-            brain_.world_output[i] = b;
-        }
-        brain_.us.resize(brain_.quantity_of_neurons);
-        for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-            for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
-                in >> brain_.us[i].words[j];
-        _word rndmLength;
-        in >> rndmLength;
-        if(rndmLength!=brain_.rndm->get_length())
-            brain_.rndm.reset(new random_put_get(rndmLength, 3));
-        for(_word i = 0; i < brain_.rndm->get_length(); i++)
-            in >> brain_.rndm->get_array()[i];
-        in >> brain_.rndm->debug_count_put;
-        in >> brain_.rndm->debug_count_get;
+        std::ifstream in(fs::path(fileName.toStdString()), std::ios::binary);
+
+        brain_friend::load(in);
     }
 }
 
-void brain_friend::stop()
+void brain_friend_web::stop()
 {
     brain_.stop();
 }
 
-void brain_friend::resize(_word brainBits_)
+void brain_friend_web::resize(_word brainBits_)
 {
     brain_.mtx.lock();
     brain_.work = false;
@@ -198,7 +131,7 @@ void brain_friend::resize(_word brainBits_)
     brain_.mtx.unlock();
 }
 
-std::map<int, int> brain_friend::graphical_representation()
+std::map<int, int> brain_friend_web::graphical_representation()
 {
     std::vector<int> v;
     std::map<int, int> m;
