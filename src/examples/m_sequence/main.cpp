@@ -30,7 +30,7 @@ static bnn::brain brn(random_array_length_in_power_of_two,
 // don't expect a wow effect without using real data
 static bnn::m_sequence m_seq(input_length);
 
-// this method will be performed on every beat of the brain
+// This method will be performed on every cycle of the brain
 void clock_cycle_handler(void*)
 {
     int count = 0;

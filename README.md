@@ -48,8 +48,12 @@ make uninstall
 QT build
 
 ## Usage
+
+main.cpp
 ```
-#include "brain.h"
+#include <iostream>
+
+#include "/usr/local/include/bnn/brain.h"
 
 void clock_cycle_handler(void*);
 
@@ -63,6 +67,10 @@ static bnn::brain brn(24, // random_array_length_in_power_of_two,
 // This method will be performed on every beat of the brain
 void clock_cycle_handler(void*)
 {
+	static long int count = 0;
+
+    std::cout << std::endl << "cycle = " << std::to_string(count++) << std::endl;
+
     for (_word i = 0; i < brn.get_input_length(); i++)
     {
         // Put your data here
@@ -85,6 +93,16 @@ int main()
 }
 ```
 
+Building and installing the library
+```
+cd ./src/brain; sudo make install;
+```
+
+Building the application
+```
+g++ -std=c++17 -pthread main.cpp /usr/local/lib/brain.so
+```
+
 ## Author
 Ilya Shishkin  
 mailto:cortl@8iter.ru
@@ -99,4 +117,4 @@ https://github.com/cortl0/binary_neurons_network
 ## License
 This project is licensed under the GPL v3.0 - see the LICENSE file for details
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DPXPWAL9BQD8Q)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=cortl@yandex.ru&item_name=for+the+development+binary+neurons+network&amount=5%2e00&currency_code=USD)  

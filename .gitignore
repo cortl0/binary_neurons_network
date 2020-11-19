@@ -1,5 +1,6 @@
 *.o
 *.out
+*.so
 *.user
 *.autosave
 src/brain_obj/*

@@ -32,10 +32,10 @@ static bnn::brain brn(random_array_length_in_power_of_two,
                       clock_cycle_handler);
 
 #ifdef first_option_communication
-// this method will be performed on every beat of the brain
+// This method will be performed on every cycle of the brain
 #endif
 #ifdef second_option_communication
-// this method will be performed on every beat of the brain
+// This method will be performed on every cycle of the brain
 #endif
 #ifdef third_option_communication
 // this method will be performed on every cycle of the "while(1) communication();" (see below)

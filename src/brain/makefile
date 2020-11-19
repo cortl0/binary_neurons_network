@@ -8,11 +8,35 @@
 
 TARGET = brain
 
-SRCS=brain.cpp random_put_get.cpp m_sequence.cpp neurons/neuron.cpp neurons/binary.cpp neurons/motor.cpp neurons/sensor.cpp
+SRCS= brain.cpp \
+random_put_get.cpp \
+m_sequence.cpp \
+neurons/neuron.cpp \
+neurons/binary.cpp \
+neurons/motor.cpp \
+neurons/sensor.cpp \
+../brain_friend.cpp
+
+HDRS=brain.h \
+config.h \
+simple_math.h \
+random_put_get.h \
+m_sequence.h \
+../brain_friend.h
+
+HDRS_RM=brain.h \
+config.h \
+simple_math.h \
+random_put_get.h \
+m_sequence.h \
+brain_friend.h
 
 ifeq ($(PREFIX),)
 	PREFIX := /usr/local
 endif
+
+PREFIX_INC=$(PREFIX)/include/bnn
+PREFIX_LIB=$(PREFIX)/lib
 
 .PHONY: all clean install uninstall
 
@@ -25,11 +49,11 @@ clean:
 	rm -f $(TARGET).so
 
 install: $(TARGET).so
-	install -d $(PREFIX)/lib/
-	install -m 644 $(TARGET).so $(PREFIX)/lib/$(TARGET).so
-	install -d $(PREFIX)/include/
-	install -m 644 $(TARGET).h $(PREFIX)/include/$(TARGET).h
+	install -d $(PREFIX_LIB)
+	install -m 644 $(TARGET).so $(PREFIX_LIB)/$(TARGET).so
+	install -d $(PREFIX_INC)
+	install -t $(PREFIX_INC) $(HDRS)
 
 uninstall:
-	rm -f $(PREFIX)/lib/$(TARGET).so
-	rm -f $(PREFIX)/include/$(TARGET).h
+	cd $(PREFIX_INC); rm $(HDRS_RM);
+	cd $(PREFIX_LIB); rm $(TARGET).so;
