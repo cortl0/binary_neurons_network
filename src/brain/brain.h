@@ -104,7 +104,7 @@ struct brain
 
     _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons_in_power_of_two_max;
-    _word coefficient = 3;
+    _word coefficient = 4;
     _word quantity_of_neurons;
     _word quantity_of_neurons_binary;
     _word quantity_of_neurons_sensor;

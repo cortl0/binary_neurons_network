@@ -58,34 +58,6 @@ brain::brain(_word random_array_length_in_power_of_two,
     quantity_of_neurons = quantity_of_neurons_sensor + quantity_of_neurons_motor;
     quantity_of_neurons_binary = 0;
     update_quantity();
-
-    //    uint i = quantity_of_neurons_sensor + quantity_of_neurons_motor;
-    //    uint j = 0;
-    //    while((i < quantity_of_neurons - 4) && (j < quantity_of_neurons_sensor + quantity_of_neurons_motor - 1))
-    //    {
-    //        for(int n = 0; n < 1; n++)
-    //        {
-    //            us[j].neuron_.out_new = 0;
-    //            us[j + 1].neuron_.out_new = 1;
-    //            us[i + n].binary_.init(j, j + 1, us);
-
-    //            us[j].neuron_.out_new = 1;
-    //            us[j + 1].neuron_.out_new = 0;
-    //            us[i + n + 4].binary_.init(j, j + 1, us);
-
-    //            us[j].neuron_.out_new = 1;
-    //            us[j + 1].neuron_.out_new = 1;
-    //            us[i + n + 8].binary_.init(j, j + 1, us);
-
-    //            us[j].neuron_.out_new = 0;
-    //            us[j + 1].neuron_.out_new = 0;
-    //            us[i + n + 12].binary_.init(j, j + 1, us);
-
-    //            quantity_of_initialized_neurons_binary += 4;
-    //        }
-    //        j++;
-    //        i += 4;
-    //    }
 }
 
 void brain::thread_work(brain* brn)
@@ -96,7 +68,7 @@ void brain::thread_work(brain* brn)
             return;
         if(!brn->reaction_rate)
         {
-            brn->reaction_rate = brn->quantity_of_neurons;
+            brn->reaction_rate = simple_math::two_pow_x(brn->quantity_of_neurons_in_power_of_two_max);
             brn->iteration++;
             brn->debug_quantity_of_solve_binary = 0;
             if(!brn->clock_cycle_completed)
@@ -132,7 +104,7 @@ void brain::stop()
     mtx.lock();
     work = false;
     mtx.unlock();
-    usleep(200);
+    usleep(500);
     clock_cycle_completed = false;
 }
 
@@ -158,7 +130,7 @@ void brain::set_in(_word offset, bool value)
 
 void brain::update_quantity()
 {
-    while((((_word)1 << quantity_of_neurons_in_power_of_two) < (quantity_of_neurons_sensor + quantity_of_neurons_motor + quantity_of_initialized_neurons_binary) * coefficient)
+    while(((simple_math::two_pow_x(quantity_of_neurons_in_power_of_two)) < (quantity_of_neurons_sensor + quantity_of_neurons_motor + quantity_of_initialized_neurons_binary) * coefficient)
           && quantity_of_neurons_in_power_of_two < quantity_of_neurons_in_power_of_two_max)
     {
         quantity_of_neurons_in_power_of_two++;
