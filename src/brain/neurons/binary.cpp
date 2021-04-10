@@ -35,6 +35,7 @@ void brain::union_storage::binary::init(_word j, _word k, std::vector<union_stor
     solve_body(us);
     out_old = out_new;
     level = us[j].neuron_.level > us[k].neuron_.level ? us[j].neuron_.level + 1 : us[k].neuron_.level + 1;
+    kill_factor = 0;
 }
 
 bool brain::union_storage::binary::create(brain &brn)
@@ -185,8 +186,11 @@ void brain::union_storage::binary::solve(brain &brn)
             if (brn.quantity_of_neurons_binary > brn.rndm->get_ft(0, brn.quantity_of_neurons_binary) *
                     (brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
 #endif
-                kill(brn);
+                if(brn.quantity_of_neurons_in_power_of_two == brn.quantity_of_neurons_in_power_of_two_max)
+                    kill_factor++;
 
+            if((255 - kill_factor) * brn.quantity_of_neurons_binary < brn.quantity_of_initialized_neurons_binary * 255)
+                kill(brn);
         }
         break;
     }

@@ -66,7 +66,8 @@ struct brain
             bool first_mem;
             bool second_mem;
             bool motor_connect = false;
-            char char_reserve_binary[1]; // reserve
+            unsigned char kill_factor;
+            char char_reserve_binary[0]; // reserve
             binary();
             neuron_binary_type get_type_binary(){ return neuron_binary_type_; }
             void init(_word j, _word k, std::vector<union_storage> &us);
@@ -104,7 +105,7 @@ struct brain
 
     _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons_in_power_of_two_max;
-    _word coefficient = 4;
+    _word coefficient = 2;
     _word quantity_of_neurons;
     _word quantity_of_neurons_binary;
     _word quantity_of_neurons_sensor;
