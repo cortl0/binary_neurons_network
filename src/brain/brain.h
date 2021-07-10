@@ -14,7 +14,6 @@
 
 #include <unistd.h>
 #include <memory>
-#include <mutex>
 #include <thread>
 
 #include "config.h"
@@ -30,11 +29,20 @@ struct brain
     friend struct brain_friend;
 #endif
 
+    enum state
+    {
+        state_stopped = 0,
+        state_to_start = 1,
+        state_started = 2,
+        state_to_stop = 3
+    };
+
     union union_storage
     {
         struct neuron
         {
-            enum neuron_type{
+            enum neuron_type
+            {
                 neuron_type_neuron = 0,
                 neuron_type_sensor = 1,
                 neuron_type_binary = 2,
@@ -43,17 +51,18 @@ struct brain
             neuron_type neuron_type_;
             _word level = 1;
             _word signals_occupied = 0;
-            bool buzy = false;
             bool out_new;
             bool out_old;
-            char char_reserve_neuron[1]; // reserve
+            char char_reserve_neuron[2]; // reserve
             neuron();
             neuron_type get_type(){ return neuron_type_; }
             void solve(brain &brn, _word me);
         };
+
         struct binary : neuron
         {
-            enum neuron_binary_type{
+            enum neuron_binary_type
+            {
                 neuron_binary_type_free = 0,
                 neuron_binary_type_in_work = 1,
                 neuron_binary_type_marked_to_kill = 2
@@ -66,8 +75,7 @@ struct brain
             bool first_mem;
             bool second_mem;
             bool motor_connect = false;
-            unsigned char kill_factor;
-            char char_reserve_binary[0]; // reserve
+            char char_reserve_binary[1]; // reserve
             binary();
             neuron_binary_type get_type_binary(){ return neuron_binary_type_; }
             void init(_word j, _word k, std::vector<union_storage> &us);
@@ -76,6 +84,7 @@ struct brain
             void solve_body(std::vector<union_storage> &us);
             void solve(brain &brn);
         };
+
         struct motor : neuron
         {
             _word world_output_address;
@@ -85,6 +94,7 @@ struct brain
             motor(std::vector<bool>& world_output, _word world_output_address_);
             void solve(brain &brn, _word me);
         };
+
         struct sensor : neuron
         {
             _word world_input_address;
@@ -113,31 +123,30 @@ struct brain
     _word quantity_of_initialized_neurons_binary = 0;
     _word iteration = 0;
     _word reaction_rate = 0;
-    _word debug_soft_kill = 0;
-    _word debug_quantity_of_solve_binary = 0;
-    bool work = false;
+    _word candidate_for_kill;
+    _word candidate_except_creation;
+    state state_ = state_stopped;
     void* owner;
-    void (*clock_cycle_handler)(void* owner);
+    void (*owner_clock_cycle_handler)(void* owner);
     static void thread_work(brain* brn);
     std::vector<bool> world_input;
     std::vector<bool> world_output;
     std::thread thrd;
-    std::mutex mtx;
     std::unique_ptr<random_put_get> rndm;
 
     void update_quantity();
     void stop();
 public:
-    volatile bool clock_cycle_completed;
     ~brain();
     brain() = delete;
     brain(_word random_array_length_in_power_of_two,
           _word random_max_value_to_fill_in_power_of_two,
           _word quantity_of_neurons_in_power_of_two,
           _word input_length,
-          _word output_length,
-          void (*clock_cycle_handler)(void* owner));
-    void start(void* owner, bool detach = true);
+          _word output_length);
+    void start(void* owner,
+               void (*owner_clock_cycle_handler)(void* owner),
+               bool detach = true);
     bool get_out(_word offset);
     _word get_output_length();
     _word get_input_length();

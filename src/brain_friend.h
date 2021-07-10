@@ -1,8 +1,8 @@
 /*
- *   device
+ *   binary neurons network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
- *   https://github.com/cortl0/device
+ *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
  */
 
@@ -11,6 +11,7 @@
 
 #include <list>
 #include <experimental/filesystem>
+#include <fstream>
 #include <stdexcept>
 
 #include "brain/brain.h"

@@ -134,15 +134,13 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
                                  random_max_value_to_fill_in_power_of_two,
                                  quantity_of_neurons_in_power_of_two,
                                  static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
-                                 motorCount,
-                                 nullptr));
+                                 motorCount));
     else
         brn.reset(new bnn::brain(random_array_length_in_power_of_two,
                                  random_max_value_to_fill_in_power_of_two,
                                  quantity_of_neurons_in_power_of_two,
                                  static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
-                                 motorCount,
-                                 nullptr));
+                                 motorCount));
     brain_friend_.reset(new bnn::brain_friend_web(*brn.get()));
 }
 

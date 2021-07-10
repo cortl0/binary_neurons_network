@@ -1,14 +1,12 @@
 /*
- *   device
+ *   binary neurons network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
- *   https://github.com/cortl0/device
+ *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
  */
 
 #include "brain_friend.h"
-
-#include <fstream>
 
 namespace bnn
 {
@@ -28,10 +26,8 @@ bool brain_friend::load(std::ifstream& ifs)
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_binary), sizeof (brain_.quantity_of_neurons_binary));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_sensor), sizeof (brain_.quantity_of_neurons_sensor));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_motor), sizeof (brain_.quantity_of_neurons_motor));
-        ifs.read(reinterpret_cast<char*>(&brain_.work), sizeof (brain_.work));
         ifs.read(reinterpret_cast<char*>(&brain_.iteration), sizeof (brain_.iteration));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_initialized_neurons_binary), sizeof (brain_.quantity_of_initialized_neurons_binary));
-        ifs.read(reinterpret_cast<char*>(&brain_.debug_soft_kill), sizeof (brain_.debug_soft_kill));
 
         brain_.world_input.resize(brain_.quantity_of_neurons_sensor);
 
@@ -86,13 +82,8 @@ bool brain_friend::load(std::ifstream& ifs)
 
 void brain_friend::resize(_word brainBits_)
 {
-    brain_.mtx.lock();
-    brain_.work = false;
-    brain_.mtx.unlock();
-
-    usleep(200);
-
-    brain_.mtx.lock();
+    if(brain_.state_ != brain::state::state_stopped)
+        throw "brain is running now";
 
     if(brainBits_ > brain_.quantity_of_neurons_in_power_of_two)
     {
@@ -112,10 +103,7 @@ void brain_friend::resize(_word brainBits_)
         brain_.quantity_of_neurons_in_power_of_two = brainBits_;
         brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
         brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;
-        brain_.reaction_rate = brain_.quantity_of_neurons;
     }
-
-    brain_.mtx.unlock();
 }
 
 bool brain_friend::save(std::ofstream& ofs)
@@ -128,10 +116,8 @@ bool brain_friend::save(std::ofstream& ofs)
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_binary), sizeof (brain_.quantity_of_neurons_binary));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_sensor), sizeof (brain_.quantity_of_neurons_sensor));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_motor), sizeof (brain_.quantity_of_neurons_motor));
-        ofs.write(reinterpret_cast<char*>(&brain_.work), sizeof (brain_.work));
         ofs.write(reinterpret_cast<char*>(&brain_.iteration), sizeof (brain_.iteration));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_initialized_neurons_binary), sizeof (brain_.quantity_of_initialized_neurons_binary));
-        ofs.write(reinterpret_cast<char*>(&brain_.debug_soft_kill), sizeof (brain_.debug_soft_kill));
 
         bool b;
 

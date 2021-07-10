@@ -23,8 +23,7 @@ static bnn::brain brn(random_array_length_in_power_of_two,
                  random_max_value_to_fill_in_power_of_two,
                  quantity_of_neurons_in_power_of_two,
                  input_length,
-                 output_length,
-                 clock_cycle_handler);
+                 output_length);
 
 // M-sequence only demonstrates the workable of the algorithm
 // don't expect a wow effect without using real data
@@ -61,6 +60,6 @@ void clock_cycle_handler(void*)
 int main()
 {
     bool detach = false;
-    brn.start(nullptr, detach);
+    brn.start(nullptr, clock_cycle_handler, detach);
     return 0;
 }

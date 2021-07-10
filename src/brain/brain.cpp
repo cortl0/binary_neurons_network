@@ -23,25 +23,24 @@ brain::brain(_word random_array_length_in_power_of_two,
              _word random_max_value_to_fill_in_power_of_two,
              _word quantity_of_neurons_in_power_of_two,
              _word input_length,
-             _word output_length,
-             void (*clock_cycle_handler)(void* owner))
+             _word output_length)
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
-      quantity_of_neurons_motor(output_length),
-      clock_cycle_handler(clock_cycle_handler)
+      quantity_of_neurons_motor(output_length)
 {
     rndm.reset(new random_put_get(random_array_length_in_power_of_two, random_max_value_to_fill_in_power_of_two));
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
-    reaction_rate = quantity_of_neurons;
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw ("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
     us.resize(quantity_of_neurons);
+
     world_input.resize(quantity_of_neurons_sensor);
     for (_word i = 0; i < quantity_of_neurons_sensor; i++)
     {
         world_input[i] = rndm->get(1);
         us[i].sensor_ = union_storage::sensor(world_input, i);
     }
+
     world_output.resize(quantity_of_neurons_motor);
     for (uint i = 0; i < quantity_of_neurons_motor; i++)
     {
@@ -62,50 +61,70 @@ brain::brain(_word random_array_length_in_power_of_two,
 
 void brain::thread_work(brain* brn)
 {
-    while(true)
+    if(brn->state_ != state::state_to_start)
+        throw "brn->state_ != state::state_to_start";
+
+    brn->state_ = state::state_started;
+
+    _word j;
+
+    while(brn->state_ != state::state_to_stop)
     {
-        if(!brn->work)
-            return;
-        if(!brn->reaction_rate)
+        if(!brn->reaction_rate--)
         {
             brn->reaction_rate = simple_math::two_pow_x(brn->quantity_of_neurons_in_power_of_two_max);
+
+            brn->candidate_for_kill = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two_max);
+            brn->candidate_except_creation = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two_max);
+
             brn->iteration++;
-            brn->debug_quantity_of_solve_binary = 0;
-            if(!brn->clock_cycle_completed)
-                brn->clock_cycle_completed = true;
-            if(nullptr != brn->clock_cycle_handler)
-                brn->clock_cycle_handler(brn->owner);
+
+            if(nullptr != brn->owner_clock_cycle_handler)
+                brn->owner_clock_cycle_handler(brn->owner);
+
             brn->update_quantity();
         }
-        brn->reaction_rate--;
-        _word j = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two);
+
+        j = brn->rndm->get(brn->quantity_of_neurons_in_power_of_two);
+
         brn->us[j].neuron_.solve(*brn, j);
     }
+
+    brn->state_ = state::state_stopped;
 }
 
-void brain::start(void* owner_, bool detach)
+void brain::start(void* owner,
+                  void (*owner_clock_cycle_handler)(void* owner),
+                  bool detach)
 {
-    if(work)
-    {
-        stop();
-    }
-    clock_cycle_completed = false;
+    if(state_ != state::state_stopped)
+        throw "state_ != state::state_stopped";
+
+    reaction_rate = 0;
+
+    this->owner = owner;
+    this->owner_clock_cycle_handler = owner_clock_cycle_handler;
+
+    state_ = state::state_to_start;
+
     thrd = std::thread(thread_work, this);
-    owner = owner_;
-    work = true;
+
     if(detach)
         thrd.detach();
     else
         thrd.join();
+
+    while(state_ != state::state_started);
 }
 
 void brain::stop()
 {
-    mtx.lock();
-    work = false;
-    mtx.unlock();
-    usleep(500);
-    clock_cycle_completed = false;
+    if(state_ != state::state_started)
+        throw "state_ != state::state_started";
+
+    state_ = state::state_to_stop;
+
+    while(state_ != state::state_stopped);
 }
 
 bool brain::get_out(_word offset)

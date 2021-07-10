@@ -62,13 +62,12 @@ static bnn::brain brn(24, // random_array_length_in_power_of_two,
                       31, // random_max_value_to_fill_in_power_of_two,
                       14, // quantity_of_neurons_in_power_of_two,
                       31, // input_length,
-                      8,  // output_length,
-                      clock_cycle_handler);
+                      8,  // output_length);
 
 // This method will be performed on every beat of the brain
 void clock_cycle_handler(void*)
 {
-	static long int count = 0;
+    static long int count = 0;
 
     std::cout << std::endl << "cycle = " << std::to_string(count++) << std::endl;
 
@@ -89,7 +88,7 @@ void clock_cycle_handler(void*)
 int main()
 {
     bool detach = false;
-    brn.start(nullptr, detach);
+    brn.start(nullptr, clock_cycle_handler, detach);
     return 0;
 }
 ```
@@ -113,6 +112,11 @@ http://8iter.ru/ai.html
 https://t.me/artificial_intelligence_bnn  
 https://t.me/artificial_intelligence_bnn_grp  
 https://www.youtube.com/watch?v=z-TKgo2b8mg&t  
+http://www.gotai.net/forum/default.aspx?threadid=192413  
+http://www.gotai.net/forum/default.aspx?threadid=276702  
+https://www.cyberforum.ru/ai/thread1834551.html  
+https://agi.place/?ai=9&id=24  
+https://agi.place/?ai=9&id=26  
 https://github.com/cortl0/binary_neurons_network
 
 ## License

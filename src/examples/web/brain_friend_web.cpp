@@ -108,11 +108,7 @@ void brain_friend_web::stop()
 
 void brain_friend_web::resize(_word brainBits_)
 {
-    brain_.mtx.lock();
-    brain_.work = false;
-    brain_.mtx.unlock();
-    usleep(200);
-    brain_.mtx.lock();
+    brain_.stop();
     if(brainBits_ > brain_.quantity_of_neurons_in_power_of_two)
     {
         _word quantity_of_neuron_end_temp = 1 << (brainBits_);
@@ -128,7 +124,6 @@ void brain_friend_web::resize(_word brainBits_)
         brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;
         brain_.reaction_rate = brain_.quantity_of_neurons;
     }
-    brain_.mtx.unlock();
 }
 
 std::map<int, int> brain_friend_web::graphical_representation()

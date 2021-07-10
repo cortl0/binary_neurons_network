@@ -15,7 +15,6 @@
 // pick one
 #define first_option_communication
 //#define second_option_communication
-//#define third_option_communication
 
 static _word random_array_length_in_power_of_two = 24;
 static _word random_max_value_in_power_of_two = 31;
@@ -23,23 +22,17 @@ static _word quantity_of_neurons_in_power_of_two = 16;
 static const _word input_length = 64;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
+
+#ifdef first_option_communication
 static void clock_cycle_handler(void* owner);
+#endif
+
 static bnn::brain brn(random_array_length_in_power_of_two,
                       random_max_value_in_power_of_two,
                       quantity_of_neurons_in_power_of_two,
                       input_length,
-                      output_length,
-                      clock_cycle_handler);
+                      output_length);
 
-#ifdef first_option_communication
-// This method will be performed on every cycle of the brain
-#endif
-#ifdef second_option_communication
-// This method will be performed on every cycle of the brain
-#endif
-#ifdef third_option_communication
-// this method will be performed on every cycle of the "while(1) communication();" (see below)
-#endif
 static void communication()
 {
     int count = 0;
@@ -68,35 +61,27 @@ static void communication()
     std::cout << c << std::endl;
 }
 
+#ifdef first_option_communication
 void clock_cycle_handler(void*)
 {
-#ifdef first_option_communication
+    // This method will be performed on every cycle of the brain
     communication();
-#endif
 }
 
 int main()
 {
-#ifdef first_option_communication
     bool detach = false;
-    brn.start(&brn, detach);
+    brn.start(&brn, clock_cycle_handler, detach);
     return 0;
+}
 #endif
 
 #ifdef second_option_communication
-    brn.start(nullptr);
+int main()
+{
+    brn.start(nullptr, nullptr);
     while(1)
-        if (brn.clock_cycle_completed == true)
-        {
-            communication();
-            // this unsafe
-            brn.clock_cycle_completed = false;
-        }
-#endif
-
-#ifdef third_option_communication
-    brn.start(nullptr);
-    while(1)
+        // this method will be performed on every cycle of the "while(1) communication();" (see below)
         communication();
-#endif
 }
+#endif

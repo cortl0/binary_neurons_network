@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     int k=4;
-    deviceAI.reset(new DeviceAI(26, 31, 6, 18,
+    deviceAi.reset(new DeviceAI(27, 31, 6, 16,
                                 QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k),
                                 ui->preview->size(), ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");
@@ -37,59 +37,59 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotTimerAlarm()
 {
-    if (!deviceAI->GetBrain().clock_cycle_completed)
+    if (!brain_clock_cycle_completed)
         return;
     if(busy)
         return;
     else
         busy=true;
-    deviceAI->Go(deviceAI->GetBrain());
-    ui->qLabel->setPixmap((deviceAI->GetSensorPixmap()).GetPixmap());
+    deviceAi->Go(deviceAi->GetBrain());
+    ui->qLabel->setPixmap((deviceAi->GetSensorPixmap()).GetPixmap());
     QPixmap qPixmap = ui->preview->grab(QRect(QPoint(0,0), ui->preview->size()));
-    deviceAI->GetSensorPixmap().FillBinary(qPixmap, deviceAI->GetBrain());
-    ui->labelDebug->setText(deviceAI->brain_friend_->brain_get_state() + '\n' +
-                            "x=" + QString::number(static_cast<int>(deviceAI->GetSensorPixmap().x)) +
-                            " y=" + QString::number(static_cast<int>(deviceAI->GetSensorPixmap().y)) +
-                            " zoom=" + QString::number(deviceAI->GetSensorPixmap().zoom));
-    deviceAI->GetBrain().clock_cycle_completed = false;
+    deviceAi->GetSensorPixmap().FillBinary(qPixmap, deviceAi->GetBrain());
+    ui->labelDebug->setText(deviceAi->brain_friend_->brain_get_state() + '\n' +
+                            "x=" + QString::number(static_cast<int>(deviceAi->GetSensorPixmap().x)) +
+                            " y=" + QString::number(static_cast<int>(deviceAi->GetSensorPixmap().y)) +
+                            " zoom=" + QString::number(deviceAi->GetSensorPixmap().zoom));
+    brain_clock_cycle_completed = false;
     busy=false;
     return;
 }
 
 void MainWindow::on_pushButtonZoomIncr_clicked()
 {
-    deviceAI->GetSensorPixmap().Zoom_in();
-    deviceAI->GetSensorPixmap().PixmapNormalize();
+    deviceAi->GetSensorPixmap().Zoom_in();
+    deviceAi->GetSensorPixmap().PixmapNormalize();
 }
 
 void MainWindow::on_pushButtonZoomDecr_clicked()
 {
-    deviceAI->GetSensorPixmap().Zoom_out();
-    deviceAI->GetSensorPixmap().PixmapNormalize();
+    deviceAi->GetSensorPixmap().Zoom_out();
+    deviceAi->GetSensorPixmap().PixmapNormalize();
 }
 
 void MainWindow::on_pushButtonUp_clicked()
 {
-    deviceAI->GetSensorPixmap().Y_minus();
-    deviceAI->GetSensorPixmap().PixmapNormalize();
+    deviceAi->GetSensorPixmap().Y_minus();
+    deviceAi->GetSensorPixmap().PixmapNormalize();
 }
 
 void MainWindow::on_pushButtonDown_clicked()
 {
-    deviceAI->GetSensorPixmap().Y_plus();
-    deviceAI->GetSensorPixmap().PixmapNormalize();
+    deviceAi->GetSensorPixmap().Y_plus();
+    deviceAi->GetSensorPixmap().PixmapNormalize();
 }
 
 void MainWindow::on_pushButtonLeft_clicked()
 {
-    deviceAI->GetSensorPixmap().X_minus();
-    deviceAI->GetSensorPixmap().PixmapNormalize();
+    deviceAi->GetSensorPixmap().X_minus();
+    deviceAi->GetSensorPixmap().PixmapNormalize();
 }
 
 void MainWindow::on_pushButtonRight_clicked()
 {
-    deviceAI->GetSensorPixmap().X_plus();
-    deviceAI->GetSensorPixmap().PixmapNormalize();
+    deviceAi->GetSensorPixmap().X_plus();
+    deviceAi->GetSensorPixmap().PixmapNormalize();
 }
 
 void MainWindow::on_pushButtonStart_clicked()
@@ -100,7 +100,7 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonStart->setText("Start");
         ui->pushButtonLoad->setEnabled(true);
         ui->pushButtonSave->setEnabled(true);
-        deviceAI->brain_friend_->stop();
+        deviceAi->brain_friend_->stop();
     }
     else
     {
@@ -108,19 +108,19 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonStart->setText("Stop");
         ui->pushButtonLoad->setEnabled(false);
         ui->pushButtonSave->setEnabled(false);
-        deviceAI->GetBrain().start(&deviceAI);
+        deviceAi->GetBrain().start(this, clock_cycle_handler);
     }
     ft=!ft;
 }
 
 void MainWindow::on_pushButtonLoad_clicked()
 {
-    deviceAI->brain_friend_->load();
+    deviceAi->brain_friend_->load();
 }
 
 void MainWindow::on_pushButtonSave_clicked()
 {
-    deviceAI->brain_friend_->save();
+    deviceAi->brain_friend_->save();
 }
 
 void MainWindow::on_pushButtonAddress_clicked()
@@ -130,8 +130,8 @@ void MainWindow::on_pushButtonAddress_clicked()
 
 void MainWindow::on_pushButton_graphical_representation_pressed()
 {
-    deviceAI->brain_friend_->stop();
-    std::map<int, int> m = deviceAI->brain_friend_->graphical_representation();
+    deviceAi->brain_friend_->stop();
+    std::map<int, int> m = deviceAi->brain_friend_->graphical_representation();
     QPixmap qPixmap;
     qPixmap = QPixmap(QSize(64*4, 36*4));
     QPainter qPainter(&qPixmap);
@@ -151,11 +151,18 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
     ui->qLabel->setPixmap(qPixmap);
     QString qString;
     qString += "max_level = " + QString::number(max_level) + "\n";
-    qString += deviceAI->brain_friend_->brain_get_representation();
+    qString += deviceAi->brain_friend_->brain_get_representation();
     ui->labelDebug->setText(qString);
 }
 
 void MainWindow::on_pushButton_graphical_representation_released()
 {
-    deviceAI->GetBrain().start(&deviceAI);
+    deviceAi->GetBrain().start(this, clock_cycle_handler);
+}
+
+void MainWindow::clock_cycle_handler(void* me_void)
+{
+    MainWindow* me = static_cast<MainWindow*>(me_void);
+    if(!me->brain_clock_cycle_completed)
+        me->brain_clock_cycle_completed = true;
 }

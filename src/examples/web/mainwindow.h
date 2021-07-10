@@ -30,6 +30,7 @@ public:
     ~MainWindow();
     bool ft = false;
     bool busy = false;
+    volatile bool brain_clock_cycle_completed = false;
 private slots:
     void on_pushButtonZoomIncr_clicked();
     void on_pushButtonZoomDecr_clicked();
@@ -46,9 +47,10 @@ private slots:
     void on_pushButton_graphical_representation_released();
 private:
     Ui::MainWindow *ui;
-    std::unique_ptr<DeviceAI> deviceAI;
+    std::unique_ptr<DeviceAI> deviceAi;
     void Web_qPixmap_refresh();
     std::unique_ptr<QTimer> timer;
+    static void clock_cycle_handler(void* me_void);
 };
 
 #endif // MAINWINDOW_H

@@ -27,8 +27,8 @@ class random_put_get
     _word length;
     std::vector<_word> array;
 public:
-    _word debug_count_put=0;
-    _word debug_count_get=0;
+    unsigned long long int debug_count_put=0;
+    unsigned long long int debug_count_get=0;
     ~random_put_get();
     random_put_get() = delete;
     random_put_get(_word random_array_length_in_power_of_two, _word random_max_value_to_fill_in_power_of_two);
