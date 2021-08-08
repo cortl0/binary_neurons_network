@@ -1,13 +1,11 @@
-# //*************************************************************//
-# //                                                             //
-# //   binary neurons network                                    //
-# //   created by Ilya Shishkin                                  //
-# //   cortl@8iter.ru                                            //
-# //   http://8iter.ru/ai.html                                   //
-# //   https://github.com/cortl0/binary_neurons_network          //
-# //   licensed by GPL v3.0                                      //
-# //                                                             //
-# //*************************************************************//
+#
+#   binary neurons network
+#   created by Ilya Shishkin
+#   cortl@8iter.ru
+#   http://8iter.ru/ai.html
+#   https://github.com/cortl0/binary_neurons_network
+#   licensed by GPL v3.0
+#
 
 TARGET   = web
 TEMPLATE = app
@@ -31,6 +29,7 @@ SOURCES += \
         ../../brain/neurons/neuron.cpp \
         ../../brain/neurons/sensor.cpp \
         ../../brain/random_put_get.cpp \
+        ../../brain/thread.cpp \
         brain_friend_web.cpp \
         deviceai.cpp \
         main.cpp \

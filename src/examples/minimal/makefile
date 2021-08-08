@@ -8,7 +8,7 @@
 
 TARGET = minimal_brain.out
 BRAIN_DIR = ../../brain
-SRCS_BRAIN=brain.cpp random_put_get.cpp m_sequence.cpp neurons/neuron.cpp neurons/binary.cpp neurons/motor.cpp neurons/sensor.cpp
+SRCS_BRAIN=brain.cpp random_put_get.cpp m_sequence.cpp thread.cpp neurons/neuron.cpp neurons/binary.cpp neurons/motor.cpp neurons/sensor.cpp
 OBJS_BRAIN=$(SRCS_BRAIN:.cpp=.o)
 OBJS_BRAIN=$(SRCS_BRAIN:neurons/=)
 

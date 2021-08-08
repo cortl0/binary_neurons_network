@@ -1,13 +1,11 @@
-//*************************************************************//
-//                                                             //
-//   binary neurons network                                    //
-//   created by Ilya Shishkin                                  //
-//   cortl@8iter.ru                                            //
-//   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/binary_neurons_network          //
-//   licensed by GPL v3.0                                      //
-//                                                             //
-//*************************************************************//
+/*
+ *   binary neurons network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
 
 #include "brain_friend_web.h"
 
@@ -31,17 +29,21 @@ QString brain_friend_web::brain_get_state()
     qString += "\nquantity_of_neuron_motor=" + QString::number(brain_.quantity_of_neurons_motor) + "\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
         if (brain_.world_output[i]) qString += "1"; else qString += "0";
+    /*
     qString += "\nsignals\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
         qString += QString::number(brain_.us[i + brain_.quantity_of_neurons_sensor].motor_.signals_occupied) + "\t";
     qString += "\nslots\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
         qString += QString::number(brain_.us[i + brain_.quantity_of_neurons_sensor].motor_.slots_occupied) + "\t";
+    */
     qString += "\naccum\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
         qString += QString::number(brain_.us[i + brain_.quantity_of_neurons_sensor].motor_.accumulator) + "\t";
+    /*
     qString += "\ncountPut=" + QString::number(brain_.rndm->debug_count_put);
     qString += "\tcountGet=" + QString::number(brain_.rndm->debug_count_get);
+    */
     return qString;
 }
 
@@ -52,6 +54,7 @@ QString brain_friend_web::brain_get_representation()
     _word e = brain_.quantity_of_neurons_binary + brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
     int consensus = 0;
     int count = 0;
+    /*
     for (_word i = s; i < e; i++)
     {
         if (brain_.us[i].neuron_.get_type() == brain::union_storage::neuron::neuron_type::neuron_type_binary)
@@ -63,6 +66,7 @@ QString brain_friend_web::brain_get_representation()
                         count++;
                     }
     }
+    */
     qString += "consensus=" + QString::number(consensus);
     qString += "\ncount=" + QString::number(count);
     qString += "\nc/c=" + QString::number((static_cast<double>(consensus) / static_cast<double>(count)));
@@ -122,7 +126,7 @@ void brain_friend_web::resize(_word brainBits_)
         brain_.quantity_of_neurons_in_power_of_two = brainBits_;
         brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
         brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;
-        brain_.reaction_rate = brain_.quantity_of_neurons;
+        //brain_.reaction_rate = brain_.quantity_of_neurons;
     }
 }
 

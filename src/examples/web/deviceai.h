@@ -1,13 +1,11 @@
-//*************************************************************//
-//                                                             //
-//   binary neurons network                                    //
-//   created by Ilya Shishkin                                  //
-//   cortl@8iter.ru                                            //
-//   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/binary_neurons_network          //
-//   licensed by GPL v3.0                                      //
-//                                                             //
-//*************************************************************//
+/*
+ *   binary neurons network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
 
 #ifndef DEVICEAI_H
 #define DEVICEAI_H
@@ -60,7 +58,6 @@ public:
     ~DeviceAI();
     DeviceAI() = delete;
     DeviceAI(_word random_array_length_in_power_of_two,
-             _word random_max_value_to_fill_in_power_of_two,
              _word motorCount,
              _word brainBits,
              QSize qSize,

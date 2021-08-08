@@ -9,6 +9,7 @@
 TARGET = brain
 
 SRCS= brain.cpp \
+thread.cpp \
 random_put_get.cpp \
 m_sequence.cpp \
 neurons/neuron.cpp \

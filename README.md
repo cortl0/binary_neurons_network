@@ -7,6 +7,10 @@ It is AI in the original meaning coinciding with the meanings of the following s
 - Human-level artificial intelligence (HLAI);  
 - True artificial intelligence (True AI).
 
+## Looking for a sponsor
+Development takes time  
+Time is money
+
 ## Project directories
 
 #### ./src/brain/
@@ -30,6 +34,9 @@ Contains the simple_math struct. Easy and fast matematics.
 
 #### ./src/brain/neurons/*.cpp
 neuron source files: neuron(base), binary neuron, motor neuron, sensor neuron
+
+#### ./src/brain/thread.cpp
+source file of thread class for multithreading
 
 #### ./src/brain_friend.*
 Friendly class for debug, save, load, stop brain
@@ -56,20 +63,17 @@ main.cpp
 
 #include "/usr/local/include/bnn/brain.h"
 
-void clock_cycle_handler(void*);
+static bnn::brain brn(24, // random_array_length_in_power_of_two
+                      14, // quantity_of_neurons_in_power_of_two
+                      31, // input_length
+                      8,  // output_length
+                      );
 
-static bnn::brain brn(24, // random_array_length_in_power_of_two,
-                      31, // random_max_value_to_fill_in_power_of_two,
-                      14, // quantity_of_neurons_in_power_of_two,
-                      31, // input_length,
-                      8,  // output_length);
-
-// This method will be performed on every beat of the brain
-void clock_cycle_handler(void*)
+void cycle()
 {
     static long int count = 0;
 
-    std::cout << std::endl << "cycle = " << std::to_string(count++) << std::endl;
+    std::cout << std::endl << "iteration = " << std::to_string(count++) << std::endl;
 
     for (_word i = 0; i < brn.get_input_length(); i++)
     {
@@ -87,8 +91,12 @@ void clock_cycle_handler(void*)
 
 int main()
 {
-    bool detach = false;
-    brn.start(nullptr, clock_cycle_handler, detach);
+    brn.start();
+    while(1)
+    {
+        usleep(100000);
+        cycle();
+    }
     return 0;
 }
 ```

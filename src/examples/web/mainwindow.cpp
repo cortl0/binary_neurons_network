@@ -1,13 +1,11 @@
-//*************************************************************//
-//                                                             //
-//   binary neurons network                                    //
-//   created by Ilya Shishkin                                  //
-//   cortl@8iter.ru                                            //
-//   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/binary_neurons_network          //
-//   licensed by GPL v3.0                                      //
-//                                                             //
-//*************************************************************//
+/*
+ *   binary neurons network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -20,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     int k=4;
-    deviceAi.reset(new DeviceAI(27, 31, 6, 16,
+    deviceAi.reset(new DeviceAI(27, 6, 16,
                                 QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k),
                                 ui->preview->size(), ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");
@@ -37,8 +35,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotTimerAlarm()
 {
-    if (!brain_clock_cycle_completed)
-        return;
     if(busy)
         return;
     else
@@ -51,7 +47,6 @@ void MainWindow::slotTimerAlarm()
                             "x=" + QString::number(static_cast<int>(deviceAi->GetSensorPixmap().x)) +
                             " y=" + QString::number(static_cast<int>(deviceAi->GetSensorPixmap().y)) +
                             " zoom=" + QString::number(deviceAi->GetSensorPixmap().zoom));
-    brain_clock_cycle_completed = false;
     busy=false;
     return;
 }
@@ -108,7 +103,7 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonStart->setText("Stop");
         ui->pushButtonLoad->setEnabled(false);
         ui->pushButtonSave->setEnabled(false);
-        deviceAi->GetBrain().start(this, clock_cycle_handler);
+        deviceAi->GetBrain().start(/*this, clock_cycle_handler*/);
     }
     ft=!ft;
 }
@@ -157,12 +152,5 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
 
 void MainWindow::on_pushButton_graphical_representation_released()
 {
-    deviceAi->GetBrain().start(this, clock_cycle_handler);
-}
-
-void MainWindow::clock_cycle_handler(void* me_void)
-{
-    MainWindow* me = static_cast<MainWindow*>(me_void);
-    if(!me->brain_clock_cycle_completed)
-        me->brain_clock_cycle_completed = true;
+    deviceAi->GetBrain().start();
 }

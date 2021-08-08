@@ -1,13 +1,11 @@
-//*************************************************************//
-//                                                             //
-//   binary neurons network                                    //
-//   created by Ilya Shishkin                                  //
-//   cortl@8iter.ru                                            //
-//   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/binary_neurons_network          //
-//   licensed by GPL v3.0                                      //
-//                                                             //
-//*************************************************************//
+/*
+ *   binary neurons network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -30,7 +28,6 @@ public:
     ~MainWindow();
     bool ft = false;
     bool busy = false;
-    volatile bool brain_clock_cycle_completed = false;
 private slots:
     void on_pushButtonZoomIncr_clicked();
     void on_pushButtonZoomDecr_clicked();
@@ -50,7 +47,6 @@ private:
     std::unique_ptr<DeviceAI> deviceAi;
     void Web_qPixmap_refresh();
     std::unique_ptr<QTimer> timer;
-    static void clock_cycle_handler(void* me_void);
 };
 
 #endif // MAINWINDOW_H

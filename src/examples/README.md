@@ -8,9 +8,6 @@ The input to the brain is a picture from the browser, and the output is the move
 #### ./minimal/  
 Contains minimal project
 
-#### ./m_sequence/  
-Contains project. The m-sequence is fed to the input of binary neurons network
-
 ## Author
 Ilya Shishkin  
 mailto:cortl@8iter.ru

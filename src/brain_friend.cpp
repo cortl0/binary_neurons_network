@@ -18,16 +18,19 @@ brain_friend::brain_friend(bnn::brain &brain_) : brain_(brain_)
 
 bool brain_friend::load(std::ifstream& ifs)
 {
+#if (1)
     if(ifs.is_open())
     {
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_in_power_of_two), sizeof (brain_.quantity_of_neurons_in_power_of_two));
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_in_power_of_two_max), sizeof (brain_.quantity_of_neurons_in_power_of_two_max));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons), sizeof (brain_.quantity_of_neurons));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_binary), sizeof (brain_.quantity_of_neurons_binary));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_sensor), sizeof (brain_.quantity_of_neurons_sensor));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_motor), sizeof (brain_.quantity_of_neurons_motor));
         ifs.read(reinterpret_cast<char*>(&brain_.iteration), sizeof (brain_.iteration));
         ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_initialized_neurons_binary), sizeof (brain_.quantity_of_initialized_neurons_binary));
+        ifs.read(reinterpret_cast<char*>(&brain_.candidate_for_kill), sizeof (brain_.candidate_for_kill));
+        ifs.read(reinterpret_cast<char*>(&brain_.state_), sizeof (brain_.state_));
+        ifs.read(reinterpret_cast<char*>(&brain_.threads_count), sizeof (brain_.threads_count));
 
         brain_.world_input.resize(brain_.quantity_of_neurons_sensor);
 
@@ -58,25 +61,33 @@ bool brain_friend::load(std::ifstream& ifs)
                 brain_.us[i].words[j] = w;
             }
 
-        _word rndmLength;
-
-        ifs.read(reinterpret_cast<char*>(&rndmLength), sizeof (rndmLength));
-
-        if(rndmLength != brain_.rndm->get_length())
-            brain_.rndm.reset(new random_put_get(rndmLength, 3));
-
-        for(_word i = 0; i < brain_.rndm->get_length(); i++)
+        for(_word i = 0; i < brain_.threads_count; i++)
         {
-            ifs.read(reinterpret_cast<char*>(&w), sizeof (w));
-            brain_.rndm->get_array()[i] = w;
+            _word rndmLength;
+
+            ifs.read(reinterpret_cast<char*>(&rndmLength), sizeof (rndmLength));
+
+            if(rndmLength != brain_.threads[i].rndm->get_length())
+            {
+                m_sequence m_sequence(_word_bits - 1);
+                brain_.threads[i].rndm.reset(new random_put_get(rndmLength, m_sequence));
+            }
+
+            for(_word j = 0; j < rndmLength; j++)
+            {
+                ifs.read(reinterpret_cast<char*>(&w), sizeof (w));
+                brain_.threads[i].rndm->get_array()[j] = w;
+            }
         }
 
-        ifs.read(reinterpret_cast<char*>(&brain_.rndm->debug_count_put), sizeof (brain_.rndm->debug_count_put));
-        ifs.read(reinterpret_cast<char*>(&brain_.rndm->debug_count_get), sizeof (brain_.rndm->debug_count_get));
+        //#ifdef DEBUG
+        //        ifs.read(reinterpret_cast<char*>(&brain_.rndm->debug_count_put), sizeof (brain_.rndm->debug_count_put));
+        //        ifs.read(reinterpret_cast<char*>(&brain_.rndm->debug_count_get), sizeof (brain_.rndm->debug_count_get));
+        //#endif
 
         return true;
     }
-
+#endif
     return false;
 }
 
@@ -108,16 +119,19 @@ void brain_friend::resize(_word brainBits_)
 
 bool brain_friend::save(std::ofstream& ofs)
 {
+#if (1)
     if(ofs.is_open())
     {
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_in_power_of_two), sizeof (brain_.quantity_of_neurons_in_power_of_two));
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_in_power_of_two_max), sizeof (brain_.quantity_of_neurons_in_power_of_two_max));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons), sizeof (brain_.quantity_of_neurons));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_binary), sizeof (brain_.quantity_of_neurons_binary));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_sensor), sizeof (brain_.quantity_of_neurons_sensor));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_motor), sizeof (brain_.quantity_of_neurons_motor));
         ofs.write(reinterpret_cast<char*>(&brain_.iteration), sizeof (brain_.iteration));
         ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_initialized_neurons_binary), sizeof (brain_.quantity_of_initialized_neurons_binary));
+        ofs.write(reinterpret_cast<char*>(&brain_.candidate_for_kill), sizeof (brain_.candidate_for_kill));
+        ofs.write(reinterpret_cast<char*>(&brain_.state_), sizeof (brain_.state_));
+        ofs.write(reinterpret_cast<char*>(&brain_.threads_count), sizeof (brain_.threads_count));
 
         bool b;
 
@@ -142,21 +156,26 @@ bool brain_friend::save(std::ofstream& ofs)
                 ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
             }
 
-        w = brain_.rndm->get_length();
-        ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
-
-        for(_word i = 0; i < brain_.rndm->get_length(); i++)
+        for(_word i = 0; i < brain_.threads_count; i++)
         {
-            w = brain_.rndm->get_array()[i];
-            ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
-        }
+            _word rndmLength = brain_.threads[i].rndm->get_length();
 
-        ofs.write(reinterpret_cast<char*>(&brain_.rndm->debug_count_put), sizeof (brain_.rndm->debug_count_put));
-        ofs.write(reinterpret_cast<char*>(&brain_.rndm->debug_count_get), sizeof (brain_.rndm->debug_count_get));
+            ofs.write(reinterpret_cast<char*>(&rndmLength), sizeof (rndmLength));
+
+            for(_word j = 0; j < rndmLength; j++)
+            {
+                w = brain_.threads[i].rndm->get_array()[j];
+                ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
+            }
+        }
+        //#ifdef DEBUG
+        //        ofs.write(reinterpret_cast<char*>(&brain_.rndm->debug_count_put), sizeof (brain_.rndm->debug_count_put));
+        //        ofs.write(reinterpret_cast<char*>(&brain_.rndm->debug_count_get), sizeof (brain_.rndm->debug_count_get));
+        //#endif
 
         return true;
     }
-
+#endif
     return false;
 }
 

@@ -1,13 +1,11 @@
-//*************************************************************//
-//                                                             //
-//   binary neurons network                                    //
-//   created by Ilya Shishkin                                  //
-//   cortl@8iter.ru                                            //
-//   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/binary_neurons_network          //
-//   licensed by GPL v3.0                                      //
-//                                                             //
-//*************************************************************//
+/*
+ *   binary neurons network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
 
 #include "deviceai.h"
 
@@ -117,7 +115,6 @@ DeviceAI::~DeviceAI()
 }
 
 DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
-                   _word random_max_value_to_fill_in_power_of_two,
                    _word motorCount,
                    _word quantity_of_neurons_in_power_of_two,
                    QSize qSize, QSize qSizeBig,
@@ -131,13 +128,11 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)
         brn.reset(new bnn::brain(random_array_length_in_power_of_two,
-                                 random_max_value_to_fill_in_power_of_two,
                                  quantity_of_neurons_in_power_of_two,
                                  static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
                                  motorCount));
     else
         brn.reset(new bnn::brain(random_array_length_in_power_of_two,
-                                 random_max_value_to_fill_in_power_of_two,
                                  quantity_of_neurons_in_power_of_two,
                                  static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
                                  motorCount));

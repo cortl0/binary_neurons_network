@@ -1,13 +1,11 @@
-//*************************************************************//
-//                                                             //
-//   binary neurons network                                    //
-//   created by Ilya Shishkin                                  //
-//   cortl@8iter.ru                                            //
-//   http://8iter.ru/ai.html                                   //
-//   https://github.com/cortl0/binary_neurons_network          //
-//   licensed by GPL v3.0                                      //
-//                                                             //
-//*************************************************************//
+/*
+ *   binary neurons network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
 
 #include "../brain.h"
 
@@ -25,22 +23,19 @@ void brain::union_storage::binary::init(_word j, _word k, std::vector<union_stor
     neuron_binary_type_ = neuron_binary_type_in_work;
     first = j;
     second = k;
-    signals_occupied = 0;
-    motor_connect = false;
-    motor_consensus = 0;
-    us[j].neuron_.signals_occupied++;
-    us[k].neuron_.signals_occupied++;
     first_mem = us[j].neuron_.out_new;
     second_mem = us[k].neuron_.out_new;
     solve_body(us);
     out_old = out_new;
     level = us[j].neuron_.level > us[k].neuron_.level ? us[j].neuron_.level + 1 : us[k].neuron_.level + 1;
+    first_life_number = us[j].neuron_.life_number;
+    second_life_number = us[k].neuron_.life_number;
 }
 
-bool brain::union_storage::binary::create(brain &brn)
+bool brain::union_storage::binary::create(brain &brn, _word thread_number)
 {
-    _word j = brn.rndm->get(brn.quantity_of_neurons_in_power_of_two);
-    _word k = brn.rndm->get(brn.quantity_of_neurons_in_power_of_two);
+    _word j = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
+    _word k = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
     if (j == k)
         return false;
     if (&(this->char_reserve_neuron) == &(brn.us[j].neuron_.char_reserve_neuron))
@@ -60,42 +55,22 @@ bool brain::union_storage::binary::create(brain &brn)
     if ((brn.us[j].neuron_.out_new == brn.us[j].neuron_.out_old) || (brn.us[k].neuron_.out_new == brn.us[k].neuron_.out_old))
         return false;
 
-    // TODO
-    {
-        //    if (brn.rndm->get_ft(0, brn.us[j].neuron_.signals_occupied + brn.us[k].neuron_.signals_occupied))
-        //        return false;
-
-        //bad
-        //        if (brn.rndm->get_ft(0, brn.us[j].neuron_.signals_occupied))
-        //            return false;
-        //        if (brn.rndm->get_ft(0, brn.us[k].neuron_.signals_occupied))
-        //            return false;
-
-        //        if (brn.rndm->get(brn.us[j].neuron_.signals_occupied + brn.us[k].neuron_.signals_occupied))
-        //            return false;
-
-        //    if (brn.us[j].neuron_.signals_occupied + brn.us[k].neuron_.signals_occupied > 2)
-        //        return false;
-
-        //    if (brn.us[j].neuron_.level != brn.us[k].neuron_.level)
-        //        return false;
-    }
-
     init(j, k, brn.us);
-    brn.quantity_of_initialized_neurons_binary++;
+    brn.threads[thread_number].quantity_of_initialized_neurons_binary++;
+#ifdef DEBUG
+    brn.threads[thread_number].debug_created++;
+#endif
     return true;
 }
 
-void brain::union_storage::binary::kill(brain &brn)
+void brain::union_storage::binary::kill(brain &brn, _word thread_number)
 {
-    brn.us[first].neuron_.signals_occupied--;
-    brn.us[second].neuron_.signals_occupied--;
-    neuron_binary_type_ = neuron_binary_type_marked_to_kill;
-    if (motor_connect)
-    {
-        motor_connect = false;
-        (brn.us[motor]).motor_.slots_occupied--;
-    }
+    life_number++;
+    neuron_binary_type_ = neuron_binary_type_free;
+    brn.threads[thread_number].quantity_of_initialized_neurons_binary--;
+#ifdef DEBUG
+    brn.threads[thread_number].debug_killed++;
+#endif
 }
 
 void brain::union_storage::binary::solve_body(std::vector<union_storage> &us)
@@ -108,15 +83,28 @@ void brain::union_storage::binary::solve_body(std::vector<union_storage> &us)
             [us[first].neuron_.out_new][us[second].neuron_.out_new];
 }
 
-void brain::union_storage::binary::solve(brain &brn)
+void brain::union_storage::binary::solve(brain &brn, _word thread_number)
 {
+    _word candidate_for_kill = brn.candidate_for_kill;
+
+    if (&(this->char_reserve_neuron) == &(brn.us[brn.candidate_for_kill].neuron_.char_reserve_neuron))
+        while (true)
+        {
+            _word i = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
+
+            if(brn.us[i].neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary)
+            {
+                brn.candidate_for_kill = i;
+                break;
+            }
+        }
+
     switch (neuron_binary_type_)
     {
     case binary::neuron_binary_type_free:
     {
-        if (&(this->char_reserve_neuron) != &(brn.us[brn.candidate_except_creation].neuron_.char_reserve_neuron))
-            if (brn.rndm->get_ft(0, brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-                create(brn);
+        if (brn.threads[thread_number].rndm->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+            create(brn, thread_number);
 
         break;
     }
@@ -125,15 +113,15 @@ void brain::union_storage::binary::solve(brain &brn)
         bool b = false;
 
         if (brn.us[first].neuron_.get_type() == neuron_type_binary)
-            if (brn.us[first].binary_.get_type_binary() == neuron_binary_type_marked_to_kill)
+            if (brn.us[first].binary_.life_number != first_life_number)
                 b = true;
 
         if (brn.us[second].neuron_.get_type() == neuron_type_binary)
-            if (brn.us[second].binary_.get_type_binary() == neuron_binary_type_marked_to_kill)
+            if (brn.us[second].binary_.life_number != second_life_number)
                 b = true;
 
         if (b)
-            kill(brn);
+            kill(brn, thread_number);
         else
         {
             out_old = out_new;
@@ -141,29 +129,10 @@ void brain::union_storage::binary::solve(brain &brn)
             solve_body(brn.us);
 
             if (out_new != out_old)
-                brn.rndm->put(out_new);
+                brn.threads[thread_number].rndm->put(out_new);
 
-            if (motor_connect)
-            {
-                brn.us[motor].motor_.accumulator += (out_new * 2 - 1) * simple_math::sign0(motor_consensus);
-
-                if ((out_new ^ out_old) & (brn.us[motor].neuron_.out_new ^ brn.us[motor].neuron_.out_old))
-                    motor_consensus -= ((out_new ^ brn.us[motor].neuron_.out_new) * 2 - 1);
-            }
-
-            if (&(this->char_reserve_neuron) == &(brn.us[brn.candidate_for_kill].neuron_.char_reserve_neuron))
-                if (!brn.rndm->get_ft(0, brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
-                    kill(brn);
-        }
-
-        break;
-    }
-    case neuron_binary_type_marked_to_kill:
-    {
-        if (signals_occupied == 0)
-        {
-            neuron_binary_type_ = neuron_binary_type_free;
-            brn.quantity_of_initialized_neurons_binary--;
+            if (&(this->char_reserve_neuron) == &(brn.us[candidate_for_kill].neuron_.char_reserve_neuron))
+                kill(brn, thread_number);
         }
 
         break;
