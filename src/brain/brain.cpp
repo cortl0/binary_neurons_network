@@ -329,10 +329,9 @@ void brain::primary_filling()
                                 us[j].sensor_.out_new = m1;
                                 us[k].sensor_.out_new = m2;
 
-                                us[n].binary_.init(j, k, us);
-
                                 thread_number = n / (quantity_of_neurons / threads_count);
-                                threads[thread_number].quantity_of_initialized_neurons_binary++;
+
+                                us[n].binary_.init(*this, thread_number, j, k, us);
 
                                 n += quantity_of_neurons / threads_count;
 

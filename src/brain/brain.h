@@ -104,7 +104,7 @@ struct brain
             char char_reserve_binary[2]; // reserve
             binary();
             neuron_binary_type get_type_binary(){ return neuron_binary_type_; }
-            void init(_word j, _word k, std::vector<union_storage> &us);
+            void init(brain &brn, _word thread_number, _word j, _word k, std::vector<union_storage> &us);
             bool create(brain &brn, _word thread_number);
             void kill(brain &brn, _word thread_number);
             void solve_body(std::vector<union_storage> &us);

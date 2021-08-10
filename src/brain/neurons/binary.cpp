@@ -18,7 +18,7 @@ brain::union_storage::binary::binary()
     neuron_binary_type_ = neuron_binary_type_free;
 }
 
-void brain::union_storage::binary::init(_word j, _word k, std::vector<union_storage> &us)
+void brain::union_storage::binary::init(brain &brn, _word thread_number, _word j, _word k, std::vector<union_storage> &us)
 {
     neuron_binary_type_ = neuron_binary_type_in_work;
     first = j;
@@ -30,6 +30,10 @@ void brain::union_storage::binary::init(_word j, _word k, std::vector<union_stor
     level = us[j].neuron_.level > us[k].neuron_.level ? us[j].neuron_.level + 1 : us[k].neuron_.level + 1;
     first_life_number = us[j].neuron_.life_number;
     second_life_number = us[k].neuron_.life_number;
+    brn.threads[thread_number].quantity_of_initialized_neurons_binary++;
+#ifdef DEBUG
+    brn.threads[thread_number].debug_created++;
+#endif
 }
 
 bool brain::union_storage::binary::create(brain &brn, _word thread_number)
@@ -55,11 +59,7 @@ bool brain::union_storage::binary::create(brain &brn, _word thread_number)
     if ((brn.us[j].neuron_.out_new == brn.us[j].neuron_.out_old) || (brn.us[k].neuron_.out_new == brn.us[k].neuron_.out_old))
         return false;
 
-    init(j, k, brn.us);
-    brn.threads[thread_number].quantity_of_initialized_neurons_binary++;
-#ifdef DEBUG
-    brn.threads[thread_number].debug_created++;
-#endif
+    init(brn, thread_number, j, k, brn.us);
     return true;
 }
 
@@ -103,7 +103,9 @@ void brain::union_storage::binary::solve(brain &brn, _word thread_number)
     {
     case binary::neuron_binary_type_free:
     {
-        if (brn.threads[thread_number].rndm->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary))
+
+        if((brn.threads[thread_number].rndm->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary)) ||
+                (brn.quantity_of_initialized_neurons_binary * 3 < brn.quantity_of_neurons * 2))
             create(brn, thread_number);
 
         break;
@@ -132,7 +134,8 @@ void brain::union_storage::binary::solve(brain &brn, _word thread_number)
                 brn.threads[thread_number].rndm->put(out_new);
 
             if (&(this->char_reserve_neuron) == &(brn.us[candidate_for_kill].neuron_.char_reserve_neuron))
-                kill(brn, thread_number);
+                if(brn.quantity_of_initialized_neurons_binary * 3 > brn.quantity_of_neurons * 2)
+                    kill(brn, thread_number);
         }
 
         break;
