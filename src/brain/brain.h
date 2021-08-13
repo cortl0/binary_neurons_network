@@ -52,8 +52,10 @@ struct brain
 #ifdef DEBUG
         unsigned long long int debug_created = 0;
         unsigned long long int debug_killed = 0;
-        _word debug_max_consensus = 0;
         _word debug_average_consensus = 0;
+        _word debug_max_consensus = 0;
+        _word debug_max_consensus_binary_num = 0;
+        _word debug_max_consensus_motor_num = 0;
 #endif
         std::unique_ptr<random_put_get> rndm;
         thread(brain* brn,
@@ -133,7 +135,7 @@ struct brain
 #endif
 
             motor(std::vector<bool>& world_output, _word world_output_address_);
-            void solve(brain &brn, _word me, _word thread_number);
+            void solve(brain &brn, const _word &me, const _word &thread_number);
         };
 
         struct sensor : neuron

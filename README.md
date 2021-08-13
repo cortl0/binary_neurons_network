@@ -1,5 +1,5 @@
 ![](img.png)
-# Binary neurons network
+# Binary Neurons Network
 This is an attempt to create AI but not AI in the modern sense of the word.  
 It is AI in the original meaning coinciding with the meanings of the following synonyms:  
 - Artificial general intelligence (AGI);  
@@ -66,7 +66,7 @@ main.cpp
 static bnn::brain brn(24, // random_array_length_in_power_of_two
                       14, // quantity_of_neurons_in_power_of_two
                       31, // input_length
-                      8,  // output_length
+                      8   // output_length
                       );
 
 void cycle()

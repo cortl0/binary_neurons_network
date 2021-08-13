@@ -26,8 +26,9 @@ class random_put_get
     std::vector<_word> array;
 public:
 #ifdef DEBUG
-    unsigned long long int debug_count_put=0;
-    unsigned long long int debug_count_get=0;
+    unsigned long long int debug_count_get = 0;
+    unsigned long long int debug_count_put = 0;
+    long long int debug_sum_put = 0;
 #endif
     ~random_put_get();
     random_put_get() = delete;

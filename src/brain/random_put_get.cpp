@@ -44,6 +44,7 @@ random_put_get::random_put_get(_word random_array_length_in_power_of_two, m_sequ
 void random_put_get::put(bool i) noexcept
 {
 #ifdef DEBUG
+    debug_sum_put += i * 2 - 1;
     debug_count_put++;
 #endif
     array[offset] = (array[offset] & (~(1 << offset_in_word))) | (static_cast<_word>(i) << offset_in_word);

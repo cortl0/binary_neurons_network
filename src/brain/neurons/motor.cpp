@@ -21,7 +21,7 @@ brain::union_storage::motor::motor(std::vector<bool>& world_output, _word world_
     binary_neurons = new std::map<_word, binary_neuron>();
 }
 
-void brain::union_storage::motor::solve(brain &brn, _word me, _word thread_number)
+void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word &thread_number)
 {
 #ifdef DEBUG
     _word debug_average_consensus = 0;
@@ -46,7 +46,11 @@ void brain::union_storage::motor::solve(brain &brn, _word me, _word thread_numbe
 
 #ifdef DEBUG
         if(brn.threads[thread_number].debug_max_consensus < abs(i->second.consensus))
+        {
             brn.threads[thread_number].debug_max_consensus = abs(i->second.consensus);
+            brn.threads[thread_number].debug_max_consensus_binary_num = i->first;
+            brn.threads[thread_number].debug_max_consensus_motor_num = me;
+        }
 
         debug_average_consensus += abs(i->second.consensus);
         count++;
@@ -55,7 +59,7 @@ void brain::union_storage::motor::solve(brain &brn, _word me, _word thread_numbe
     }
 
     if(count > 0)
-    this->debug_average_consensus = debug_average_consensus / count;
+        this->debug_average_consensus = debug_average_consensus / count;
 
     out_old = out_new;
     if (accumulator < 0)
