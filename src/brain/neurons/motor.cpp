@@ -25,7 +25,7 @@ void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word
 {
 #ifdef DEBUG
     _word debug_average_consensus = 0;
-    _word count = 0;
+    _word debug_count = 0;
 #endif
 
     for(auto i = binary_neurons->begin(); i != binary_neurons->end();)
@@ -53,13 +53,15 @@ void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word
         }
 
         debug_average_consensus += abs(i->second.consensus);
-        count++;
+        debug_count++;
 #endif
         i++;
     }
 
-    if(count > 0)
-        this->debug_average_consensus = debug_average_consensus / count;
+#ifdef DEBUG
+    if(debug_count > 0)
+        this->debug_average_consensus = debug_average_consensus / debug_count;
+#endif
 
     out_old = out_new;
     if (accumulator < 0)

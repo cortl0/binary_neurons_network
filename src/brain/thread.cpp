@@ -48,18 +48,20 @@ void brain::thread::function(brain* brn, _word thread_number, _word start_in_us,
 
 #ifdef DEBUG
             _word debug_average_consensus = 0;
-            _word count = 0;
+
+            _word debug_count = 0;
 
             for(_word i = brn->threads[thread_number].start_neuron;
                 i < brn->threads[thread_number].start_neuron + brn->quantity_of_neurons / brn->threads_count; i++)
                 if(brn->us[i].neuron_.neuron_type_ == union_storage::neuron::neuron_type::neuron_type_motor)
                 {
                     debug_average_consensus += brn->us[i].motor_.debug_average_consensus;
-                    count++;
+
+                    debug_count++;
                 }
 
-            if(count > 0)
-                brn->threads[thread_number].debug_average_consensus = debug_average_consensus / count;
+            if(debug_count > 0)
+                brn->threads[thread_number].debug_average_consensus = debug_average_consensus / debug_count;
 
             if(brn->threads[thread_number].debug_max_consensus > 0)
                 brn->threads[thread_number].debug_max_consensus--;

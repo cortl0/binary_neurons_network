@@ -19,6 +19,8 @@ brain::union_storage::neuron::neuron()
 
 void brain::union_storage::neuron::solve(brain &brn, _word me, _word thread_number)
 {
+    calculation_count++;
+
     switch (brn.us[me].neuron_.get_type())
     {
     case brain::union_storage::neuron::neuron_type_binary:

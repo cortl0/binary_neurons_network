@@ -246,6 +246,10 @@ void brain::main_function(brain* brn)
         });
 
 #ifdef DEBUG
+        debug_average_consensus / brn->threads_count;
+
+        _word debug_count = 0;
+
         for (_word i = 0; i < brn->us.size(); i++)
         {
             if(brn->us[i].neuron_.get_type()==brain::union_storage::neuron::neuron_type_motor)
@@ -253,15 +257,22 @@ void brain::main_function(brain* brn)
                 debug_motors_slots_ocupied += brn->us[i].motor_.binary_neurons->size();
             }
 
-            if(brn->us[i].neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary)
+            if(brn->us[i].neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary &&
+                    brn->us[i].binary_.get_type_binary()==brain::union_storage::binary::neuron_binary_type_in_work)
             {
                 debug_average_level += brn->us[i].binary_.level;
+
+                debug_count++;
+
                 if(debug_max_level < brn->us[i].binary_.level)
                 {
                     debug_max_level = brn->us[i].binary_.level;
                     debug_max_level_binary_num = i;
                 }
             }
+
+            if(debug_count)
+                debug_average_level /= debug_count;
         }
 #endif
 
@@ -284,17 +295,20 @@ void brain::main_function(brain* brn)
             s += " | motor_slots_ocupied " + std::to_string(debug_motors_slots_ocupied);
             s += "\n";
             s += "level     ";
-            s += " | average " + std::to_string(debug_average_level / brn->quantity_of_neurons_binary);
+            s += " | average " + std::to_string(debug_average_level);
             s += " | max " + std::to_string(debug_max_level);
             s += " | max_binary_life " + std::to_string(brn->us[debug_max_level_binary_num].neuron_.life_number);
             s += " | max_binary_num " + std::to_string(debug_max_level_binary_num);
+            s += " | max_binary_calculation_count " + std::to_string(brn->us[debug_max_level_binary_num].neuron_.calculation_count);
             s += "\n";
             s += "consensus ";
-            s += " | average " + std::to_string(debug_average_consensus / brn->threads_count);
+            s += " | average " + std::to_string(debug_average_consensus);
             s += " | max " + std::to_string(debug_max_consensus);
+            s += " | max_motor_num " + std::to_string(debug_max_consensus_motor_num);
             s += " | max_binary_life " + std::to_string(brn->us[debug_max_consensus_binary_num].neuron_.life_number);
             s += " | max_binary_num " + std::to_string(debug_max_consensus_binary_num);
-            s += " | max_motor_num " + std::to_string(debug_max_consensus_motor_num);
+            s += " | max_binary_calculation_count " + std::to_string(brn->us[debug_max_consensus_binary_num].neuron_.calculation_count);
+
             s += "\n";
             s += "random    ";
             s += " | count_get " + std::to_string(debug_count_get);
