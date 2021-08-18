@@ -24,11 +24,13 @@ brain::~brain()
 brain::brain(_word random_array_length_in_power_of_two,
              _word quantity_of_neurons_in_power_of_two,
              _word input_length,
-             _word output_length)
+             _word output_length,
+             _word threads_count)
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
       quantity_of_neurons_motor(output_length),
-      random_array_length_in_power_of_two(random_array_length_in_power_of_two)
+      random_array_length_in_power_of_two(random_array_length_in_power_of_two),
+      threads_count(threads_count)
 {
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
 

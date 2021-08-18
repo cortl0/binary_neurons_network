@@ -133,7 +133,7 @@ struct brain
 #ifdef DEBUG
             _word debug_average_consensus = 0;
             char char_reserve_motor[8]; // reserve
-#elif
+#else
             char char_reserve_motor[12]; // reserve
 #endif
 
@@ -168,7 +168,7 @@ struct brain
     _word random_array_length_in_power_of_two;
     _word iteration = 0;
     _word candidate_for_kill = 0;
-    _word threads_count = 4;
+    _word threads_count;
     
     state state_ = state_stopped;
     std::vector<bool> world_input;
@@ -185,7 +185,8 @@ public:
     brain(_word random_array_length_in_power_of_two,
           _word quantity_of_neurons_in_power_of_two,
           _word input_length,
-          _word output_length);
+          _word output_length,
+          _word threads_count = 1);
     void start();
     bool get_out(_word offset);
     _word get_output_length();

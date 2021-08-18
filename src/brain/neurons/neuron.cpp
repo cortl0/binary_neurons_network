@@ -19,7 +19,9 @@ brain::union_storage::neuron::neuron()
 
 void brain::union_storage::neuron::solve(brain &brn, _word me, _word thread_number)
 {
+#ifdef DEBUG
     calculation_count++;
+#endif
 
     switch (brn.us[me].neuron_.get_type())
     {
