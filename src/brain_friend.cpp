@@ -93,7 +93,7 @@ bool brain_friend::load(std::ifstream& ifs)
 
 void brain_friend::resize(_word brainBits_)
 {
-    if(brain_.state_ != brain::state::state_stopped)
+    if(brain_.state_ != bnn::state::stopped)
         throw "brain is running now";
 
     if(brainBits_ > brain_.quantity_of_neurons_in_power_of_two)

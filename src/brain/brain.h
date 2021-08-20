@@ -25,19 +25,19 @@
 namespace bnn
 {
 
+enum state
+{
+    stopped = 0,
+    start = 1,
+    started = 2,
+    stop = 3
+};
+
 struct brain
 {
 #ifdef BRAIN_FRIEND_H
     friend struct brain_friend;
 #endif
-
-    enum state
-    {
-        state_stopped = 0,
-        state_to_start = 1,
-        state_started = 2,
-        state_to_stop = 3
-    };
 
     struct thread
     {
@@ -170,13 +170,13 @@ struct brain
     _word candidate_for_kill = 0;
     _word threads_count;
     
-    state state_ = state_stopped;
+    state state_ = stopped;
     std::vector<bool> world_input;
     std::vector<bool> world_output;
     std::vector<thread> threads;
     std::thread main_thread;
 
-    static void main_function(brain* brn);
+    static void function(brain* brn);
     void primary_filling();
     void stop();
 public:

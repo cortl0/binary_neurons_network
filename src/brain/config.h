@@ -12,6 +12,8 @@
 
 #define DEBUG
 
+#define bits_in_byte 8
+
 #include <vector>
 #include <iostream>
 
@@ -20,6 +22,6 @@
 //#define _word uint64_t;
 #define _word unsigned int
 
-#define _word_bits (sizeof(_word) * 8)
+#define _word_bits (sizeof(_word) * bits_in_byte)
 
 #endif // BNN_CONFIG_H

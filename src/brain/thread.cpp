@@ -35,10 +35,13 @@ void brain::thread::function(brain* brn, _word thread_number, _word start_in_us,
 
     _word quantity_of_neurons = simple_math::two_pow_x(brn->quantity_of_neurons_in_power_of_two) / brn->threads_count;
 
-    while(brn->threads[thread_number].in_work != true)
-        ;
+    do
+    {
+        sleep(1);
+    }
+    while(brn->threads[thread_number].in_work != true);
 
-    while(brn->state_ != state::state_to_stop)
+    while(brn->state_ != state::stop)
     {
         if(!reaction_rate--)
         {

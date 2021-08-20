@@ -12,10 +12,7 @@ Contains minimal project
 Ilya Shishkin  
 mailto:cortl@8iter.ru
 
-## Home page
-http://8iter.ru/ai.html
-
-## GitHub reference
+## Links
 https://github.com/cortl0/binary_neurons_network
 
 ## License
