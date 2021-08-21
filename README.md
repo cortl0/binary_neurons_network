@@ -1,5 +1,5 @@
 ![](img.png)
-# Binary Neurons Network
+# Binary Neurons Network (BNN)
 This is an attempt to create AI but not AI in the modern sense of the word.  
 It is AI in the original meaning coinciding with the meanings of the following synonyms:  
 - Artificial general intelligence (AGI);  
@@ -88,7 +88,7 @@ Building the application
 g++ -std=c++17 -pthread main.cpp /usr/local/lib/brain.so
 ```
 
-## Example projects for the Binary Neurons Network
+## Example projects for BNN
 - https://github.com/cortl0/device  
 - https://github.com/cortl0/device_3d
 
@@ -97,12 +97,12 @@ Ilya Shishkin
 mailto:cortl@8iter.ru
 
 ## Achievements
-- The first mention of bnn in the literature:  
+- The first mention of BNN in the literature:  
 http://gcrinstitute.org  
 http://gcrinstitute.org/papers/055_agi-2020.pdf  
-(see page 52)  
-  
-- The Binary Neurons Network was placed in the Arctic Code Vault  
+(see page 52)
+
+- BNN was placed in the Arctic Code Vault  
 https://archiveprogram.github.com/arctic-vault
 
 ## Links
@@ -115,6 +115,7 @@ https://archiveprogram.github.com/arctic-vault
 - https://www.cyberforum.ru/ai/thread1834551.html
 - https://agi.place/?ai=9&id=24
 - https://agi.place/?ai=9&id=26
+- https://agi.place/?ai=9&id=34
 - https://github.com/cortl0/binary_neurons_network
 
 ## License
