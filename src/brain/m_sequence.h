@@ -19,8 +19,8 @@ namespace bnn
 class m_sequence
 {
     unsigned int triggers = 1;
-public:
     unsigned int length;
+public:
     m_sequence();
     m_sequence(unsigned int triggers_length);
     bool next();

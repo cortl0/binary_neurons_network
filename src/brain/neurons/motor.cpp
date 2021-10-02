@@ -7,12 +7,15 @@
  *   licensed by GPL v3.0
  */
 
+#include "motor.h"
 #include "../brain.h"
+#include "../thread.h"
+#include "../storage.h"
 
 namespace bnn
 {
 
-brain::union_storage::motor::motor(std::vector<bool>& world_output, _word world_output_address_)
+motor::motor(std::vector<bool>& world_output, _word world_output_address_)
 {
     neuron_type_ = neuron_type_motor;
     world_output_address = world_output_address_;
@@ -21,7 +24,7 @@ brain::union_storage::motor::motor(std::vector<bool>& world_output, _word world_
     binary_neurons = new std::map<_word, binary_neuron>();
 }
 
-void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word &thread_number)
+void motor::solve(brain &brn, const _word &me, const _word &thread_number)
 {
 #ifdef DEBUG
     _word debug_average_consensus = 0;
@@ -30,19 +33,19 @@ void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word
 
     for(auto i = binary_neurons->begin(); i != binary_neurons->end();)
     {
-        if(i->second.life_number != brn.us[i->first].binary_.life_number)
+        if(i->second.life_number != brn.storage_[i->first].binary_.life_number)
         {
             i = binary_neurons->erase(i);
             continue;
         }
 
-        accumulator += (brn.us[i->first].binary_.out_new * 2 - 1) * simple_math::sign0(i->second.consensus);
+        accumulator += (brn.storage_[i->first].binary_.out_new * 2 - 1) * simple_math::sign0(i->second.consensus);
 
         //        if ((brn.us[i->first].binary_.out_new ^ brn.us[i->first].binary_.out_old)
         //                & (out_new ^ out_old))
-        if ((brn.us[i->first].binary_.out_new ^ brn.us[i->first].binary_.out_old)
+        if ((brn.storage_[i->first].binary_.out_new ^ brn.storage_[i->first].binary_.out_old)
                 & (out_new ^ out_old))
-            i->second.consensus -= ((brn.us[i->first].binary_.out_new ^ out_new) * 2 - 1);
+            i->second.consensus -= ((brn.storage_[i->first].binary_.out_new ^ out_new) * 2 - 1);
 
 #ifdef DEBUG
         if(brn.threads[thread_number].debug_max_consensus < abs(i->second.consensus))
@@ -80,16 +83,16 @@ void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word
 
 
     _word i = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
-    if(brn.us[i].neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary)
-        if(brn.us[i].binary_.get_type_binary()==brain::union_storage::binary::neuron_binary_type_in_work)
+    if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
+        if(brn.storage_[i].binary_.get_type_binary()==binary::neuron_binary_type_in_work)
             //            if(std::none_of(binary_neurons->begin(), binary_neurons->end(), [&](const std::pair<_word, binary_neuron>& p)
             //            {
             //                return i == p.first;
             //            }))
         {
-            if (((brn.us[i].binary_.out_new ^ brn.us[i].binary_.out_old)
+            if (((brn.storage_[i].binary_.out_new ^ brn.storage_[i].binary_.out_old)
                  & (out_new ^ out_old)))
-                binary_neurons->insert(std::pair<_word, binary_neuron>(i, binary_neuron(i, brn.us[i].binary_.life_number)));
+                binary_neurons->insert(std::pair<_word, binary_neuron>(i, binary_neuron(i, brn.storage_[i].binary_.life_number)));
         }
 
     //std::cout << "binary_neurons->size() " << std::to_string(binary_neurons->size()) << std::endl;
@@ -99,7 +102,7 @@ void brain::union_storage::motor::solve(brain &brn, const _word &me, const _word
 
 }
 
-brain::union_storage::motor::binary_neuron::binary_neuron(_word adress, _word life_number)
+motor::binary_neuron::binary_neuron(_word adress, _word life_number)
     : adress(adress), life_number(life_number)
 {
 

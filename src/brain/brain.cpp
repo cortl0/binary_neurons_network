@@ -8,6 +8,8 @@
  */
 
 #include "brain.h"
+#include "thread.h"
+#include "storage.h"
 
 namespace bnn
 {
@@ -17,8 +19,8 @@ brain::~brain()
     stop();
 
     for (_word i = 0; i < quantity_of_neurons; i++)
-        if(us[i].neuron_.neuron_type_ == union_storage::neuron::neuron_type::neuron_type_neuron)
-            delete us[i].motor_.binary_neurons;
+        if(storage_[i].neuron_.neuron_type_ == neuron::neuron_type::neuron_type_neuron)
+            delete storage_[i].motor_.binary_neurons;
 }
 
 brain::brain(_word random_array_length_in_power_of_two,
@@ -38,7 +40,7 @@ brain::brain(_word random_array_length_in_power_of_two,
 
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw ("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
-    us.resize(quantity_of_neurons);
+    storage_.resize(quantity_of_neurons);
 
     _word i = 0;
     _word n = 0;
@@ -49,7 +51,7 @@ brain::brain(_word random_array_length_in_power_of_two,
     while(i < quantity_of_neurons_sensor)
     {
         world_input[i] = ft = !ft;
-        us[i].sensor_ = union_storage::sensor(world_input, i);
+        storage_[i].sensor_ = sensor(world_input, i);
 
         n += quantity_of_neurons / threads_count;
 
@@ -64,7 +66,7 @@ brain::brain(_word random_array_length_in_power_of_two,
     while(i < quantity_of_neurons_motor)
     {
         world_output[i] = ft = !ft;
-        us[i + quantity_of_neurons_sensor].motor_ = union_storage::motor(world_output, i);
+        storage_[i + quantity_of_neurons_sensor].motor_ = motor(world_output, i);
 
         n += quantity_of_neurons / threads_count;
 
@@ -78,9 +80,9 @@ brain::brain(_word random_array_length_in_power_of_two,
 
     while(i < quantity_of_neurons_binary)
     {
-        if(us[n].neuron_.get_type() != union_storage::neuron::neuron_type::neuron_type_sensor &&
-                us[n].neuron_.get_type() != union_storage::neuron::neuron_type::neuron_type_motor)
-            us[n].binary_ = union_storage::binary();
+        if(storage_[n].neuron_.get_type() != neuron::neuron_type::neuron_type_sensor &&
+                storage_[n].neuron_.get_type() != neuron::neuron_type::neuron_type_motor)
+            storage_[n].binary_ = binary();
 
         n += quantity_of_neurons / threads_count;
 
@@ -114,10 +116,10 @@ void brain::start()
         start_neuron += quantity_of_neurons_of_one_thread;
     }
 
-    if(!std::any_of(us.begin(), us.end(), [](union_storage& u)
+    if(!std::any_of(storage_.begin(), storage_.end(), [](storage& u)
     {
-                    if(u.neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary)
-                    if(u.binary_.get_type_binary()==brain::union_storage::binary::neuron_binary_type_in_work)
+                    if(u.neuron_.get_type()==neuron::neuron_type_binary)
+                    if(u.binary_.get_type_binary()==binary::neuron_binary_type_in_work)
                     return true;
                     return false;
 }))
@@ -128,8 +130,8 @@ void brain::start()
         {
             threads[i].quantity_of_initialized_neurons_binary = 0;
             for(_word j = 0; j < quantity_of_neurons_of_one_thread; j++)
-                if(us[j + threads[i].start_neuron].neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary)
-                    if(us[j + threads[i].start_neuron].binary_.get_type_binary()==brain::union_storage::binary::neuron_binary_type_in_work)
+                if(storage_[j + threads[i].start_neuron].neuron_.get_type()==neuron::neuron_type_binary)
+                    if(storage_[j + threads[i].start_neuron].binary_.get_type_binary()==binary::neuron_binary_type_in_work)
                         threads[i].quantity_of_initialized_neurons_binary++;
         }
     }
@@ -250,23 +252,23 @@ void brain::function(brain* brn)
 
         _word debug_count = 0;
 
-        for (_word i = 0; i < brn->us.size(); i++)
+        for (_word i = 0; i < brn->storage_.size(); i++)
         {
-            if(brn->us[i].neuron_.get_type() == brain::union_storage::neuron::neuron_type_motor)
+            if(brn->storage_[i].neuron_.get_type() == neuron::neuron_type_motor)
             {
-                debug_motors_slots_ocupied += brn->us[i].motor_.binary_neurons->size();
+                debug_motors_slots_ocupied += brn->storage_[i].motor_.binary_neurons->size();
             }
 
-            if(brn->us[i].neuron_.get_type() == brain::union_storage::neuron::neuron_type_binary &&
-                    brn->us[i].binary_.get_type_binary() == brain::union_storage::binary::neuron_binary_type_in_work)
+            if(brn->storage_[i].neuron_.get_type() == neuron::neuron_type_binary &&
+                    brn->storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work)
             {
-                debug_average_level += brn->us[i].binary_.level;
+                debug_average_level += brn->storage_[i].binary_.level;
 
                 debug_count++;
 
-                if(debug_max_level < brn->us[i].binary_.level)
+                if(debug_max_level < brn->storage_[i].binary_.level)
                 {
-                    debug_max_level = brn->us[i].binary_.level;
+                    debug_max_level = brn->storage_[i].binary_.level;
                     debug_max_level_binary_num = i;
                 }
             }
@@ -297,17 +299,17 @@ void brain::function(brain* brn)
             s += "level     ";
             s += " | average " + std::to_string(debug_average_level);
             s += " | max " + std::to_string(debug_max_level);
-            s += " | max_binary_life " + std::to_string(brn->us[debug_max_level_binary_num].neuron_.life_number);
+            s += " | max_binary_life " + std::to_string(brn->storage_[debug_max_level_binary_num].neuron_.life_number);
             s += " | max_binary_num " + std::to_string(debug_max_level_binary_num);
-            s += " | max_binary_calculation_count " + std::to_string(brn->us[debug_max_level_binary_num].neuron_.calculation_count);
+            s += " | max_binary_calculation_count " + std::to_string(brn->storage_[debug_max_level_binary_num].neuron_.calculation_count);
             s += "\n";
             s += "consensus ";
             s += " | average " + std::to_string(debug_average_consensus);
             s += " | max " + std::to_string(debug_max_consensus);
             s += " | max_motor_num " + std::to_string(debug_max_consensus_motor_num);
-            s += " | max_binary_life " + std::to_string(brn->us[debug_max_consensus_binary_num].neuron_.life_number);
+            s += " | max_binary_life " + std::to_string(brn->storage_[debug_max_consensus_binary_num].neuron_.life_number);
             s += " | max_binary_num " + std::to_string(debug_max_consensus_binary_num);
-            s += " | max_binary_calculation_count " + std::to_string(brn->us[debug_max_consensus_binary_num].neuron_.calculation_count);
+            s += " | max_binary_calculation_count " + std::to_string(brn->storage_[debug_max_consensus_binary_num].neuron_.calculation_count);
 
             s += "\n";
             s += "random    ";
@@ -323,8 +325,8 @@ void brain::function(brain* brn)
 
 void brain::primary_filling()
 {
-    for (_word i = 0; i < us.size(); i++)
-        if(us[i].neuron_.get_type()==brain::union_storage::neuron::neuron_type_binary)
+    for (_word i = 0; i < storage_.size(); i++)
+        if(storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
         {
             candidate_for_kill = i;
             break;
@@ -344,12 +346,12 @@ void brain::primary_filling()
         for (int m2 = 0; m2 < 2; m2++)
             for(_word j = 0; j < quantity_of_neurons - 1; j++)
             {
-                if(us[j].neuron_.get_type() != union_storage::neuron::neuron_type::neuron_type_sensor)
+                if(storage_[j].neuron_.get_type() != neuron::neuron_type::neuron_type_sensor)
                     continue;
 
                 for(_word k = j + 1; k < quantity_of_neurons; k++)
                 {
-                    if(us[k].neuron_.get_type() != union_storage::neuron::neuron_type::neuron_type_sensor)
+                    if(storage_[k].neuron_.get_type() != neuron::neuron_type::neuron_type_sensor)
                         continue;
 
                     {
@@ -362,14 +364,14 @@ void brain::primary_filling()
 
                             i++;
 
-                            if(us[n].neuron_.get_type() == union_storage::neuron::neuron_type::neuron_type_binary)
+                            if(storage_[n].neuron_.get_type() == neuron::neuron_type::neuron_type_binary)
                             {
-                                us[j].sensor_.out_new = m1;
-                                us[k].sensor_.out_new = m2;
+                                storage_[j].sensor_.out_new = m1;
+                                storage_[k].sensor_.out_new = m2;
 
                                 thread_number = n / (quantity_of_neurons / threads_count);
 
-                                us[n].binary_.init(*this, thread_number, j, k, us);
+                                storage_[n].binary_.init(*this, thread_number, j, k, storage_);
 
                                 n += quantity_of_neurons / threads_count;
 

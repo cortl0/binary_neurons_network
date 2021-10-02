@@ -7,12 +7,17 @@
  *   licensed by GPL v3.0
  */
 
+#include "thread.h"
 #include "brain.h"
+#include "neurons/neuron.h"
+#include "storage.h"
+#include "m_sequence.h"
+#include "random_put_get.h"
 
 namespace bnn
 {
 
-brain::thread::thread(brain* brn,
+thread::thread(brain* brn,
                       _word thread_number,
                       _word start_neuron,
                       _word length_in_us_in_power_of_two,
@@ -27,7 +32,7 @@ brain::thread::thread(brain* brn,
     thread_ = std::thread(function, brn, thread_number, start_neuron, length_in_us_in_power_of_two);
 }
 
-void brain::thread::function(brain* brn, _word thread_number, _word start_in_us, _word length_in_us_in_power_of_two)
+void thread::function(brain* brn, _word thread_number, _word start_in_us, _word length_in_us_in_power_of_two)
 {
     _word reaction_rate = 0;
 
@@ -56,9 +61,9 @@ void brain::thread::function(brain* brn, _word thread_number, _word start_in_us,
 
             for(_word i = brn->threads[thread_number].start_neuron;
                 i < brn->threads[thread_number].start_neuron + brn->quantity_of_neurons / brn->threads_count; i++)
-                if(brn->us[i].neuron_.neuron_type_ == union_storage::neuron::neuron_type::neuron_type_motor)
+                if(brn->storage_[i].neuron_.neuron_type_ == neuron::neuron_type::neuron_type_motor)
                 {
-                    debug_average_consensus += brn->us[i].motor_.debug_average_consensus;
+                    debug_average_consensus += brn->storage_[i].motor_.debug_average_consensus;
 
                     debug_count++;
                 }
@@ -73,7 +78,7 @@ void brain::thread::function(brain* brn, _word thread_number, _word start_in_us,
 
         j = start_in_us + brn->threads[thread_number].rndm->get(length_in_us_in_power_of_two);
 
-        brn->us[j].neuron_.solve(*brn, j, thread_number);
+        brn->storage_[j].neuron_.solve(*brn, j, thread_number);
     }
 
     brn->threads[thread_number].in_work = false;

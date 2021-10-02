@@ -28,6 +28,13 @@ SOURCES += \
 HEADERS += \
         ../../brain/brain.h \
         ../../brain/m_sequence.h \
+        ../../brain/neurons/binary.h \
+        ../../brain/neurons/motor.h \
+        ../../brain/neurons/neuron.h \
+        ../../brain/neurons/sensor.h \
         ../../brain/random_put_get.h \
         ../../brain/simple_math.h \
+        ../../brain/state.h \
+        ../../brain/storage.h \
+        ../../brain/thread.h \
         ../../brain/config.h

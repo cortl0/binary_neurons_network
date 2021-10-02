@@ -14,9 +14,6 @@
 
 #define bits_in_byte 8
 
-#include <vector>
-#include <iostream>
-
 //#define _word uint16_t;
 //#define _word uint32_t;
 //#define _word uint64_t;
