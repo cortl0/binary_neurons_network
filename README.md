@@ -78,7 +78,7 @@ g++ -std=c++17 -pthread main.cpp /usr/local/lib/brain.so
 - [./src/examples/minimal/](../master/src/examples/minimal/) - Contains minimal project  
 - [./src/examples/web/](../master/src/examples/web/) - The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain  
 - https://github.com/cortl0/device - The practical implementation of a physical device with the binary neurons  
-- https://github.com/cortl0/device_- 3d Testing the BNN in 3d world
+- https://github.com/cortl0/device_3d - Testing the BNN in 3d world
 
 ## Author
 Ilya Shishkin  
