@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef THREADH_H
-#define THREADH_H
+#ifndef THREAD_H
+#define THREAD_H
 
 #include <thread>
 
@@ -55,4 +55,4 @@ public:
 
 } // namespace bnn
 
-#endif // THREADH_H
+#endif // THREAD_H

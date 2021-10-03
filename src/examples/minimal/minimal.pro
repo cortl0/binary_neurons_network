@@ -27,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
         ../../brain/brain.h \
+        ../../brain/config.h \
         ../../brain/m_sequence.h \
         ../../brain/neurons/binary.h \
         ../../brain/neurons/motor.h \
@@ -36,5 +37,4 @@ HEADERS += \
         ../../brain/simple_math.h \
         ../../brain/state.h \
         ../../brain/storage.h \
-        ../../brain/thread.h \
-        ../../brain/config.h
+        ../../brain/thread.h

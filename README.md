@@ -11,20 +11,6 @@ It is AI in the original meaning coinciding with the meanings of the following s
 Development takes time  
 Time is money
 
-## Project files
-- ./src/brain/brain.* - Contains the brain class - the basis of the project
-- ./src/brain/config.h - Contains configuration definitions
-- ./src/brain/neurons/binary.cpp - Source file of binary neuron
-- ./src/brain/neurons/motor.cpp - Source file of motor neuron
-- ./src/brain/neurons/neuron.cpp - Source file of base neuron
-- ./src/brain/neurons/sensor.cpp - Source file of sensor neuron
-- ./src/brain/m_sequence.* - Contains M-sequence implementation for random_put_get instance initialization
-- ./src/brain/random_put_get.* - Contains easy and fast random numbers generator. First you put, then you get random numbers
-- ./src/brain/simple_math.h - Contains easy and fast matematics
-- ./src/brain/thread.cpp - Source file of thread class for multithreading
-- ./src/brain_friend.* - Friendly class for debug, save, load, stop of brain
-- ./src/examples/ - Examples directory. See the [./src/examples/README.md](../master/src/examples/) file for details
-
 ## Build
 - make
 - make clean
@@ -89,8 +75,10 @@ g++ -std=c++17 -pthread main.cpp /usr/local/lib/brain.so
 ```
 
 ## Example projects for BNN
-- https://github.com/cortl0/device  
-- https://github.com/cortl0/device_3d
+- [./src/examples/minimal/](../master/src/examples/minimal/) - Contains minimal project  
+- [./src/examples/web/](../master/src/examples/web/) - The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain  
+- https://github.com/cortl0/device - The practical implementation of a physical device with the binary neurons  
+- https://github.com/cortl0/device_- 3d Testing the BNN in 3d world
 
 ## Author
 Ilya Shishkin  

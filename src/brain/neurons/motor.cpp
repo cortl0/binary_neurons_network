@@ -41,7 +41,7 @@ void motor::solve(brain &brn, const _word &me, const _word &thread_number)
 
         accumulator += (brn.storage_[i->first].binary_.out_new * 2 - 1) * simple_math::sign0(i->second.consensus);
 
-        //        if ((brn.us[i->first].binary_.out_new ^ brn.us[i->first].binary_.out_old)
+        //        if ((brn.storage_[i->first].binary_.out_new ^ brn.storage_[i->first].binary_.out_old)
         //                & (out_new ^ out_old))
         if ((brn.storage_[i->first].binary_.out_new ^ brn.storage_[i->first].binary_.out_old)
                 & (out_new ^ out_old))

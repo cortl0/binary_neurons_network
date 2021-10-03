@@ -37,11 +37,18 @@ SOURCES += \
 
 HEADERS += \
         ../../brain/brain.h \
+        ../../brain/config.h \
         ../../brain_friend.h \
         ../../brain/m_sequence.h \
+        ../../brain/neurons/binary.h \
+        ../../brain/neurons/motor.h \
+        ../../brain/neurons/neuron.h \
+        ../../brain/neurons/sensor.h \
         ../../brain/random_put_get.h \
         ../../brain/simple_math.h \
-        ../../brain/config.h \
+        ../../brain/state.h \
+        ../../brain/storage.h \
+        ../../brain/thread.h \
         brain_friend_web.h \
         deviceai.h \
         mainwindow.h

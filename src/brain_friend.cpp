@@ -7,6 +7,8 @@
  */
 
 #include "brain_friend.h"
+#include "brain/thread.h"
+#include "brain/storage.h"
 
 namespace bnn
 {
@@ -50,15 +52,15 @@ bool brain_friend::load(std::ifstream& ifs)
             brain_.world_output[i] = b;
         }
 
-        brain_.us.resize(brain_.quantity_of_neurons);
+        brain_.storage_.resize(brain_.quantity_of_neurons);
 
         _word w;
 
         for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-            for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
+            for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
             {
                 ifs.read(reinterpret_cast<char*>(&w), sizeof (w));
-                brain_.us[i].words[j] = w;
+                brain_.storage_[i].words[j] = w;
             }
 
         for(_word i = 0; i < brain_.threads_count; i++)
@@ -100,16 +102,16 @@ void brain_friend::resize(_word brainBits_)
     {
         _word quantity_of_neuron_end_temp = 1 << (brainBits_);
 
-        std::vector<bnn::brain::union_storage> us_temp = std::vector<brain::union_storage>(quantity_of_neuron_end_temp);
+        std::vector<bnn::storage> us_temp = std::vector<storage>(quantity_of_neuron_end_temp);
 
         for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-            for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
-                us_temp[i].words[j] = brain_.us[i].words[j];
+            for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
+                us_temp[i].words[j] = brain_.storage_[i].words[j];
 
         for (_word i = brain_.quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
-            us_temp[i].binary_ = brain::union_storage::binary();
+            us_temp[i].binary_ = binary();
 
-        std::swap(brain_.us, us_temp);
+        std::swap(brain_.storage_, us_temp);
 
         brain_.quantity_of_neurons_in_power_of_two = brainBits_;
         brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
@@ -150,9 +152,9 @@ bool brain_friend::save(std::ofstream& ofs)
         _word w;
 
         for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-            for(_word j = 0; j < sizeof(brain::union_storage) / sizeof(_word); j++)
+            for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
             {
-                w = brain_.us[i].words[j];
+                w = brain_.storage_[i].words[j];
                 ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
             }
 
