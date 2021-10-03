@@ -25,7 +25,7 @@ union storage
     sensor sensor_;
     motor motor_;
     _word words[sizeof(binary) / sizeof(_word)];
-    storage(){}
+    storage();
 };
 
 } // namespace bnn

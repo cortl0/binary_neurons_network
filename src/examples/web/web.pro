@@ -29,6 +29,7 @@ SOURCES += \
         ../../brain/neurons/neuron.cpp \
         ../../brain/neurons/sensor.cpp \
         ../../brain/random_put_get.cpp \
+        ../../brain/storage.cpp \
         ../../brain/thread.cpp \
         brain_friend_web.cpp \
         deviceai.cpp \

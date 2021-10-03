@@ -71,7 +71,7 @@ int main()
 
 Building the application
 ```
-g++ -std=c++17 -pthread main.cpp /usr/local/lib/brain.so
+g++ -std=c++17 -pthread main.cpp /usr/local/lib/libbnnbrain.so
 ```
 
 ## Example projects for BNN

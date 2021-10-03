@@ -6,30 +6,48 @@
 #   licensed by GPL v3.0
 #
 
-TARGET = brain
+TARGET = libbnnbrain
 
-SRCS= brain.cpp \
-thread.cpp \
-random_put_get.cpp \
+SRCS= \
+brain.cpp \
 m_sequence.cpp \
 neurons/neuron.cpp \
 neurons/binary.cpp \
 neurons/motor.cpp \
 neurons/sensor.cpp \
+random_put_get.cpp \
+storage.cpp \
+thread.cpp \
 ../brain_friend.cpp
 
-HDRS=brain.h \
+HDRS= \
+brain.h \
 config.h \
-simple_math.h \
-random_put_get.h \
 m_sequence.h \
+neurons/neuron.h \
+neurons/binary.h \
+neurons/motor.h \
+neurons/sensor.h \
+random_put_get.h \
+simple_math.h \
+state.h \
+storage.h \
+thread.h \
 ../brain_friend.h
 
-HDRS_RM=brain.h \
+HDRS_RM= \
+brain.h \
 config.h \
-simple_math.h \
-random_put_get.h \
 m_sequence.h \
+neurons/neuron.h \
+neurons/binary.h \
+neurons/motor.h \
+neurons/sensor.h \
+random_put_get.h \
+simple_math.h \
+state.h \
+storage.h \
+thread.h \
 brain_friend.h
 
 ifeq ($(PREFIX),)
