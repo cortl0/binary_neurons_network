@@ -17,38 +17,23 @@ neurons/motor.cpp \
 neurons/sensor.cpp \
 random_put_get.cpp \
 storage.cpp \
-thread.cpp \
-../brain_friend.cpp
+thread.cpp
 
 HDRS= \
 brain.h \
 config.h \
 m_sequence.h \
-neurons/neuron.h \
-neurons/binary.h \
-neurons/motor.h \
-neurons/sensor.h \
 random_put_get.h \
 simple_math.h \
 state.h \
 storage.h \
-thread.h \
-../brain_friend.h
+thread.h
 
-HDRS_RM= \
-brain.h \
-config.h \
-m_sequence.h \
+HDRS_N= \
 neurons/neuron.h \
 neurons/binary.h \
 neurons/motor.h \
-neurons/sensor.h \
-random_put_get.h \
-simple_math.h \
-state.h \
-storage.h \
-thread.h \
-brain_friend.h
+neurons/sensor.h
 
 ifeq ($(PREFIX),)
 	PREFIX := /usr/local
@@ -71,8 +56,10 @@ install: $(TARGET).so
 	install -d $(PREFIX_LIB)
 	install -m 644 $(TARGET).so $(PREFIX_LIB)/$(TARGET).so
 	install -d $(PREFIX_INC)
+	install -d $(PREFIX_INC)/neurons
 	install -t $(PREFIX_INC) $(HDRS)
+	install -t $(PREFIX_INC)/neurons $(HDRS_N)
 
 uninstall:
-	cd $(PREFIX_INC); rm $(HDRS_RM);
-	cd $(PREFIX_LIB); rm $(TARGET).so;
+	rm -r $(PREFIX_INC);
+	rm $(PREFIX_LIB)/$(TARGET).so;
