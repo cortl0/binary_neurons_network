@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BRAIN_H
-#define BRAIN_H
+#ifndef BNN_BRAIN_H
+#define BNN_BRAIN_H
 
 #include <algorithm>
 #include <iostream>
@@ -20,7 +20,7 @@
 
 #include "config.h"
 #include "state.h"
-#include "random_put_get.h"
+#include "random/random.h"
 #include "simple_math.h"
 
 #include "neurons/neuron.h"
@@ -49,9 +49,11 @@ struct brain
     _word iteration = 0;
     _word candidate_for_kill = 0;
     _word threads_count;
+    _word threads_count_in_power_of_two;
     
     state state_ = stopped;
 
+    std::unique_ptr<random::random> random_;
     std::vector<storage> storage_;
     std::vector<bool> world_input;
     std::vector<bool> world_output;
@@ -69,7 +71,7 @@ public:
           _word quantity_of_neurons_in_power_of_two,
           _word input_length,
           _word output_length,
-          _word threads_count = 1);
+          _word threads_count_in_power_of_two = 0);
     void start();
     bool get_out(_word offset);
     _word get_output_length();
@@ -80,4 +82,4 @@ public:
 
 } // namespace bnn
 
-#endif // BRAIN_H
+#endif // BNN_BRAIN_H

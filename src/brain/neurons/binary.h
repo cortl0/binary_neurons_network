@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BINARY_H
-#define BINARY_H
+#ifndef BNN_NEURONS_BINARY_H
+#define BNN_NEURONS_BINARY_H
 
 #include <vector>
 
@@ -47,4 +47,4 @@ struct binary : neuron
 
 } // namespace bnn
 
-#endif // BINARY_H
+#endif // BNN_NEURONS_BINARY_H

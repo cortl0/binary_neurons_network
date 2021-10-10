@@ -12,7 +12,7 @@
 #include "neurons/neuron.h"
 #include "storage.h"
 #include "m_sequence.h"
-#include "random_put_get.h"
+#include "random/random.h"
 
 namespace bnn
 {
@@ -21,14 +21,12 @@ thread::thread(brain* brn,
                       _word thread_number,
                       _word start_neuron,
                       _word length_in_us_in_power_of_two,
-                      _word random_array_length_in_power_of_two,
-                      m_sequence& m_sequence)
+                      random::config random_config)
     : thread_number(thread_number),
-      start_neuron(start_neuron),
       length_in_us_in_power_of_two(length_in_us_in_power_of_two),
-      random_array_length_in_power_of_two(random_array_length_in_power_of_two)
+      start_neuron(start_neuron),
+      random_config(random_config)
 {
-    rndm.reset(new random_put_get(random_array_length_in_power_of_two, m_sequence));
     thread_ = std::thread(function, brn, thread_number, start_neuron, length_in_us_in_power_of_two);
 }
 
@@ -76,7 +74,7 @@ void thread::function(brain* brn, _word thread_number, _word start_in_us, _word 
 #endif
         }
 
-        j = start_in_us + brn->threads[thread_number].rndm->get(length_in_us_in_power_of_two);
+        j = start_in_us + brn->random_->get(length_in_us_in_power_of_two, brn->threads[thread_number].random_config);
 
         brn->storage_[j].neuron_.solve(*brn, j, thread_number);
     }

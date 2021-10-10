@@ -73,7 +73,7 @@ void motor::solve(brain &brn, const _word &me, const _word &thread_number)
         out_new = true;
     brn.world_output[world_output_address] = out_new;
     accumulator >>= 1;
-    accumulator += (brn.threads[thread_number].rndm->get(1) << 1) - 1;
+    accumulator += (brn.random_->get(1, brn.threads[thread_number].random_config) << 1) - 1;
 
     //    if (brn.threads[thread_number].rndm->get_ft(0, binary_neurons->size()))
     //        return;
@@ -82,7 +82,7 @@ void motor::solve(brain &brn, const _word &me, const _word &thread_number)
     //        return;
 
 
-    _word i = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
+    _word i = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
     if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
         if(brn.storage_[i].binary_.get_type_binary()==binary::neuron_binary_type_in_work)
             //            if(std::none_of(binary_neurons->begin(), binary_neurons->end(), [&](const std::pair<_word, binary_neuron>& p)

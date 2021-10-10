@@ -41,8 +41,8 @@ void binary::init(brain &brn, _word thread_number, _word j, _word k, std::vector
 
 bool binary::create(brain &brn, _word thread_number)
 {
-    _word j = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
-    _word k = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
+    _word j = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
+    _word k = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
     if (j == k)
         return false;
     if (&(this->char_reserve_neuron) == &(brn.storage_[j].neuron_.char_reserve_neuron))
@@ -93,7 +93,7 @@ void binary::solve(brain &brn, _word thread_number)
     if (&(this->char_reserve_neuron) == &(brn.storage_[brn.candidate_for_kill].neuron_.char_reserve_neuron))
         while (true)
         {
-            _word i = brn.threads[thread_number].rndm->get(brn.quantity_of_neurons_in_power_of_two);
+            _word i = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
 
             if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
             {
@@ -107,7 +107,7 @@ void binary::solve(brain &brn, _word thread_number)
     case binary::neuron_binary_type_free:
     {
 
-        if((brn.threads[thread_number].rndm->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary)) ||
+        if((brn.random_->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary, brn.threads[thread_number].random_config)) ||
                 (brn.quantity_of_initialized_neurons_binary * 3 < brn.quantity_of_neurons * 2))
             create(brn, thread_number);
 
@@ -134,7 +134,7 @@ void binary::solve(brain &brn, _word thread_number)
             solve_body(brn.storage_);
 
             if (out_new != out_old)
-                brn.threads[thread_number].rndm->put(out_new);
+                brn.random_->put(out_new, brn.threads[thread_number].random_config);
 
             if (&(this->char_reserve_neuron) == &(brn.storage_[candidate_for_kill].neuron_.char_reserve_neuron))
                 if(brn.quantity_of_initialized_neurons_binary * 3 > brn.quantity_of_neurons * 2)

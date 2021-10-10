@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef SENSOR_H
-#define SENSOR_H
+#ifndef BNN_NEURONS_SENSOR_H
+#define BNN_NEURONS_SENSOR_H
 
 #include <vector>
 
@@ -27,4 +27,4 @@ struct sensor : neuron
 
 } // namespace bnn
 
-#endif // SENSOR_H
+#endif // BNN_NEURONS_SENSOR_H

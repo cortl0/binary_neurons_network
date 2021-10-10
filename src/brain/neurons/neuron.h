@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef NEURON_H
-#define NEURON_H
+#ifndef BNN_NEURONS_NEURON_H
+#define BNN_NEURONS_NEURON_H
 
 #include "../config.h"
 
@@ -42,4 +42,4 @@ struct neuron
 
 } // namespace bnn
 
-#endif // NEURON_H
+#endif // BNN_NEURONS_NEURON_H

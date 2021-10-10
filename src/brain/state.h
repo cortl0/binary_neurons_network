@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef STATE_H
-#define STATE_H
+#ifndef BNN_STATE_H
+#define BNN_STATE_H
 
 namespace bnn
 {
@@ -23,4 +23,4 @@ enum state
 
 } // namespace bnn
 
-#endif // STATE_H
+#endif // BNN_STATE_H

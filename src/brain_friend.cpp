@@ -69,17 +69,17 @@ bool brain_friend::load(std::ifstream& ifs)
 
             ifs.read(reinterpret_cast<char*>(&rndmLength), sizeof (rndmLength));
 
-            if(rndmLength != brain_.threads[i].rndm->get_length())
-            {
-                m_sequence m_sequence(_word_bits - 1);
-                brain_.threads[i].rndm.reset(new random_put_get(rndmLength, m_sequence));
-            }
+//            if(rndmLength != brain_.threads[i].rndm->get_length())
+//            {
+//                m_sequence m_sequence(_word_bits - 1);
+//                brain_.threads[i].rndm.reset(new random::random_put_get(rndmLength, m_sequence));
+//            }
 
-            for(_word j = 0; j < rndmLength; j++)
-            {
-                ifs.read(reinterpret_cast<char*>(&w), sizeof (w));
-                brain_.threads[i].rndm->get_array()[j] = w;
-            }
+//            for(_word j = 0; j < rndmLength; j++)
+//            {
+//                ifs.read(reinterpret_cast<char*>(&w), sizeof (w));
+//                brain_.threads[i].rndm->get_array()[j] = w;
+//            }
         }
 
         //#ifdef DEBUG
@@ -160,15 +160,15 @@ bool brain_friend::save(std::ofstream& ofs)
 
         for(_word i = 0; i < brain_.threads_count; i++)
         {
-            _word rndmLength = brain_.threads[i].rndm->get_length();
+//            _word rndmLength = brain_.threads[i].rndm->get_length();
 
-            ofs.write(reinterpret_cast<char*>(&rndmLength), sizeof (rndmLength));
+//            ofs.write(reinterpret_cast<char*>(&rndmLength), sizeof (rndmLength));
 
-            for(_word j = 0; j < rndmLength; j++)
-            {
-                w = brain_.threads[i].rndm->get_array()[j];
-                ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
-            }
+//            for(_word j = 0; j < rndmLength; j++)
+//            {
+//                w = brain_.threads[i].rndm->get_array()[j];
+//                ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
+//            }
         }
         //#ifdef DEBUG
         //        ofs.write(reinterpret_cast<char*>(&brain_.rndm->debug_count_put), sizeof (brain_.rndm->debug_count_put));

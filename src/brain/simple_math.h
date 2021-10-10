@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef SIMPLE_MATH_HPP
-#define SIMPLE_MATH_HPP
+#ifndef BNN_SIMPLE_MATH_HPP
+#define BNN_SIMPLE_MATH_HPP
 
 #include "config.h"
 
@@ -41,4 +41,4 @@ struct simple_math
 
 } // namespace bnn
 
-#endif // SIMPLE_MATH_HPP
+#endif // BNN_SIMPLE_MATH_HPP

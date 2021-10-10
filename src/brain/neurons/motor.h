@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef MOTOR_H
-#define MOTOR_H
+#ifndef BNN_NEURONS_MOTOR_H
+#define BNN_NEURONS_MOTOR_H
 
 #include <map>
 #include <vector>
@@ -45,4 +45,4 @@ struct motor : neuron
 
 } // namespace bnn
 
-#endif // MOTOR_H
+#endif // BNN_NEURONS_MOTOR_H

@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef STORAGE_H
-#define STORAGE_H
+#ifndef BNN_STORAGE_H
+#define BNN_STORAGE_H
 
 #include "neurons/neuron.h"
 #include "neurons/binary.h"
@@ -30,4 +30,4 @@ union storage
 
 } // namespace bnn
 
-#endif // STORAGE_H
+#endif // BNN_STORAGE_H

@@ -27,16 +27,18 @@ brain::brain(_word random_array_length_in_power_of_two,
              _word quantity_of_neurons_in_power_of_two,
              _word input_length,
              _word output_length,
-             _word threads_count)
+             _word threads_count_in_power_of_two)
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
       quantity_of_neurons_motor(output_length),
       random_array_length_in_power_of_two(random_array_length_in_power_of_two),
-      threads_count(threads_count)
+      threads_count_in_power_of_two(threads_count_in_power_of_two)
 {
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
 
     quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
+
+    threads_count = simple_math::two_pow_x(threads_count_in_power_of_two);
 
     if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw ("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
@@ -108,10 +110,19 @@ void brain::start()
 
     m_sequence m_sequence(_word_bits - 1);
 
+    random_.reset(new random::random(random_array_length_in_power_of_two, m_sequence));
+
     for(_word i = 0; i < threads_count; i++)
     {
         std::cout << "thrd.push_back(thread(this, i, start_neuron, length_in_us_in_power_of_two));" << std::endl;
-        threads.push_back(thread(this, i, start_neuron, length_in_us_in_power_of_two, random_array_length_in_power_of_two, m_sequence));
+
+        _word random_array_length_per_thread = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two) / threads_count;
+
+        random::config random_config;
+        random_config.put_offset_start = random_array_length_per_thread * i;
+        random_config.put_offset_end = random_array_length_per_thread * (i + 1);
+
+        threads.push_back(thread(this, i, start_neuron, length_in_us_in_power_of_two, random_config));
         threads[i].thread_.detach();
         start_neuron += quantity_of_neurons_of_one_thread;
     }
@@ -241,9 +252,9 @@ void brain::function(brain* brn)
                 debug_max_consensus_motor_num = t.debug_max_consensus_motor_num;
             }
 
-            debug_count_get += t.rndm->debug_count_get;
-            debug_count_put += t.rndm->debug_count_put;
-            debug_sum_put += t.rndm->debug_sum_put;
+            //            debug_count_get += t.rndm->debug_count_get;
+            //            debug_count_put += t.rndm->debug_count_put;
+            //            debug_sum_put += t.rndm->debug_sum_put;
 #endif
         });
 

@@ -6,8 +6,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BRAIN_FRIEND_H
-#define BRAIN_FRIEND_H
+#ifndef BNN_BRAIN_FRIEND_H
+#define BNN_BRAIN_FRIEND_H
 
 #include <list>
 #include <experimental/filesystem>
@@ -35,4 +35,4 @@ struct brain_friend
 
 } // namespace bnn
 
-#endif // BRAIN_FRIEND_H
+#endif // BNN_BRAIN_FRIEND_H

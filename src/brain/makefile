@@ -15,7 +15,7 @@ neurons/neuron.cpp \
 neurons/binary.cpp \
 neurons/motor.cpp \
 neurons/sensor.cpp \
-random_put_get.cpp \
+random/random.cpp \
 storage.cpp \
 thread.cpp
 
@@ -23,7 +23,6 @@ HDRS= \
 brain.h \
 config.h \
 m_sequence.h \
-random_put_get.h \
 simple_math.h \
 state.h \
 storage.h \
@@ -34,6 +33,10 @@ neurons/neuron.h \
 neurons/binary.h \
 neurons/motor.h \
 neurons/sensor.h
+
+HDRS_R= \
+random/config.h \
+random/random.h
 
 ifeq ($(PREFIX),)
 	PREFIX := /usr/local
@@ -57,8 +60,10 @@ install: $(TARGET).so
 	install -m 644 $(TARGET).so $(PREFIX_LIB)/$(TARGET).so
 	install -d $(PREFIX_INC)
 	install -d $(PREFIX_INC)/neurons
+	install -d $(PREFIX_INC)/random
 	install -t $(PREFIX_INC) $(HDRS)
 	install -t $(PREFIX_INC)/neurons $(HDRS_N)
+	install -t $(PREFIX_INC)/random $(HDRS_R)
 
 uninstall:
 	rm -r $(PREFIX_INC);
