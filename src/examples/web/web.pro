@@ -1,5 +1,5 @@
 #
-#   binary neurons network
+#   Binary Neurons Network
 #   created by Ilya Shishkin
 #   cortl@8iter.ru
 #   http://8iter.ru/ai.html
@@ -28,7 +28,7 @@ SOURCES += \
         ../../brain/neurons/motor.cpp \
         ../../brain/neurons/neuron.cpp \
         ../../brain/neurons/sensor.cpp \
-        ../../brain/random_put_get.cpp \
+        ../../brain/random/random.cpp \
         ../../brain/storage.cpp \
         ../../brain/thread.cpp \
         brain_friend_web.cpp \
@@ -45,7 +45,8 @@ HEADERS += \
         ../../brain/neurons/motor.h \
         ../../brain/neurons/neuron.h \
         ../../brain/neurons/sensor.h \
-        ../../brain/random_put_get.h \
+        ../../brain/random/config.h \
+        ../../brain/random/random.h \
         ../../brain/simple_math.h \
         ../../brain/state.h \
         ../../brain/storage.h \

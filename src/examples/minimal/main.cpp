@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -8,7 +8,8 @@
  */
 
 #include <iostream>
-#include "../../brain/brain.h"
+//#include "brain.h"
+#include "/usr/local/include/bnn/brain.h"
 
 static const _word input_length = sizeof (int) * 8 - 1;
 static const _word output_length = 8;
