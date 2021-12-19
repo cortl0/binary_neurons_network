@@ -44,7 +44,6 @@ struct brain final
     _word iteration = 0;
     _word candidate_for_kill = 0;
     _word threads_count;
-    void (*debug_out)(brain*, _word &old_iteration) = nullptr;
     
     state state_ = stopped;
 
@@ -55,7 +54,6 @@ struct brain final
     std::vector<thread> threads;
     std::thread main_thread;
 
-    static void function(brain* brn);
     void primary_filling();
     void stop();
 

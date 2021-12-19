@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   https://github.com/cortl0/binary_neurons_network
@@ -27,7 +27,7 @@ struct brain_friend
 
     brain_friend() = delete;
     brain_friend(bnn::brain &);
-    static void debug_out(brain*, _word &old_iteration);
+    void debug_out();
     bool load(std::ifstream&);
     void resize(_word brainBits);
     bool save(std::ofstream&);
