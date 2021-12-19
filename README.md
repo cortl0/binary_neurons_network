@@ -71,7 +71,7 @@ int main()
 
 Building the application
 ```
-g++ -std=c++17 -pthread main.cpp /usr/local/lib/libbnnbrain.so
+g++ -std=c++17 -pthread main.cpp /usr/local/lib/libbnn.so
 ```
 
 ## Example projects for BNN
@@ -104,6 +104,7 @@ https://archiveprogram.github.com/arctic-vault
 - https://agi.place/?ai=9&id=24
 - https://agi.place/?ai=9&id=26
 - https://agi.place/?ai=9&id=34
+- https://agi.place/?ai=9&id=48
 - https://github.com/cortl0/binary_neurons_network
 
 ## License

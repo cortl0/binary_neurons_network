@@ -8,7 +8,7 @@
  */
 
 #include <iostream>
-//#include "brain.h"
+
 #include "/usr/local/include/bnn/brain.h"
 
 static const _word input_length = sizeof (int) * 8 - 1;
