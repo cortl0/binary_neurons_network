@@ -26,7 +26,8 @@ struct brain_friend
     bnn::brain &brain_;
 
     brain_friend() = delete;
-    brain_friend(bnn::brain &brain_);
+    brain_friend(bnn::brain &);
+    static void debug_out(brain*, _word &old_iteration);
     bool load(std::ifstream&);
     void resize(_word brainBits);
     bool save(std::ofstream&);

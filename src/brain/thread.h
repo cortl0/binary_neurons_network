@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -25,7 +25,7 @@ namespace random
     class random;
 }
 
-class thread
+class thread final
 {
     _word thread_number;
     _word length_in_us_in_power_of_two;

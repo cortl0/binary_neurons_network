@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -18,7 +18,7 @@
 namespace bnn
 {
 
-union storage
+union storage final
 {
     neuron neuron_;
     binary binary_;

@@ -1,5 +1,5 @@
 ﻿/*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -8,6 +8,12 @@
  */
 
 #include "brain.h"
+
+#include <unistd.h>
+
+#include <algorithm>
+#include <iostream>
+
 #include "thread.h"
 #include "storage.h"
 
@@ -31,8 +37,7 @@ brain::brain(_word random_array_length_in_power_of_two,
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       quantity_of_neurons_sensor(input_length),
       quantity_of_neurons_motor(output_length),
-      random_array_length_in_power_of_two(random_array_length_in_power_of_two),
-      threads_count_in_power_of_two(threads_count_in_power_of_two)
+      random_array_length_in_power_of_two(random_array_length_in_power_of_two)
 {
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
 
@@ -213,125 +218,9 @@ void brain::function(brain* brn)
 
     brn->state_ = state::started;
 
-    while(brn->state_ != state::stop)
-    {
-        iteration = 0;
-
-        quantity_of_initialized_neurons_binary = 0;
-
-#ifdef DEBUG
-        unsigned long long int debug_created = 0;
-        unsigned long long int debug_killed = 0;
-        _word debug_motors_slots_ocupied = 0;
-        _word debug_average_level = 0;
-        _word debug_max_level = 0;
-        _word debug_max_level_binary_num = 0;
-        _word debug_average_consensus = 0;
-        _word debug_max_consensus = 0;
-        _word debug_max_consensus_binary_num = 0;
-        _word debug_max_consensus_motor_num = 0;
-        unsigned long long int debug_count_get=0;
-        unsigned long long int debug_count_put=0;
-        long long int debug_sum_put=0;
-#endif
-
-        std::for_each(brn->threads.begin(), brn->threads.end(), [&](const thread& t)
-        {
-            iteration += t.iteration;
-            quantity_of_initialized_neurons_binary += t.quantity_of_initialized_neurons_binary;
-#ifdef DEBUG
-            debug_created += t.debug_created;
-            debug_killed += t.debug_killed;
-
-            debug_average_consensus += t.debug_average_consensus;
-
-            if(debug_max_consensus < t.debug_max_consensus)
-            {
-                debug_max_consensus = t.debug_max_consensus;
-                debug_max_consensus_binary_num = t.debug_max_consensus_binary_num;
-                debug_max_consensus_motor_num = t.debug_max_consensus_motor_num;
-            }
-
-            //            debug_count_get += t.rndm->debug_count_get;
-            //            debug_count_put += t.rndm->debug_count_put;
-            //            debug_sum_put += t.rndm->debug_sum_put;
-#endif
-        });
-
-#ifdef DEBUG
-        debug_average_consensus /= brn->threads_count;
-
-        _word debug_count = 0;
-
-        for (_word i = 0; i < brn->storage_.size(); i++)
-        {
-            if(brn->storage_[i].neuron_.get_type() == neuron::neuron_type_motor)
-            {
-                debug_motors_slots_ocupied += brn->storage_[i].motor_.binary_neurons->size();
-            }
-
-            if(brn->storage_[i].neuron_.get_type() == neuron::neuron_type_binary &&
-                    brn->storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work)
-            {
-                debug_average_level += brn->storage_[i].binary_.level;
-
-                debug_count++;
-
-                if(debug_max_level < brn->storage_[i].binary_.level)
-                {
-                    debug_max_level = brn->storage_[i].binary_.level;
-                    debug_max_level_binary_num = i;
-                }
-            }
-
-            if(debug_count)
-                debug_average_level /= debug_count;
-        }
-#endif
-
-        brn->quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
-
-        old_iteration = brn->iteration;
-
-        brn->iteration = iteration / brn->threads.size();
-
-        if(old_iteration < brn->iteration && !(brn->iteration % 128))
-        {
-            std::string s("\n");
-
-            s += "iteration " + std::to_string(brn->iteration);
-            s += " | initialized " + std::to_string(brn->quantity_of_initialized_neurons_binary);
-
-#ifdef DEBUG
-            s += " = created " + std::to_string(debug_created);
-            s += " - killed " + std::to_string(debug_killed);
-            s += " | motor_slots_ocupied " + std::to_string(debug_motors_slots_ocupied);
-            s += "\n";
-            s += "level     ";
-            s += " | average " + std::to_string(debug_average_level);
-            s += " | max " + std::to_string(debug_max_level);
-            s += " | max_binary_life " + std::to_string(brn->storage_[debug_max_level_binary_num].neuron_.life_number);
-            s += " | max_binary_num " + std::to_string(debug_max_level_binary_num);
-            s += " | max_binary_calculation_count " + std::to_string(brn->storage_[debug_max_level_binary_num].neuron_.calculation_count);
-            s += "\n";
-            s += "consensus ";
-            s += " | average " + std::to_string(debug_average_consensus);
-            s += " | max " + std::to_string(debug_max_consensus);
-            s += " | max_motor_num " + std::to_string(debug_max_consensus_motor_num);
-            s += " | max_binary_life " + std::to_string(brn->storage_[debug_max_consensus_binary_num].neuron_.life_number);
-            s += " | max_binary_num " + std::to_string(debug_max_consensus_binary_num);
-            s += " | max_binary_calculation_count " + std::to_string(brn->storage_[debug_max_consensus_binary_num].neuron_.calculation_count);
-
-            s += "\n";
-            s += "random    ";
-            s += " | count_get " + std::to_string(debug_count_get);
-            s += " | count_put " + std::to_string(debug_count_put);
-            s += " | sum_put " + std::to_string(debug_sum_put);
-#endif
-
-            std::cout << s << std::endl;
-        }
-    }
+//    if(brn->debug_out)
+//            brn->debug_out(brn, old_iteration);
+    while(1);
 }
 
 void brain::primary_filling()

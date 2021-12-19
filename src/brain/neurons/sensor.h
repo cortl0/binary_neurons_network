@@ -17,7 +17,7 @@
 namespace bnn
 {
 
-struct sensor : neuron
+struct sensor final : neuron
 {
     _word world_input_address;
     char char_reserve_sensor[28]; // reserve

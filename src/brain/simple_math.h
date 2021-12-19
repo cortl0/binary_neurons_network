@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -15,7 +15,7 @@
 namespace bnn
 {
 
-struct simple_math
+struct simple_math final
 {
     inline static int sign(int i) noexcept { if (i < 0) return (-1); else return (1); }
     inline static int sign0(int i) noexcept { if (i < 0) return (-1); else if (i > 0) return (1); else return (0); }

@@ -18,7 +18,7 @@
 namespace bnn
 {
 
-struct motor : neuron
+struct motor final : neuron
 {
     struct binary_neuron
     {

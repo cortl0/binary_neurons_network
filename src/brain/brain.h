@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -10,13 +10,8 @@
 #ifndef BNN_BRAIN_H
 #define BNN_BRAIN_H
 
-#include <algorithm>
-#include <iostream>
-#include <map>
-#include <memory>
 #include <thread>
 #include <vector>
-#include <unistd.h>
 
 #include "config.h"
 #include "state.h"
@@ -33,7 +28,7 @@ namespace bnn
 
 class thread;
 
-struct brain
+struct brain final
 {
 #ifdef BRAIN_FRIEND_H
     friend struct brain_friend;
@@ -49,7 +44,7 @@ struct brain
     _word iteration = 0;
     _word candidate_for_kill = 0;
     _word threads_count;
-    _word threads_count_in_power_of_two;
+    void (*debug_out)(brain*, _word &old_iteration) = nullptr;
     
     state state_ = stopped;
 
@@ -67,11 +62,11 @@ struct brain
 public:
     ~brain();
     brain() = delete;
-    brain(_word random_array_length_in_power_of_two,
-          _word quantity_of_neurons_in_power_of_two,
-          _word input_length,
-          _word output_length,
-          _word threads_count_in_power_of_two = 0);
+    explicit brain(_word random_array_length_in_power_of_two,
+                   _word quantity_of_neurons_in_power_of_two,
+                   _word input_length,
+                   _word output_length,
+                   _word threads_count_in_power_of_two = 0);
     void start();
     bool get_out(_word offset);
     _word get_output_length();

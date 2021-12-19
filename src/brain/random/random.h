@@ -19,7 +19,7 @@
 namespace bnn::random
 {
 
-class random
+class random final
 {
 private:
     std::vector<_word> array;

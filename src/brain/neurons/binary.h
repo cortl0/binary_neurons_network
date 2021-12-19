@@ -18,9 +18,10 @@ namespace bnn
 {
 
 struct brain;
+
 union storage;
 
-struct binary : neuron
+struct binary final : neuron
 {
     enum neuron_binary_type
     {

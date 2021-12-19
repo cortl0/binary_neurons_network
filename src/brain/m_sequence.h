@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -16,7 +16,7 @@
 namespace bnn
 {
 
-class m_sequence
+class m_sequence final
 {
     unsigned int triggers = 1;
     unsigned int length;

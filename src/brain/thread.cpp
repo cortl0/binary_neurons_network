@@ -1,5 +1,5 @@
 /*
- *   binary neurons network
+ *   Binary Neurons Network
  *   created by Ilya Shishkin
  *   cortl@8iter.ru
  *   http://8iter.ru/ai.html
@@ -8,6 +8,9 @@
  */
 
 #include "thread.h"
+
+#include <unistd.h>
+
 #include "brain.h"
 #include "neurons/neuron.h"
 #include "storage.h"
