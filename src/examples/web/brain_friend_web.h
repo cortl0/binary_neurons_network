@@ -23,16 +23,22 @@ namespace bnn
 
 struct brain_friend_web : brain_friend
 {
-    QString version = QString("0");
-    QString brain_get_state();
     QString brain_get_representation();
-    void save();
-    void load();
-    void stop();
-    void resize(_word brainBits);
-    brain_friend_web() = delete;
-    brain_friend_web(bnn::brain &brain_);
+    QString brain_get_state();
+    QString version = QString("0");
     std::map<int, int> graphical_representation();
+
+    virtual ~brain_friend_web();
+    brain_friend_web() = delete;
+    brain_friend_web(_word random_array_length_in_power_of_two,
+                     _word quantity_of_neurons_in_power_of_two,
+                     _word input_length,
+                     _word output_length,
+                     _word threads_count_in_power_of_two = 0);
+    void load();
+    void resize(_word brainBits);
+    void save();
+    void stop();
 };
 
 } // namespace bnn

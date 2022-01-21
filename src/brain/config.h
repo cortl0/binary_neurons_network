@@ -12,13 +12,10 @@
 
 #define DEBUG
 
-#define bits_in_byte 8
+#define QUANTITY_OF_BITS_IN_BYTE 8
 
-//#define _word uint16_t;
-//#define _word uint32_t;
-//#define _word uint64_t;
 #define _word unsigned int
 
-#define _word_bits (sizeof(_word) * bits_in_byte)
+#define QUANTITY_OF_BITS_IN_WORD (sizeof(_word) * QUANTITY_OF_BITS_IN_BYTE)
 
 #endif // BNN_CONFIG_H

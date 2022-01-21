@@ -11,6 +11,7 @@
 #include "ui_mainwindow.h"
 #include<QImage>
 #include<QColor>
+#include "qpainter.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     int k=4;
-    deviceAi.reset(new DeviceAI(27, 6, 16,
+    deviceAi.reset(new DeviceAI(27, 6, 18,
                                 QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k),
                                 ui->preview->size(), ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");
@@ -39,7 +40,7 @@ void MainWindow::slotTimerAlarm()
         return;
     else
         busy=true;
-    deviceAi->Go(deviceAi->GetBrain());
+    deviceAi->Go();
     ui->qLabel->setPixmap((deviceAi->GetSensorPixmap()).GetPixmap());
     QPixmap qPixmap = ui->preview->grab(QRect(QPoint(0,0), ui->preview->size()));
     deviceAi->GetSensorPixmap().FillBinary(qPixmap, deviceAi->GetBrain());

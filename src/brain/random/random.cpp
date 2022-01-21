@@ -16,7 +16,7 @@ random::~random() { }
 
 random::random(_word random_array_length_in_power_of_two, m_sequence& m_sequence)
 {
-    _word length = (1 << random_array_length_in_power_of_two) / _word_bits;
+    _word length = (1 << random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
     array.resize(length);
 
 #define fill_from 2
@@ -39,7 +39,7 @@ random::random(_word random_array_length_in_power_of_two, m_sequence& m_sequence
     config_.put_offset_start = 0,
     config_.put_offset_end = length;
     for (_word i = 0; i < length; i++)
-        for (_word j = 0; j < _word_bits; j++)
+        for (_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
             put(m_sequence.next(), config_);
 #endif
 }
@@ -53,7 +53,7 @@ void random::put(bool i, config& config_) noexcept
     _word offset = config_.put_offset_start + config_.put_offset;
     array[offset] = (array[offset] & (~(1 << config_.put_offset_in_word))) | (static_cast<_word>(i) << config_.put_offset_in_word);
     config_.put_offset_in_word++;
-    if (config_.put_offset_in_word >= _word_bits)
+    if (config_.put_offset_in_word >= QUANTITY_OF_BITS_IN_WORD)
     {
         config_.put_offset_in_word = 0;
         config_.put_offset++;
@@ -68,10 +68,10 @@ _word random::get(_word bits, config& config_) noexcept
     debug_count_get += bits;
 #endif
     _word returnValue = array[config_.get_offset] >> config_.get_offset_in_word;
-    if(bits > _word_bits - config_.get_offset_in_word)
+    if(bits > QUANTITY_OF_BITS_IN_WORD - config_.get_offset_in_word)
     {
-        returnValue = returnValue & (~((~static_cast<_word>(0)) << (_word_bits - config_.get_offset_in_word)));
-        config_.get_offset_in_word = config_.get_offset_in_word + bits - _word_bits;
+        returnValue = returnValue & (~((~static_cast<_word>(0)) << (QUANTITY_OF_BITS_IN_WORD - config_.get_offset_in_word)));
+        config_.get_offset_in_word = config_.get_offset_in_word + bits - QUANTITY_OF_BITS_IN_WORD;
         config_.get_offset++;
         if (config_.get_offset >= array.size())
             config_.get_offset = 0;
@@ -81,9 +81,9 @@ _word random::get(_word bits, config& config_) noexcept
     {
         returnValue = returnValue & (~((~static_cast<_word>(0)) << bits));
         config_.get_offset_in_word += bits;
-        if (config_.get_offset_in_word >= _word_bits)
+        if (config_.get_offset_in_word >= QUANTITY_OF_BITS_IN_WORD)
         {
-            config_.get_offset_in_word -= _word_bits;
+            config_.get_offset_in_word -= QUANTITY_OF_BITS_IN_WORD;
             config_.get_offset++;
             if (config_.get_offset >= array.size())
                 config_.get_offset = 0;

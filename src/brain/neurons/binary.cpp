@@ -90,17 +90,17 @@ void binary::solve(brain &brn, _word thread_number)
 {
     _word candidate_for_kill = brn.candidate_for_kill;
 
-    if (&(this->char_reserve_neuron) == &(brn.storage_[brn.candidate_for_kill].neuron_.char_reserve_neuron))
-        while (true)
-        {
-            _word i = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
+//    if (&(this->char_reserve_neuron) == &(brn.storage_[candidate_for_kill].neuron_.char_reserve_neuron))
+//        while (true)
+//        {
+//            _word i = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
 
-            if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
-            {
-                brn.candidate_for_kill = i;
-                break;
-            }
-        }
+//            if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
+//            {
+//                brn.candidate_for_kill = i;
+//                break;
+//            }
+//        }
 
     switch (neuron_binary_type_)
     {

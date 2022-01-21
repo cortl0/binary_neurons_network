@@ -7,6 +7,8 @@
  *   licensed by GPL v3.0
  */
 
+#include "unistd.h"
+
 #include <iostream>
 
 #include "/usr/local/include/bnn/brain.h"
@@ -15,9 +17,11 @@ static const _word input_length = sizeof (int) * 8 - 1;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
 static bnn::brain brn(24, // random_array_length_in_power_of_two
-                      14, // quantity_of_neurons_in_power_of_two
+                      16, // quantity_of_neurons_in_power_of_two
                       input_length,
-                      output_length);
+                      output_length,
+                      1 // threads_count_in_power_of_two (2^1=2)
+                      );
 
 static void cycle()
 {
@@ -35,7 +39,7 @@ static void cycle()
 
         c[count++] = static_cast<bool>(value) + 48;
         // Put data in the brain
-        brn.set_in(i, value);
+        brn.set_input(i, value);
     }
     c[count++] = ' ';
     c[count++] = 'o';
@@ -45,7 +49,7 @@ static void cycle()
     for (_word i = 0; i < output_length; i++)
     {
         // Get data from the brain
-        c[count++] = brn.get_out(i) + 48;
+        c[count++] = brn.get_output(i) + 48;
     }
     c[count++] = '\0';
     std::cout << c << std::endl;

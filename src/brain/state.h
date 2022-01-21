@@ -15,10 +15,10 @@ namespace bnn
 
 enum state
 {
-    stopped = 0,
     start = 1,
-    started = 2,
-    stop = 3
+    started,
+    stop,
+    stopped
 };
 
 } // namespace bnn

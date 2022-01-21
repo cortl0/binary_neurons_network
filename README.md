@@ -32,9 +32,10 @@ main.cpp
 #include "/usr/local/include/bnn/brain.h"
 
 static bnn::brain brn(24, // random_array_length_in_power_of_two
-                      14, // quantity_of_neurons_in_power_of_two
+                      16, // quantity_of_neurons_in_power_of_two
                       31, // input_length
-                      8   // output_length
+                      8,  // output_length
+                      1   // threads_count_in_power_of_two (2^1 = 2)
                       );
 
 void cycle()
@@ -47,13 +48,13 @@ void cycle()
     {
         // Put your data here
         bool value = true;
-        brn.set_in(i, value);
+        brn.set_input(i, value);
     }
 
     for (_word i = 0; i < brn.get_output_length(); i++)
     {
         // Get the result from the brain
-        bool value = brn.get_out(i);
+        bool value = brn.get_output(i);
     }
 }
 

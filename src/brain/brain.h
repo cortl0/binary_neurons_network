@@ -28,12 +28,9 @@ namespace bnn
 
 class thread;
 
-struct brain final
+struct brain
 {
-#ifdef BRAIN_FRIEND_H
-    friend struct brain_friend;
-#endif
-
+    _word candidate_for_kill = 0;
     _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons;
     _word quantity_of_neurons_binary;
@@ -41,10 +38,8 @@ struct brain final
     _word quantity_of_neurons_motor;
     _word quantity_of_initialized_neurons_binary = 0;
     _word random_array_length_in_power_of_two;
-    _word iteration = 0;
-    _word candidate_for_kill = 0;
     _word threads_count;
-    
+
     state state_ = stopped;
 
     std::unique_ptr<random::random> random_;
@@ -52,25 +47,31 @@ struct brain final
     std::vector<bool> world_input;
     std::vector<bool> world_output;
     std::vector<thread> threads;
-    std::thread main_thread;
-
-    void primary_filling();
-    void stop();
 
 public:
-    ~brain();
+    virtual ~brain();
     brain() = delete;
     explicit brain(_word random_array_length_in_power_of_two,
                    _word quantity_of_neurons_in_power_of_two,
                    _word input_length,
                    _word output_length,
                    _word threads_count_in_power_of_two = 0);
+    const _word &get_input_length() const;
+    bool get_output(_word offset) const;
+    const _word &get_output_length() const;
+    void set_input(_word offset, bool value);
     void start();
-    bool get_out(_word offset);
-    _word get_output_length();
-    _word get_input_length();
-    void set_in(_word offset, bool value);
-    _word get_iteration();
+
+protected:
+    const _word &get_iteration() const;
+    void stop();
+
+private:
+    _word iteration = 0;
+    std::thread main_thread;
+
+    static void main_function(brain* brn);
+    void primary_filling();
 };
 
 } // namespace bnn

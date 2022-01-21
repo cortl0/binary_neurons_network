@@ -19,7 +19,9 @@ namespace bnn
 {
 
 struct brain;
+
 class m_sequence;
+
 namespace random
 {
     class random;

@@ -9,6 +9,8 @@
 
 #include "deviceai.h"
 
+#include "qpainter.h"
+
 SensorPixmap::SensorPixmap(QSize qSize, QSize qSizeBig_, int gradation_bit_, bool black_white_)
 {
     qSizeBig = QSize(qSizeBig_.width(),qSizeBig_.height());
@@ -68,12 +70,12 @@ void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
             for(int k=0;k<gradation_bit;k++)
             {
                 if (black_white)
-                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*gradation_bit+k), ((r + g + b)/3/kgr)&(k+1));
+                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*gradation_bit+k), ((r + g + b)/3/kgr)&(k+1));
                 else
                 {
-                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k), (r/kgr)&(k+1));
-                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit), (g/kgr)&(k+1));
-                    brn.set_in(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2), (b/kgr)&(k+1));
+                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k), (r/kgr)&(k+1));
+                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit), (g/kgr)&(k+1));
+                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2), (b/kgr)&(k+1));
                 }
             }
         }
@@ -127,52 +129,61 @@ DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
         stepOld[i] = 0;
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)
-        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
-                                 quantity_of_neurons_in_power_of_two,
-                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
-                                 motorCount));
+        brain_friend_.reset(new bnn::brain_friend_web(random_array_length_in_power_of_two,
+                                                      quantity_of_neurons_in_power_of_two,
+                                                      static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
+                                                      motorCount,
+                                                      2));
+//        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
+//                                 quantity_of_neurons_in_power_of_two,
+//                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
+//                                 motorCount));
     else
-        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
-                                 quantity_of_neurons_in_power_of_two,
-                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
-                                 motorCount));
-    brain_friend_.reset(new bnn::brain_friend_web(*brn.get()));
+        brain_friend_.reset(new bnn::brain_friend_web(random_array_length_in_power_of_two,
+                                                      quantity_of_neurons_in_power_of_two,
+                                                      static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
+                                                      motorCount));
+//        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
+//                                 quantity_of_neurons_in_power_of_two,
+//                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
+//                                 motorCount));
+    //brain_friend_.reset(new bnn::brain_friend_web(*brn.get()));
 }
 
-void DeviceAI::Go (bnn::brain &brn)
+void DeviceAI::Go()
 {
-    if(stepOld[0]!= brn.get_out(0))
+    if(stepOld[0]!= brain_friend_->get_output(0))
     {
         sensorPixmap->Y_minus();
-        stepOld[0]=brn.get_out(0);
+        stepOld[0]=brain_friend_->get_output(0);
     }
-    if(stepOld[1]!=brn.get_out(1))
+    if(stepOld[1]!=brain_friend_->get_output(1))
     {
         sensorPixmap->Y_plus();
-        stepOld[1]=brn.get_out(1);
+        stepOld[1]=brain_friend_->get_output(1);
     }
-    if(stepOld[2]!=brn.get_out(2))
+    if(stepOld[2]!=brain_friend_->get_output(2))
     {
         sensorPixmap->X_minus();
-        stepOld[2]=brn.get_out(2);
+        stepOld[2]=brain_friend_->get_output(2);
     }
-    if(stepOld[3]!=brn.get_out(3))
+    if(stepOld[3]!=brain_friend_->get_output(3))
     {
         sensorPixmap->X_plus();
-        stepOld[3]=brn.get_out(3);
+        stepOld[3]=brain_friend_->get_output(3);
         //        QKeyEvent* pe = new QKeyEvent(QEvent::KeyPress, Qt::Key_K, Qt::NoModifier);
         //        //QApplication::sendEvent(this, pe);
         //        QApplication::sendEvent(qobject_cast<QMainWindow*>(qApp->topLevelWidgets()[0])->centralWidget()->, pe);
     }
-    if(stepOld[4]!=brn.get_out(4))
+    if(stepOld[4]!=brain_friend_->get_output(4))
     {
         sensorPixmap->Zoom_in();
-        stepOld[4]=brn.get_out(4);
+        stepOld[4]=brain_friend_->get_output(4);
     }
-    if(stepOld[5]!=brn.get_out(5))
+    if(stepOld[5]!=brain_friend_->get_output(5))
     {
         sensorPixmap->Zoom_out();
-        stepOld[5]=brn.get_out(5);
+        stepOld[5]=brain_friend_->get_output(5);
     }
 
     sensorPixmap->PixmapNormalize();

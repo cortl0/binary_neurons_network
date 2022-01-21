@@ -31,6 +31,8 @@ thread::thread(brain* brn,
       random_config(random_config)
 {
     thread_ = std::thread(function, brn, thread_number, start_neuron, length_in_us_in_power_of_two);
+
+    thread_.detach();
 }
 
 void thread::function(brain* brn, _word thread_number, _word start_in_us, _word length_in_us_in_power_of_two)
@@ -41,9 +43,11 @@ void thread::function(brain* brn, _word thread_number, _word start_in_us, _word 
 
     _word quantity_of_neurons = simple_math::two_pow_x(brn->quantity_of_neurons_in_power_of_two) / brn->threads_count;
 
+    while(bnn::state::started != brn->state_);
+
     while(!brn->threads[thread_number].in_work);
 
-    while(state::stop != brn->state_)
+    while(state::started == brn->state_)
     {
         if(!reaction_rate--)
         {

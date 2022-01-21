@@ -17,7 +17,21 @@
 namespace bnn
 {
 
-brain_friend::brain_friend(bnn::brain &brain_) : brain_(brain_)
+brain_friend::~brain_friend()
+{
+
+}
+
+brain_friend::brain_friend(_word random_array_length_in_power_of_two,
+                           _word quantity_of_neurons_in_power_of_two,
+                           _word input_length,
+                           _word output_length,
+                           _word threads_count_in_power_of_two)
+    : brain(random_array_length_in_power_of_two,
+            quantity_of_neurons_in_power_of_two,
+            input_length,
+            output_length,
+            threads_count_in_power_of_two)
 {
 
 }
@@ -49,21 +63,15 @@ void brain_friend::debug_out()
 {
     std::thread([&]()
     {
-        while(state::started != brain_.state_);
+        while(state::started != state_);
 
-        //std::cout <<"fff"<< std::endl;
+        std::cout <<"fff"<< std::endl;
         return;
 
-        _word old_iteration = brain_.iteration;
+        _word old_iteration = get_iteration();
 
-        _word iteration, quantity_of_initialized_neurons_binary;
-
-        while(state::stop != brain_.state_)
+        while(state::stop != state_)
         {
-            iteration = 0;
-
-            quantity_of_initialized_neurons_binary = 0;
-
 #ifdef DEBUG
             unsigned long long int debug_created = 0;
             unsigned long long int debug_killed = 0;
@@ -80,10 +88,8 @@ void brain_friend::debug_out()
             long long int debug_sum_put=0;
 #endif
 
-            std::for_each(brain_.threads.begin(), brain_.threads.end(), [&](const thread& t)
+            std::for_each(threads.begin(), threads.end(), [&](const thread& t)
             {
-                iteration += t.iteration;
-                quantity_of_initialized_neurons_binary += t.quantity_of_initialized_neurons_binary;
 #ifdef DEBUG
                 debug_created += t.debug_created;
                 debug_killed += t.debug_killed;
@@ -104,27 +110,27 @@ void brain_friend::debug_out()
             });
 
 #ifdef DEBUG
-            debug_average_consensus /= brain_.threads_count;
+            debug_average_consensus /= threads_count;
 
             _word debug_count = 0;
 
-            for (_word i = 0; i < brain_.storage_.size(); i++)
+            for (_word i = 0; i < storage_.size(); i++)
             {
-                if(brain_.storage_[i].neuron_.get_type() == neuron::neuron_type_motor)
+                if(storage_[i].neuron_.get_type() == neuron::neuron_type_motor)
                 {
-                    debug_motors_slots_ocupied += brain_.storage_[i].motor_.binary_neurons->size();
+                    debug_motors_slots_ocupied += storage_[i].motor_.binary_neurons->size();
                 }
 
-                if(neuron::neuron_type_binary == brain_.storage_[i].neuron_.get_type() &&
-                        binary::neuron_binary_type_in_work == brain_.storage_[i].binary_.get_type_binary())
+                if(neuron::neuron_type_binary == storage_[i].neuron_.get_type() &&
+                        binary::neuron_binary_type_in_work == storage_[i].binary_.get_type_binary())
                 {
-                    debug_average_level += brain_.storage_[i].binary_.level;
+                    debug_average_level += storage_[i].binary_.level;
 
                     debug_count++;
 
-                    if(debug_max_level < brain_.storage_[i].binary_.level)
+                    if(debug_max_level < storage_[i].binary_.level)
                     {
-                        debug_max_level = brain_.storage_[i].binary_.level;
+                        debug_max_level = storage_[i].binary_.level;
                         debug_max_level_binary_num = i;
                     }
                 }
@@ -134,18 +140,14 @@ void brain_friend::debug_out()
             }
 #endif
 
-            brain_.quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
+            old_iteration = get_iteration();
 
-            old_iteration = brain_.iteration;
-
-            brain_.iteration = iteration / brain_.threads.size();
-
-            if(old_iteration < brain_.iteration && !(brain_.iteration % 128))
+            if(old_iteration < get_iteration() && !(get_iteration() % 128))
             {
                 std::string s("\n");
 
-                s += "iteration " + std::to_string(brain_.iteration);
-                s += " | initialized " + std::to_string(brain_.quantity_of_initialized_neurons_binary);
+                s += "iteration " + std::to_string(get_iteration());
+                s += " | initialized " + std::to_string(quantity_of_initialized_neurons_binary);
 
 #ifdef DEBUG
                 s += " = created " + std::to_string(debug_created);
@@ -155,20 +157,20 @@ void brain_friend::debug_out()
                 s += "level     ";
                 s += " | average " + std::to_string(debug_average_level);
                 s += " | max " + std::to_string(debug_max_level);
-                s += " | max_binary_life " + std::to_string(brain_.storage_[debug_max_level_binary_num].neuron_.life_number);
+                s += " | max_binary_life " + std::to_string(storage_[debug_max_level_binary_num].neuron_.life_number);
                 s += " | max_binary_num " + std::to_string(debug_max_level_binary_num);
-                s += " | max_binary_calculation_count " + std::to_string(brain_.storage_[debug_max_level_binary_num].neuron_.calculation_count);
+                s += " | max_binary_calculation_count " + std::to_string(storage_[debug_max_level_binary_num].neuron_.calculation_count);
                 s += "\n";
                 s += "consensus ";
                 s += " | average " + std::to_string(debug_average_consensus);
                 s += " | max " + std::to_string(debug_max_consensus);
                 s += " | max_motor_num " + std::to_string(debug_max_consensus_motor_num);
-                s += " | max_binary_life " + std::to_string(brain_.storage_[debug_max_consensus_binary_num].neuron_.life_number);
+                s += " | max_binary_life " + std::to_string(storage_[debug_max_consensus_binary_num].neuron_.life_number);
                 s += " | max_binary_num " + std::to_string(debug_max_consensus_binary_num);
-                s += " | max_binary_calculation_count " + std::to_string(brain_.storage_[debug_max_consensus_binary_num].neuron_.calculation_count);
+                s += " | max_binary_calculation_count " + std::to_string(storage_[debug_max_consensus_binary_num].neuron_.calculation_count);
 
                 s += "\n";
-                recursion(debug_max_consensus_binary_num, &brain_, s);
+                recursion(debug_max_consensus_binary_num, this, s);
                 s += "\n";
 
                 s += "\n";
@@ -189,47 +191,49 @@ bool brain_friend::load(std::ifstream& ifs)
 #if (1)
     if(ifs.is_open())
     {
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_in_power_of_two), sizeof (brain_.quantity_of_neurons_in_power_of_two));
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons), sizeof (brain_.quantity_of_neurons));
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_binary), sizeof (brain_.quantity_of_neurons_binary));
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_sensor), sizeof (brain_.quantity_of_neurons_sensor));
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_neurons_motor), sizeof (brain_.quantity_of_neurons_motor));
-        ifs.read(reinterpret_cast<char*>(&brain_.iteration), sizeof (brain_.iteration));
-        ifs.read(reinterpret_cast<char*>(&brain_.quantity_of_initialized_neurons_binary), sizeof (brain_.quantity_of_initialized_neurons_binary));
-        ifs.read(reinterpret_cast<char*>(&brain_.candidate_for_kill), sizeof (brain_.candidate_for_kill));
-        ifs.read(reinterpret_cast<char*>(&brain_.state_), sizeof (brain_.state_));
-        ifs.read(reinterpret_cast<char*>(&brain_.threads_count), sizeof (brain_.threads_count));
+        auto brain_iteration = get_iteration();
 
-        brain_.world_input.resize(brain_.quantity_of_neurons_sensor);
+        ifs.read(reinterpret_cast<char*>(&quantity_of_neurons_in_power_of_two), sizeof (quantity_of_neurons_in_power_of_two));
+        ifs.read(reinterpret_cast<char*>(&quantity_of_neurons), sizeof (quantity_of_neurons));
+        ifs.read(reinterpret_cast<char*>(&quantity_of_neurons_binary), sizeof (quantity_of_neurons_binary));
+        ifs.read(reinterpret_cast<char*>(&quantity_of_neurons_sensor), sizeof (quantity_of_neurons_sensor));
+        ifs.read(reinterpret_cast<char*>(&quantity_of_neurons_motor), sizeof (quantity_of_neurons_motor));
+        ifs.read(reinterpret_cast<char*>(&brain_iteration), sizeof (brain_iteration));
+        ifs.read(reinterpret_cast<char*>(&quantity_of_initialized_neurons_binary), sizeof (quantity_of_initialized_neurons_binary));
+        ifs.read(reinterpret_cast<char*>(&candidate_for_kill), sizeof (candidate_for_kill));
+        ifs.read(reinterpret_cast<char*>(&state_), sizeof (state_));
+        ifs.read(reinterpret_cast<char*>(&threads_count), sizeof (threads_count));
+
+        world_input.resize(quantity_of_neurons_sensor);
 
         bool b;
 
-        for(_word i = 0; i < brain_.quantity_of_neurons_sensor; i++)
+        for(_word i = 0; i < quantity_of_neurons_sensor; i++)
         {
             ifs.read(reinterpret_cast<char*>(&b), sizeof (b));
-            brain_.world_input[i] = b;
+            world_input[i] = b;
         }
 
-        brain_.world_output.resize(brain_.quantity_of_neurons_motor);
+        world_output.resize(quantity_of_neurons_motor);
 
-        for(_word i = 0; i < brain_.quantity_of_neurons_motor; i++)
+        for(_word i = 0; i < quantity_of_neurons_motor; i++)
         {
             ifs.read(reinterpret_cast<char*>(&b), sizeof (b));
-            brain_.world_output[i] = b;
+            world_output[i] = b;
         }
 
-        brain_.storage_.resize(brain_.quantity_of_neurons);
+        storage_.resize(quantity_of_neurons);
 
         _word w;
 
-        for(_word i = 0; i < brain_.quantity_of_neurons; i++)
+        for(_word i = 0; i < quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
             {
                 ifs.read(reinterpret_cast<char*>(&w), sizeof (w));
-                brain_.storage_[i].words[j] = w;
+                storage_[i].words[j] = w;
             }
 
-        for(_word i = 0; i < brain_.threads_count; i++)
+        for(_word i = 0; i < threads_count; i++)
         {
             _word rndmLength;
 
@@ -261,27 +265,27 @@ bool brain_friend::load(std::ifstream& ifs)
 
 void brain_friend::resize(_word brainBits_)
 {
-    if(brain_.state_ != bnn::state::stopped)
+    if(state_ != bnn::state::stopped)
         throw "brain is running now";
 
-    if(brainBits_ > brain_.quantity_of_neurons_in_power_of_two)
+    if(brainBits_ > quantity_of_neurons_in_power_of_two)
     {
         _word quantity_of_neuron_end_temp = 1 << (brainBits_);
 
         std::vector<bnn::storage> us_temp = std::vector<storage>(quantity_of_neuron_end_temp);
 
-        for(_word i = 0; i < brain_.quantity_of_neurons; i++)
+        for(_word i = 0; i < quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
-                us_temp[i].words[j] = brain_.storage_[i].words[j];
+                us_temp[i].words[j] = storage_[i].words[j];
 
-        for (_word i = brain_.quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
+        for (_word i = quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
             us_temp[i].binary_ = binary();
 
-        std::swap(brain_.storage_, us_temp);
+        std::swap(storage_, us_temp);
 
-        brain_.quantity_of_neurons_in_power_of_two = brainBits_;
-        brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
-        brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;
+        quantity_of_neurons_in_power_of_two = brainBits_;
+        quantity_of_neurons = quantity_of_neuron_end_temp;
+        quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
     }
 }
 
@@ -290,41 +294,43 @@ bool brain_friend::save(std::ofstream& ofs)
 #if (1)
     if(ofs.is_open())
     {
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_in_power_of_two), sizeof (brain_.quantity_of_neurons_in_power_of_two));
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons), sizeof (brain_.quantity_of_neurons));
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_binary), sizeof (brain_.quantity_of_neurons_binary));
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_sensor), sizeof (brain_.quantity_of_neurons_sensor));
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_neurons_motor), sizeof (brain_.quantity_of_neurons_motor));
-        ofs.write(reinterpret_cast<char*>(&brain_.iteration), sizeof (brain_.iteration));
-        ofs.write(reinterpret_cast<char*>(&brain_.quantity_of_initialized_neurons_binary), sizeof (brain_.quantity_of_initialized_neurons_binary));
-        ofs.write(reinterpret_cast<char*>(&brain_.candidate_for_kill), sizeof (brain_.candidate_for_kill));
-        ofs.write(reinterpret_cast<char*>(&brain_.state_), sizeof (brain_.state_));
-        ofs.write(reinterpret_cast<char*>(&brain_.threads_count), sizeof (brain_.threads_count));
+        auto brain_iteration = get_iteration();
+
+        ofs.write(reinterpret_cast<char*>(&quantity_of_neurons_in_power_of_two), sizeof (quantity_of_neurons_in_power_of_two));
+        ofs.write(reinterpret_cast<char*>(&quantity_of_neurons), sizeof (quantity_of_neurons));
+        ofs.write(reinterpret_cast<char*>(&quantity_of_neurons_binary), sizeof (quantity_of_neurons_binary));
+        ofs.write(reinterpret_cast<char*>(&quantity_of_neurons_sensor), sizeof (quantity_of_neurons_sensor));
+        ofs.write(reinterpret_cast<char*>(&quantity_of_neurons_motor), sizeof (quantity_of_neurons_motor));
+        ofs.write(reinterpret_cast<char*>(&brain_iteration), sizeof (brain_iteration));
+        ofs.write(reinterpret_cast<char*>(&quantity_of_initialized_neurons_binary), sizeof (quantity_of_initialized_neurons_binary));
+        ofs.write(reinterpret_cast<char*>(&candidate_for_kill), sizeof (candidate_for_kill));
+        ofs.write(reinterpret_cast<char*>(&state_), sizeof (state_));
+        ofs.write(reinterpret_cast<char*>(&threads_count), sizeof (threads_count));
 
         bool b;
 
-        for(_word i = 0; i < brain_.quantity_of_neurons_sensor; i++)
+        for(_word i = 0; i < quantity_of_neurons_sensor; i++)
         {
-            b = brain_.world_input[i];
+            b = world_input[i];
             ofs.write(reinterpret_cast<char*>(&b), sizeof (b));
         }
 
-        for(_word i = 0; i < brain_.quantity_of_neurons_motor; i++)
+        for(_word i = 0; i < quantity_of_neurons_motor; i++)
         {
-            b = brain_.world_output[i];
+            b = world_output[i];
             ofs.write(reinterpret_cast<char*>(&b), sizeof (b));
         }
 
         _word w;
 
-        for(_word i = 0; i < brain_.quantity_of_neurons; i++)
+        for(_word i = 0; i < quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
             {
-                w = brain_.storage_[i].words[j];
+                w = storage_[i].words[j];
                 ofs.write(reinterpret_cast<char*>(&w), sizeof (w));
             }
 
-        for(_word i = 0; i < brain_.threads_count; i++)
+        for(_word i = 0; i < threads_count; i++)
         {
             //            _word rndmLength = brain_.threads[i].rndm->get_length();
 
@@ -349,7 +355,7 @@ bool brain_friend::save(std::ofstream& ofs)
 
 void brain_friend::stop()
 {
-    brain_.stop();
+    brain::stop();
 }
 
 } // namespace bnn

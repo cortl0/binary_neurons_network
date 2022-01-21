@@ -13,23 +13,37 @@
 namespace bnn
 {
 
-brain_friend_web::brain_friend_web(bnn::brain &brain_) : brain_friend(brain_)
+brain_friend_web::~brain_friend_web()
+{
+
+}
+
+brain_friend_web::brain_friend_web(_word random_array_length_in_power_of_two,
+                                   _word quantity_of_neurons_in_power_of_two,
+                                   _word input_length,
+                                   _word output_length,
+                                   _word threads_count_in_power_of_two)
+    : brain_friend(random_array_length_in_power_of_two,
+                   quantity_of_neurons_in_power_of_two,
+                   input_length,
+                   output_length,
+                   threads_count_in_power_of_two)
 {
 
 }
 
 QString brain_friend_web::brain_get_state()
 {
-    QString qString = "8iter=" + QString::number(brain_.iteration);
-    qString += "\t bits=" + QString::number(brain_.quantity_of_neurons_in_power_of_two);
-    qString += "\t n_init=" + QString::number(brain_.quantity_of_initialized_neurons_binary);
-    qString += "\nquantity_of_neuron_binary=" + QString::number(brain_.quantity_of_neurons_binary) + "\t";
-    qString += "quantity_of_neuron_sensor=" + QString::number(brain_.quantity_of_neurons_sensor) + "\t";
+    QString qString = "8iter=" + QString::number(get_iteration());
+    qString += "\t bits=" + QString::number(quantity_of_neurons_in_power_of_two);
+    qString += "\t n_init=" + QString::number(quantity_of_initialized_neurons_binary);
+    qString += "\nquantity_of_neuron_binary=" + QString::number(quantity_of_neurons_binary) + "\t";
+    qString += "quantity_of_neuron_sensor=" + QString::number(quantity_of_neurons_sensor) + "\t";
     for (uint i = 0; i < 8*16/*quantity_of_neuron_sensor*/; i+=16)
-        if (brain_.world_input[i]) qString += "1"; else qString += "0";
-    qString += "\nquantity_of_neuron_motor=" + QString::number(brain_.quantity_of_neurons_motor) + "\t";
-    for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
-        if (brain_.world_output[i]) qString += "1"; else qString += "0";
+        if (world_input[i]) qString += "1"; else qString += "0";
+    qString += "\nquantity_of_neuron_motor=" + QString::number(quantity_of_neurons_motor) + "\t";
+    for (uint i = 0; i < quantity_of_neurons_motor; i++)
+        if (world_output[i]) qString += "1"; else qString += "0";
     /*
     qString += "\nsignals\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
@@ -39,8 +53,8 @@ QString brain_friend_web::brain_get_state()
         qString += QString::number(brain_.storage_[i + brain_.quantity_of_neurons_sensor].motor_.slots_occupied) + "\t";
     */
     qString += "\naccum\t";
-    for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
-        qString += QString::number(brain_.storage_[i + brain_.quantity_of_neurons_sensor].motor_.accumulator) + "\t";
+    for (uint i = 0; i < quantity_of_neurons_motor; i++)
+        qString += QString::number(storage_[i + quantity_of_neurons_sensor].motor_.accumulator) + "\t";
     /*
     qString += "\ncountPut=" + QString::number(brain_.rndm->debug_count_put);
     qString += "\tcountGet=" + QString::number(brain_.rndm->debug_count_get);
@@ -51,8 +65,8 @@ QString brain_friend_web::brain_get_state()
 QString brain_friend_web::brain_get_representation()
 {
     QString qString;
-    _word s = brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
-    _word e = brain_.quantity_of_neurons_binary + brain_.quantity_of_neurons_sensor + brain_.quantity_of_neurons_motor;
+    _word s = quantity_of_neurons_sensor + quantity_of_neurons_motor;
+    _word e = quantity_of_neurons_binary + quantity_of_neurons_sensor + quantity_of_neurons_motor;
     int consensus = 0;
     int count = 0;
     /*
@@ -74,21 +88,22 @@ QString brain_friend_web::brain_get_representation()
     return qString;
 }
 
-void brain_friend_web::save()
+std::map<int, int> brain_friend_web::graphical_representation()
 {
-    QString fileName = QFileDialog::getSaveFileName(nullptr,
-                                                    "Save Brain", "",
-                                                    "Brain (*.brn);;All Files (*)");
-    if (fileName.isEmpty())
-        return;
-    else {
-        if (fileName.split('.')[fileName.split('.').length() - 1] != "brn")
-            fileName += ".brn";
-
-        std::ofstream out(fs::path(fileName.toStdString()), std::ios::binary);
-
-        brain_friend::save(out);
-    }
+    std::vector<int> v;
+    std::map<int, int> m;
+    std::map<int, int>::iterator it;
+    for(_word i = 0; i < quantity_of_neurons; i++)
+        if(storage_[i].neuron_.get_type() == neuron::neuron_type_binary)
+            if(storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work)
+            {
+                it = m.find(static_cast<int>(storage_[i].binary_.level));
+                if (it == m.end())
+                    m.insert(std::make_pair(static_cast<int>(storage_[i].binary_.level), 1));
+                else
+                    it->second++;
+            }
+    return m;
 }
 
 void brain_friend_web::load()
@@ -106,47 +121,46 @@ void brain_friend_web::load()
     }
 }
 
-void brain_friend_web::stop()
-{
-    brain_.stop();
-}
-
 void brain_friend_web::resize(_word brainBits_)
 {
-    brain_.stop();
-    if(brainBits_ > brain_.quantity_of_neurons_in_power_of_two)
+    brain::stop();
+    if(brainBits_ > quantity_of_neurons_in_power_of_two)
     {
         _word quantity_of_neuron_end_temp = 1 << (brainBits_);
         std::vector<storage> us_temp = std::vector<storage>(quantity_of_neuron_end_temp);
-        for(_word i = 0; i < brain_.quantity_of_neurons; i++)
+        for(_word i = 0; i < quantity_of_neurons; i++)
             for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
-                us_temp[i].words[j] = brain_.storage_[i].words[j];
-        for (_word i = brain_.quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
+                us_temp[i].words[j] = storage_[i].words[j];
+        for (_word i = quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
             us_temp[i].binary_ = binary();
-        std::swap(brain_.storage_, us_temp);
-        brain_.quantity_of_neurons_in_power_of_two = brainBits_;
-        brain_.quantity_of_neurons = quantity_of_neuron_end_temp;
-        brain_.quantity_of_neurons_binary = brain_.quantity_of_neurons - brain_.quantity_of_neurons_sensor - brain_.quantity_of_neurons_motor;
+        std::swap(storage_, us_temp);
+        quantity_of_neurons_in_power_of_two = brainBits_;
+        quantity_of_neurons = quantity_of_neuron_end_temp;
+        quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
         //brain_.reaction_rate = brain_.quantity_of_neurons;
     }
 }
 
-std::map<int, int> brain_friend_web::graphical_representation()
+void brain_friend_web::save()
 {
-    std::vector<int> v;
-    std::map<int, int> m;
-    std::map<int, int>::iterator it;
-    for(_word i = 0; i < brain_.quantity_of_neurons; i++)
-        if(brain_.storage_[i].neuron_.get_type() == neuron::neuron_type_binary)
-            if(brain_.storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work)
-            {
-                it = m.find(static_cast<int>(brain_.storage_[i].binary_.level));
-                if (it == m.end())
-                    m.insert(std::make_pair(static_cast<int>(brain_.storage_[i].binary_.level), 1));
-                else
-                    it->second++;
-            }
-    return m;
+    QString fileName = QFileDialog::getSaveFileName(nullptr,
+                                                    "Save Brain", "",
+                                                    "Brain (*.brn);;All Files (*)");
+    if (fileName.isEmpty())
+        return;
+    else {
+        if (fileName.split('.')[fileName.split('.').length() - 1] != "brn")
+            fileName += ".brn";
+
+        std::ofstream out(fs::path(fileName.toStdString()), std::ios::binary);
+
+        brain_friend::save(out);
+    }
+}
+
+void brain_friend_web::stop()
+{
+    brain::stop();
 }
 
 } // namespace bnn

@@ -50,10 +50,9 @@ class DeviceAI
 public:
     bool* stepOld = nullptr;
     _word stepOld_count = 0;
-    void Go (bnn::brain &brn);
+    void Go();
     QWebEngineView* qwev;
     std::unique_ptr<SensorPixmap> sensorPixmap;
-    std::unique_ptr<bnn::brain> brn;
     std::unique_ptr<bnn::brain_friend_web> brain_friend_;
     ~DeviceAI();
     DeviceAI() = delete;
@@ -64,7 +63,7 @@ public:
              QSize qSizeBig,
              QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
-    bnn::brain& GetBrain(){ return *brn.get(); }
+    bnn::brain& GetBrain(){ return *brain_friend_.get(); }
 };
 
 #endif // DEVICEAI_H

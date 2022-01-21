@@ -21,12 +21,15 @@ namespace fs = std::experimental::filesystem;
 namespace bnn
 {
 
-struct brain_friend
+struct brain_friend : brain
 {
-    bnn::brain &brain_;
-
+    virtual ~brain_friend();
     brain_friend() = delete;
-    brain_friend(bnn::brain &);
+    brain_friend(_word random_array_length_in_power_of_two,
+                 _word quantity_of_neurons_in_power_of_two,
+                 _word input_length,
+                 _word output_length,
+                 _word threads_count_in_power_of_two = 0);
     void debug_out();
     bool load(std::ifstream&);
     void resize(_word brainBits);
