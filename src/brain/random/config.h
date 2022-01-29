@@ -14,15 +14,17 @@
 
 namespace bnn::random
 {
-    struct config
-    {
-        _word get_offset = 0;
-        _word get_offset_in_word = 0;
-        _word put_offset_start;
-        _word put_offset_end;
-        _word put_offset = 0;
-        _word put_offset_in_word = 0;
-    };
+
+struct config
+{
+    _word get_offset = 0;
+    _word get_offset_in_word = 0;
+    _word put_offset_start;
+    _word put_offset_end;
+    _word put_offset = 0;
+    _word put_offset_in_word = 0;
+};
+
 } // namespace bnn::random
 
 #endif // BNN_RANDOM_CONFIG_H

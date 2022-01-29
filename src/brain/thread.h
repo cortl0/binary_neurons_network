@@ -13,6 +13,7 @@
 #include <thread>
 
 #include "config.h"
+#include "state.h"
 #include "random/config.h"
 
 namespace bnn
@@ -24,7 +25,7 @@ class m_sequence;
 
 namespace random
 {
-    class random;
+class random;
 }
 
 class thread final
@@ -40,9 +41,9 @@ private:
     _word length;
 public:
     _word quantity_of_initialized_neurons_binary = 0;
-    std::thread thread_;
+    std::unique_ptr<std::thread> thread_;
     _word iteration = 0;
-    bool in_work = false;
+    state state_ = state::stopped;
 #ifdef DEBUG
     unsigned long long int debug_created = 0;
     unsigned long long int debug_killed = 0;
@@ -51,12 +52,17 @@ public:
     _word debug_max_consensus_binary_num = 0;
     _word debug_max_consensus_motor_num = 0;
 #endif
-    thread(brain* brn,
+    thread(brain*,
            _word thread_number,
            _word start_neuron,
            _word length_in_us_in_power_of_two,
-           random::config random_config);
-    static void function(brain* brn, _word thread_number, _word start_in_us, _word length_in_us_in_power_of_two);
+           random::config &random_config);
+    void start();
+
+private:
+    brain *brain_;
+
+    static void function(thread* thread_, brain* brn, _word start_in_us, _word length_in_us_in_power_of_two);
 };
 
 } // namespace bnn

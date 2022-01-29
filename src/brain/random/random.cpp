@@ -36,7 +36,7 @@ random::random(_word random_array_length_in_power_of_two, m_sequence& m_sequence
     // fill the array with M-sequence
     // no need to use random number algorithms
     config config_;
-    config_.put_offset_start = 0,
+    config_.put_offset_start = 0;
     config_.put_offset_end = length;
     for (_word i = 0; i < length; i++)
         for (_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
@@ -105,7 +105,7 @@ _word random::get(_word bits, config& config_) noexcept
 //    }
 //}
 
-_word random::get_length()
+_word random::get_length() const
 {
     return array.size();
 }

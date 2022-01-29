@@ -38,7 +38,7 @@ struct binary final : neuron
     bool second_mem;
     char char_reserve_binary[2]; // reserve
     binary();
-    neuron_binary_type get_type_binary(){ return neuron_binary_type_; }
+    const neuron_binary_type &get_type_binary() const;
     void init(brain &brn, _word thread_number, _word j, _word k, std::vector<storage> &us);
     bool create(brain &brn, _word thread_number);
     void kill(brain &brn, _word thread_number);

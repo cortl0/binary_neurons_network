@@ -35,6 +35,9 @@ struct brain_friend : brain
     void resize(_word brainBits);
     bool save(std::ofstream&);
     void stop();
+
+private:
+    std::thread thread_debug_out;
 };
 
 } // namespace bnn

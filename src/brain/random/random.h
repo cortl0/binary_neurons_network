@@ -35,7 +35,7 @@ public:
     void put(bool i, config&) noexcept;
     _word get(_word bits, config&) noexcept;
     //_word get_ft(_word from, _word to) noexcept;
-    _word get_length();
+    _word get_length() const;
     _word get_under(_word to, config&) noexcept;
     std::vector<_word>& get_array();
 };

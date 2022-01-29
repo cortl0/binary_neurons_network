@@ -10,6 +10,7 @@
 #ifndef BNN_BRAIN_H
 #define BNN_BRAIN_H
 
+#include <memory>
 #include <thread>
 #include <vector>
 
@@ -34,19 +35,16 @@ struct brain
     _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons;
     _word quantity_of_neurons_binary;
-    _word quantity_of_neurons_sensor;
-    _word quantity_of_neurons_motor;
     _word quantity_of_initialized_neurons_binary = 0;
-    _word random_array_length_in_power_of_two;
     _word threads_count;
 
-    state state_ = stopped;
+    state state_ = state::stopped;
 
     std::unique_ptr<random::random> random_;
     std::vector<storage> storage_;
     std::vector<bool> world_input;
     std::vector<bool> world_output;
-    std::vector<thread> threads;
+    std::vector<bnn::thread> threads;
 
 public:
     virtual ~brain();
@@ -63,14 +61,18 @@ public:
     void start();
 
 protected:
+    _word quantity_of_neurons_sensor;
+    _word quantity_of_neurons_motor;
+
     const _word &get_iteration() const;
     void stop();
 
 private:
     _word iteration = 0;
+    _word random_array_length_in_power_of_two;
     std::thread main_thread;
 
-    static void main_function(brain* brn);
+    static void function(brain* brn);
     void primary_filling();
 };
 

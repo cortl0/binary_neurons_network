@@ -20,7 +20,7 @@ m_sequence::m_sequence()
 m_sequence::m_sequence(unsigned int triggers_length)
 {
     if((triggers_length < 2)||(triggers_length > sizeof (int) * 8 - 1))
-        throw std::runtime_error("error");
+        throw_error("error");
 
     length = triggers_length;
 }

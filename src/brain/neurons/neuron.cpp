@@ -19,6 +19,11 @@ neuron::neuron()
     neuron_type_ = neuron_type_neuron;
 }
 
+const neuron::neuron_type &neuron::get_type() const
+{
+    return neuron_type_;
+}
+
 void neuron::solve(brain &brn, _word me, _word thread_number)
 {
 #ifdef DEBUG

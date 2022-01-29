@@ -36,7 +36,7 @@ struct neuron
     bool out_old;
     char char_reserve_neuron[2]; // reserve
     neuron();
-    neuron_type get_type(){ return neuron_type_; }
+    const neuron_type &get_type() const;
     void solve(brain &brn, _word me, _word thread_number);
 };
 

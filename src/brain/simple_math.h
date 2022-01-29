@@ -24,19 +24,19 @@ struct simple_math final
     
     inline static _word log2_1(_word x)
     {
-		if(!x)
-			throw __LINE__ + " x = 0";
-			
-		_word result = -1;
-		
-		while(x)
-		{
-			x >>= 1;
-			result++;
-		}
-		
-		return result;
-	}
+        if(!x)
+            throw_error(" x = 0");
+
+        _word result = -1;
+
+        while(x)
+        {
+            x >>= 1;
+            result++;
+        }
+
+        return result;
+    }
 };
 
 } // namespace bnn

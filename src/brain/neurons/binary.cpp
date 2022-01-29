@@ -21,6 +21,11 @@ binary::binary()
     neuron_binary_type_ = neuron_binary_type_free;
 }
 
+const binary::neuron_binary_type &binary::get_type_binary() const
+{
+    return neuron_binary_type_;
+}
+
 void binary::init(brain &brn, _word thread_number, _word j, _word k, std::vector<storage> &us)
 {
     neuron_binary_type_ = neuron_binary_type_in_work;
@@ -88,20 +93,6 @@ void binary::solve_body(std::vector<storage> &us)
 
 void binary::solve(brain &brn, _word thread_number)
 {
-    _word candidate_for_kill = brn.candidate_for_kill;
-
-//    if (&(this->char_reserve_neuron) == &(brn.storage_[candidate_for_kill].neuron_.char_reserve_neuron))
-//        while (true)
-//        {
-//            _word i = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
-
-//            if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
-//            {
-//                brn.candidate_for_kill = i;
-//                break;
-//            }
-//        }
-
     switch (neuron_binary_type_)
     {
     case binary::neuron_binary_type_free:
@@ -136,7 +127,7 @@ void binary::solve(brain &brn, _word thread_number)
             if (out_new != out_old)
                 brn.random_->put(out_new, brn.threads[thread_number].random_config);
 
-            if (&(this->char_reserve_neuron) == &(brn.storage_[candidate_for_kill].neuron_.char_reserve_neuron))
+            if (&(this->char_reserve_neuron) == &(brn.storage_[brn.candidate_for_kill].neuron_.char_reserve_neuron))
                 if(brn.quantity_of_initialized_neurons_binary * 3 > brn.quantity_of_neurons * 2)
                     kill(brn, thread_number);
         }
