@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BRAIN_FRIEND_WEB_H
-#define BRAIN_FRIEND_WEB_H
+#ifndef BRAIN_TOOLS_WEB_H
+#define BRAIN_TOOLS_WEB_H
 
 #include <fstream>
 
@@ -16,21 +16,21 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "../../brain_friend.h"
+#include "../../brain_tools.h"
 
 namespace bnn
 {
 
-struct brain_friend_web : brain_friend
+struct brain_tools_web : brain_tools
 {
     QString brain_get_representation();
     QString brain_get_state();
     QString version = QString("0");
     std::map<int, int> graphical_representation();
 
-    virtual ~brain_friend_web();
-    brain_friend_web() = delete;
-    brain_friend_web(_word random_array_length_in_power_of_two,
+    virtual ~brain_tools_web();
+    brain_tools_web() = delete;
+    brain_tools_web(_word random_array_length_in_power_of_two,
                      _word quantity_of_neurons_in_power_of_two,
                      _word input_length,
                      _word output_length,
@@ -43,4 +43,4 @@ struct brain_friend_web : brain_friend
 
 } // namespace bnn
 
-#endif // BRAIN_FRIEND_WEB_H
+#endif // BRAIN_TOOLS_WEB_H

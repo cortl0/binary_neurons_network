@@ -7,23 +7,23 @@
  *   licensed by GPL v3.0
  */
 
-#include "brain_friend_web.h"
+#include "brain_tools_web.h"
 #include "../../brain/storage.h"
 
 namespace bnn
 {
 
-brain_friend_web::~brain_friend_web()
+brain_tools_web::~brain_tools_web()
 {
 
 }
 
-brain_friend_web::brain_friend_web(_word random_array_length_in_power_of_two,
+brain_tools_web::brain_tools_web(_word random_array_length_in_power_of_two,
                                    _word quantity_of_neurons_in_power_of_two,
                                    _word input_length,
                                    _word output_length,
                                    _word threads_count_in_power_of_two)
-    : brain_friend(random_array_length_in_power_of_two,
+    : brain_tools(random_array_length_in_power_of_two,
                    quantity_of_neurons_in_power_of_two,
                    input_length,
                    output_length,
@@ -32,8 +32,10 @@ brain_friend_web::brain_friend_web(_word random_array_length_in_power_of_two,
 
 }
 
-QString brain_friend_web::brain_get_state()
+QString brain_tools_web::brain_get_state()
 {
+    //debug_out();
+
     QString qString = "8iter=" + QString::number(get_iteration());
     qString += "\t bits=" + QString::number(quantity_of_neurons_in_power_of_two);
     qString += "\t n_init=" + QString::number(quantity_of_initialized_neurons_binary);
@@ -62,7 +64,7 @@ QString brain_friend_web::brain_get_state()
     return qString;
 }
 
-QString brain_friend_web::brain_get_representation()
+QString brain_tools_web::brain_get_representation()
 {
     QString qString;
     _word s = quantity_of_neurons_sensor + quantity_of_neurons_motor;
@@ -88,7 +90,7 @@ QString brain_friend_web::brain_get_representation()
     return qString;
 }
 
-std::map<int, int> brain_friend_web::graphical_representation()
+std::map<int, int> brain_tools_web::graphical_representation()
 {
     std::vector<int> v;
     std::map<int, int> m;
@@ -106,7 +108,7 @@ std::map<int, int> brain_friend_web::graphical_representation()
     return m;
 }
 
-void brain_friend_web::load()
+void brain_tools_web::load()
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr,
                                                     "Open Brain", "",
@@ -117,11 +119,11 @@ void brain_friend_web::load()
     {
         std::ifstream in(fs::path(fileName.toStdString()), std::ios::binary);
 
-        brain_friend::load(in);
+        brain_tools::load(in);
     }
 }
 
-void brain_friend_web::resize(_word brainBits_)
+void brain_tools_web::resize(_word brainBits_)
 {
     brain::stop();
     if(brainBits_ > quantity_of_neurons_in_power_of_two)
@@ -141,7 +143,7 @@ void brain_friend_web::resize(_word brainBits_)
     }
 }
 
-void brain_friend_web::save()
+void brain_tools_web::save()
 {
     QString fileName = QFileDialog::getSaveFileName(nullptr,
                                                     "Save Brain", "",
@@ -154,11 +156,11 @@ void brain_friend_web::save()
 
         std::ofstream out(fs::path(fileName.toStdString()), std::ios::binary);
 
-        brain_friend::save(out);
+        brain_tools::save(out);
     }
 }
 
-void brain_friend_web::stop()
+void brain_tools_web::stop()
 {
     brain::stop();
 }

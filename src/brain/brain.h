@@ -31,6 +31,7 @@ class thread;
 
 struct brain
 {
+public:
     _word candidate_for_kill = 0;
     _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons;
@@ -54,15 +55,14 @@ public:
                    _word input_length,
                    _word output_length,
                    _word threads_count_in_power_of_two = 0);
-    const _word &get_input_length() const;
     bool get_output(_word offset) const;
-    const _word &get_output_length() const;
     void set_input(_word offset, bool value);
     void start();
 
 protected:
     _word quantity_of_neurons_sensor;
     _word quantity_of_neurons_motor;
+    m_sequence m_sequence_ = m_sequence(QUANTITY_OF_BITS_IN_WORD - 1);
 
     const _word &get_iteration() const;
     void stop();
@@ -73,7 +73,6 @@ private:
     std::thread main_thread;
 
     static void function(brain* brn);
-    void primary_filling();
 };
 
 } // namespace bnn

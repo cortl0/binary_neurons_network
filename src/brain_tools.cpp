@@ -6,7 +6,7 @@
  *   licensed by GPL v3.0
  */
 
-#include "brain_friend.h"
+#include "brain_tools.h"
 
 #include <algorithm>
 #include <iostream>
@@ -17,12 +17,12 @@
 namespace bnn
 {
 
-brain_friend::~brain_friend()
+brain_tools::~brain_tools()
 {
 
 }
 
-brain_friend::brain_friend(_word random_array_length_in_power_of_two,
+brain_tools::brain_tools(_word random_array_length_in_power_of_two,
                            _word quantity_of_neurons_in_power_of_two,
                            _word input_length,
                            _word output_length,
@@ -59,7 +59,7 @@ void recursion(_word num, brain *b, std::string &ss)
     }
 };
 
-void brain_friend::debug_out()
+void brain_tools::debug_out()
 {
     thread_debug_out = std::thread([&]()
     {
@@ -192,7 +192,7 @@ void brain_friend::debug_out()
     thread_debug_out.detach();
 }
 
-bool brain_friend::load(std::ifstream& ifs)
+bool brain_tools::load(std::ifstream& ifs)
 {
 #if (1)
     if(ifs.is_open())
@@ -269,7 +269,57 @@ bool brain_friend::load(std::ifstream& ifs)
     return false;
 }
 
-void brain_friend::resize(_word brainBits_)
+void brain_tools::primary_filling()
+{
+    std::vector<_word> busy_neurons;
+    std::vector<_word> free_neurons;
+    std::vector<_word> temp;
+
+    for(_word i = 0; i < storage_.size(); i++)
+    {
+        if((storage_[i].neuron_.get_type() == storage_[i].neuron_.neuron_type_sensor
+            || storage_[i].neuron_.get_type() == storage_[i].neuron_.neuron_type_motor)
+                || (storage_[i].neuron_.get_type() == storage_[i].neuron_.neuron_type_binary &&
+                    storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work))
+            busy_neurons.push_back(i);
+        else
+            free_neurons.push_back(i);
+    }
+
+    _word i, j, thread_number;
+
+    while(free_neurons.size())
+    {
+        j = busy_neurons.size() / 2;
+
+        for(i = 0; i < busy_neurons.size() && free_neurons.size(); i++)
+        {
+            if(j > busy_neurons.size())
+                j = 0;
+
+            storage_[i].neuron_.out_new = m_sequence_.next();
+            storage_[i].neuron_.out_old = m_sequence_.next();
+            storage_[j].neuron_.out_new = m_sequence_.next();
+            storage_[j].neuron_.out_old = m_sequence_.next();
+
+            thread_number = free_neurons.back() / (quantity_of_neurons / threads_count);
+
+            storage_[free_neurons.back()].binary_.init(*this, thread_number, i, j, storage_);
+
+            temp.push_back(free_neurons.back());
+
+            free_neurons.pop_back();
+
+            j++;
+        }
+
+        std::copy(temp.begin(), temp.end(), std::back_inserter(busy_neurons));
+
+        temp.clear();
+    }
+}
+
+void brain_tools::resize(_word brainBits_)
 {
     if(state_ != bnn::state::stopped)
         throw_error("brain is running now");
@@ -295,7 +345,7 @@ void brain_friend::resize(_word brainBits_)
     }
 }
 
-bool brain_friend::save(std::ofstream& ofs)
+bool brain_tools::save(std::ofstream& ofs)
 {
 #if (1)
     if(ofs.is_open())
@@ -359,7 +409,7 @@ bool brain_friend::save(std::ofstream& ofs)
     return false;
 }
 
-void brain_friend::stop()
+void brain_tools::stop()
 {
     brain::stop();
 }

@@ -15,7 +15,7 @@
 #include <ctime>
 #include <thread>
 
-//#define DEBUG
+#define DEBUG
 
 #define QUANTITY_OF_BITS_IN_BYTE 8
 

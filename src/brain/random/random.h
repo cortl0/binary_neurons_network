@@ -21,14 +21,7 @@ namespace bnn::random
 
 class random final
 {
-private:
-    std::vector<_word> array;
 public:
-#ifdef DEBUG
-    unsigned long long int debug_count_get = 0;
-    unsigned long long int debug_count_put = 0;
-    long long int debug_sum_put = 0;
-#endif
     ~random();
     random() = delete;
     random(_word random_array_length_in_power_of_two, m_sequence& m_sequence);
@@ -38,6 +31,16 @@ public:
     _word get_length() const;
     _word get_under(_word to, config&) noexcept;
     std::vector<_word>& get_array();
+
+private:
+    std::vector<_word> array;
+
+#ifdef DEBUG
+public:
+    unsigned long long int debug_count_get = 0;
+    unsigned long long int debug_count_put = 0;
+    long long int debug_sum_put = 0;
+#endif
 };
 
 } // namespace bnn::random

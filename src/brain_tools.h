@@ -6,8 +6,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_BRAIN_FRIEND_H
-#define BNN_BRAIN_FRIEND_H
+#ifndef BNN_BRAIN_TOOLS_H
+#define BNN_BRAIN_TOOLS_H
 
 #include <list>
 #include <experimental/filesystem>
@@ -21,17 +21,19 @@ namespace fs = std::experimental::filesystem;
 namespace bnn
 {
 
-struct brain_friend : brain
+struct brain_tools : public brain
 {
-    virtual ~brain_friend();
-    brain_friend() = delete;
-    brain_friend(_word random_array_length_in_power_of_two,
+public:
+    virtual ~brain_tools();
+    brain_tools() = delete;
+    brain_tools(_word random_array_length_in_power_of_two,
                  _word quantity_of_neurons_in_power_of_two,
                  _word input_length,
                  _word output_length,
                  _word threads_count_in_power_of_two = 0);
     void debug_out();
     bool load(std::ifstream&);
+    void primary_filling();
     void resize(_word brainBits);
     bool save(std::ofstream&);
     void stop();
@@ -42,4 +44,4 @@ private:
 
 } // namespace bnn
 
-#endif // BNN_BRAIN_FRIEND_H
+#endif // BNN_BRAIN_TOOLS_H

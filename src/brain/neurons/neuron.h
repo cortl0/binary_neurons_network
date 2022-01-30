@@ -29,15 +29,16 @@ struct neuron
     neuron_type neuron_type_;
     _word level = 1;
     _word life_number = 0;
-#ifdef DEBUG
-    _word calculation_count = 0;
-#endif
     bool out_new;
     bool out_old;
     char char_reserve_neuron[2]; // reserve
     neuron();
     const neuron_type &get_type() const;
     void solve(brain &brn, _word me, _word thread_number);
+
+#ifdef DEBUG
+    _word calculation_count = 0;
+#endif
 };
 
 } // namespace bnn

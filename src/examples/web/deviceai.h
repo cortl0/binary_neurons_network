@@ -15,7 +15,7 @@
 //#include <QKeyEvent>
 #include <QWebEngineView>
 
-#include "brain_friend_web.h"
+#include "brain_tools_web.h"
 
 class SensorPixmap
 {
@@ -42,7 +42,7 @@ public:
     void Y_minus();
     QPixmap& GetPixmap(){ return qPixmapSmall; }
     void PixmapNormalize();
-    void FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn);
+    void FillBinary(QPixmap &, bnn::brain &);
 };
 
 class DeviceAI
@@ -53,7 +53,7 @@ public:
     void Go();
     QWebEngineView* qwev;
     std::unique_ptr<SensorPixmap> sensorPixmap;
-    std::unique_ptr<bnn::brain_friend_web> brain_friend_;
+    std::unique_ptr<bnn::brain_tools_web> brain_;
     ~DeviceAI();
     DeviceAI() = delete;
     DeviceAI(_word random_array_length_in_power_of_two,
@@ -63,7 +63,7 @@ public:
              QSize qSizeBig,
              QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
-    bnn::brain& GetBrain(){ return *brain_friend_.get(); }
+    bnn::brain& GetBrain(){ return *brain_.get(); }
 };
 
 #endif // DEVICEAI_H

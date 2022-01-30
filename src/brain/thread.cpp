@@ -40,9 +40,9 @@ void thread::start()
 {
     logging("thread[" + std::to_string(thread_number) + "]::start() begin");
 
-    thread_.reset(new std::thread(function, this, brain_, start_neuron, length_in_us_in_power_of_two));
+    thread_ = std::thread(function, this, brain_, start_neuron, length_in_us_in_power_of_two);
 
-    thread_->detach();
+    thread_.detach();
 
     state_ = state::start;
 
@@ -78,8 +78,8 @@ void thread::function(thread* me, brain* brain_, _word start_in_us, _word length
 
                 _word debug_count = 0;
 
-                for(_word i = brain_->threads[thread_number].start_neuron;
-                    i < brain_->threads[thread_number].start_neuron + brain_->quantity_of_neurons / brain_->threads_count; i++)
+                for(_word i = brain_->threads[me->thread_number].start_neuron;
+                    i < brain_->threads[me->thread_number].start_neuron + brain_->quantity_of_neurons / brain_->threads_count; i++)
                     if(brain_->storage_[i].neuron_.neuron_type_ == neuron::neuron_type::neuron_type_motor)
                     {
                         debug_average_consensus += brain_->storage_[i].motor_.debug_average_consensus;
@@ -88,10 +88,10 @@ void thread::function(thread* me, brain* brain_, _word start_in_us, _word length
                     }
 
                 if(debug_count > 0)
-                    brain_->threads[thread_number].debug_average_consensus = debug_average_consensus / debug_count;
+                    brain_->threads[me->thread_number].debug_average_consensus = debug_average_consensus / debug_count;
 
-                if(brain_->threads[thread_number].debug_max_consensus > 0)
-                    brain_->threads[thread_number].debug_max_consensus--;
+                if(brain_->threads[me->thread_number].debug_max_consensus > 0)
+                    brain_->threads[me->thread_number].debug_max_consensus--;
 #endif
             }
 

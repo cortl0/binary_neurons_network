@@ -16,7 +16,7 @@
 static const _word input_length = sizeof (int) * 8 - 1;
 static const _word output_length = 8;
 static char c[input_length + output_length + 32];
-static bnn::brain brn(24, // random_array_length_in_power_of_two
+static bnn::brain brn(20, // random_array_length_in_power_of_two
                       16, // quantity_of_neurons_in_power_of_two
                       input_length,
                       output_length,
@@ -35,7 +35,7 @@ static void cycle()
     {
         // random numbers only demonstrates the workable of the algorithm
         // don't expect a wow effect without using real data
-        value = rand()%2;
+        value = rand() % 2;
 
         c[count++] = static_cast<bool>(value) + 48;
         // Put data in the brain
@@ -58,6 +58,7 @@ static void cycle()
 int main()
 {
     brn.start();
+
     while(1)
     {
         usleep(100000);

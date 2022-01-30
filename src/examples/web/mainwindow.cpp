@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     int k=4;
-    deviceAi.reset(new DeviceAI(27, 6, 18,
+    deviceAi.reset(new DeviceAI(27, 6, 16,
                                 QSize(ui->qLabel->size().width()/k, ui->qLabel->size().height()/k),
                                 ui->preview->size(), ui->preview));
     ui->lineEditAddress->setText("http://youtube.com/");
@@ -43,8 +43,8 @@ void MainWindow::slotTimerAlarm()
     deviceAi->Go();
     ui->qLabel->setPixmap((deviceAi->GetSensorPixmap()).GetPixmap());
     QPixmap qPixmap = ui->preview->grab(QRect(QPoint(0,0), ui->preview->size()));
-    deviceAi->GetSensorPixmap().FillBinary(qPixmap, deviceAi->GetBrain());
-    ui->labelDebug->setText(deviceAi->brain_friend_->brain_get_state() + '\n' +
+    deviceAi->GetSensorPixmap().FillBinary(qPixmap, *deviceAi->brain_);
+    ui->labelDebug->setText(deviceAi->brain_->brain_get_state() + '\n' +
                             "x=" + QString::number(static_cast<int>(deviceAi->GetSensorPixmap().x)) +
                             " y=" + QString::number(static_cast<int>(deviceAi->GetSensorPixmap().y)) +
                             " zoom=" + QString::number(deviceAi->GetSensorPixmap().zoom));
@@ -96,7 +96,7 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonStart->setText("Start");
         ui->pushButtonLoad->setEnabled(true);
         ui->pushButtonSave->setEnabled(true);
-        deviceAi->brain_friend_->stop();
+        deviceAi->brain_->stop();
     }
     else
     {
@@ -104,19 +104,22 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonStart->setText("Stop");
         ui->pushButtonLoad->setEnabled(false);
         ui->pushButtonSave->setEnabled(false);
-        deviceAi->GetBrain().start(/*this, clock_cycle_handler*/);
+
+        deviceAi->brain_->primary_filling();
+
+        deviceAi->brain_->start(/*this, clock_cycle_handler*/);
     }
     ft=!ft;
 }
 
 void MainWindow::on_pushButtonLoad_clicked()
 {
-    deviceAi->brain_friend_->load();
+    deviceAi->brain_->load();
 }
 
 void MainWindow::on_pushButtonSave_clicked()
 {
-    deviceAi->brain_friend_->save();
+    deviceAi->brain_->save();
 }
 
 void MainWindow::on_pushButtonAddress_clicked()
@@ -126,8 +129,8 @@ void MainWindow::on_pushButtonAddress_clicked()
 
 void MainWindow::on_pushButton_graphical_representation_pressed()
 {
-    deviceAi->brain_friend_->stop();
-    std::map<int, int> m = deviceAi->brain_friend_->graphical_representation();
+    deviceAi->brain_->stop();
+    std::map<int, int> m = deviceAi->brain_->graphical_representation();
     QPixmap qPixmap;
     qPixmap = QPixmap(QSize(64*4, 36*4));
     QPainter qPainter(&qPixmap);
@@ -147,11 +150,12 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
     ui->qLabel->setPixmap(qPixmap);
     QString qString;
     qString += "max_level = " + QString::number(max_level) + "\n";
-    qString += deviceAi->brain_friend_->brain_get_representation();
+    qString += deviceAi->brain_->brain_get_representation();
     ui->labelDebug->setText(qString);
 }
 
 void MainWindow::on_pushButton_graphical_representation_released()
 {
-    deviceAi->GetBrain().start();
+    deviceAi->brain_->primary_filling();
+    deviceAi->brain_->start();
 }

@@ -22,7 +22,6 @@ LIBS += -pthread
 
 SOURCES += \
         ../../brain/brain.cpp \
-        ../../brain_friend.cpp \
         ../../brain/m_sequence.cpp \
         ../../brain/neurons/binary.cpp \
         ../../brain/neurons/motor.cpp \
@@ -31,7 +30,8 @@ SOURCES += \
         ../../brain/random/random.cpp \
         ../../brain/storage.cpp \
         ../../brain/thread.cpp \
-        brain_friend_web.cpp \
+        ../../brain_tools.cpp \
+        brain_tools_web.cpp \
         deviceai.cpp \
         main.cpp \
         mainwindow.cpp
@@ -39,7 +39,6 @@ SOURCES += \
 HEADERS += \
         ../../brain/brain.h \
         ../../brain/config.h \
-        ../../brain_friend.h \
         ../../brain/m_sequence.h \
         ../../brain/neurons/binary.h \
         ../../brain/neurons/motor.h \
@@ -51,7 +50,8 @@ HEADERS += \
         ../../brain/state.h \
         ../../brain/storage.h \
         ../../brain/thread.h \
-        brain_friend_web.h \
+        ../../brain_tools.h \
+        brain_tools_web.h \
         deviceai.h \
         mainwindow.h
 

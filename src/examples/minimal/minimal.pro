@@ -15,4 +15,4 @@ CONFIG += console c++11
 
 SOURCES += main.cpp
 
-LIBS += /usr/local/lib/libbnn.so
+LIBS += -lbnn
