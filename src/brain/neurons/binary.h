@@ -10,6 +10,7 @@
 #ifndef BNN_NEURONS_BINARY_H
 #define BNN_NEURONS_BINARY_H
 
+#include <algorithm>
 #include <vector>
 
 #include "neuron.h"
@@ -40,7 +41,7 @@ struct binary final : neuron
     binary();
     const neuron_binary_type &get_type_binary() const;
     void init(brain &brn, _word thread_number, _word j, _word k, std::vector<storage> &us);
-    bool create(brain &brn, _word thread_number);
+    void create(brain &brn, _word thread_number);
     void kill(brain &brn, _word thread_number);
     void solve_body(std::vector<storage> &us);
     void solve(brain &brn, _word thread_number);

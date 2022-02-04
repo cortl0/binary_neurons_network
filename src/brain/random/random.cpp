@@ -92,18 +92,18 @@ _word random::get(_word bits, config& config_) noexcept
     return returnValue;
 }
 
-//_word random_put_get::get_ft(_word from, _word to) noexcept
-//{
-//    _word returnValue, i = 1, j = 2, tmf;
-//    tmf = to - from;
-//    while (true) { if (j > tmf) break; i++; j = j << 1; }
-//    while (true)
-//    {
-//        returnValue = get(i);
-//        if (returnValue <= tmf)
-//            return returnValue + from;
-//    }
-//}
+_word random::get_ft(_word from, _word to, config& config_) noexcept
+{
+    _word returnValue, i = 1, j = 2, tmf;
+    tmf = to - from;
+    while (true) { if (j > tmf) break; i++; j = j << 1; }
+    while (true)
+    {
+        returnValue = get(i, config_);
+        if (returnValue <= tmf)
+            return returnValue + from;
+    }
+}
 
 _word random::get_length() const
 {

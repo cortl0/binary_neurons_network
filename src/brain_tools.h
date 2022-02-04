@@ -9,7 +9,6 @@
 #ifndef BNN_BRAIN_TOOLS_H
 #define BNN_BRAIN_TOOLS_H
 
-#include <list>
 #include <experimental/filesystem>
 #include <fstream>
 #include <stdexcept>

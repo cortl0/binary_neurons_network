@@ -8,7 +8,7 @@
 
 TARGET = minimal.out
 
-LIBBNN = /usr/local/lib/libbnn.so
+LIBBNN = -lbnn
 
 SRCS = main.cpp
 
@@ -20,4 +20,4 @@ clean:
 	rm -f $(TARGET)
 
 $(TARGET): $(SRCS) $(LIBBNN)
-	g++ -std=c++11 -pthread -o $(TARGET) $(SRCS) $(LIBBNN)
+	g++ -lpthread -o $(TARGET) $(SRCS) $(LIBBNN)

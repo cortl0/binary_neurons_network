@@ -8,8 +8,10 @@
 
 #include "brain_tools.h"
 
+#include <unistd.h>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 #include "brain/thread.h"
 #include "brain/storage.h"
@@ -23,10 +25,10 @@ brain_tools::~brain_tools()
 }
 
 brain_tools::brain_tools(_word random_array_length_in_power_of_two,
-                           _word quantity_of_neurons_in_power_of_two,
-                           _word input_length,
-                           _word output_length,
-                           _word threads_count_in_power_of_two)
+                         _word quantity_of_neurons_in_power_of_two,
+                         _word input_length,
+                         _word output_length,
+                         _word threads_count_in_power_of_two)
     : brain(random_array_length_in_power_of_two,
             quantity_of_neurons_in_power_of_two,
             input_length,
@@ -67,10 +69,21 @@ void brain_tools::debug_out()
         {
             while(state::started != state_);
 
-            _word old_iteration = get_iteration();
+            _word iteration = get_iteration();
+
+            _word old_iteration = iteration;
 
             while(state::stop != state_)
             {
+                usleep(1000);
+
+                iteration = get_iteration();
+
+                if(old_iteration >= iteration)
+                    continue;
+
+                if(get_iteration() % 128)
+                    continue;
 #ifdef DEBUG
                 unsigned long long int debug_created = 0;
                 unsigned long long int debug_killed = 0;
@@ -139,9 +152,6 @@ void brain_tools::debug_out()
                 }
 #endif
 
-                old_iteration = get_iteration();
-
-                if(old_iteration < get_iteration() && !(get_iteration() % 128))
                 {
                     std::string s("\n");
 
@@ -169,7 +179,7 @@ void brain_tools::debug_out()
                     s += " | max_binary_calculation_count " + std::to_string(storage_[debug_max_consensus_binary_num].neuron_.calculation_count);
 
                     s += "\n";
-                    recursion(debug_max_consensus_binary_num, this, s);
+                    //recursion(debug_max_consensus_binary_num, this, s);
                     s += "\n";
 
                     s += "\n";
@@ -181,11 +191,13 @@ void brain_tools::debug_out()
 
                     std::cout << s << std::endl;
                 }
+
+                old_iteration = iteration;
             }
         }
         catch (...)
         {
-            std::cout << "error in " << __func__ << std::endl;
+            logging("unknown error");
         }
     });
 
@@ -272,8 +284,7 @@ bool brain_tools::load(std::ifstream& ifs)
 void brain_tools::primary_filling()
 {
     std::vector<_word> busy_neurons;
-    std::vector<_word> free_neurons;
-    std::vector<_word> temp;
+    std::vector<std::vector<_word>> free_neurons(threads_count, std::vector<_word>());
 
     for(_word i = 0; i < storage_.size(); i++)
     {
@@ -283,39 +294,42 @@ void brain_tools::primary_filling()
                     storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work))
             busy_neurons.push_back(i);
         else
-            free_neurons.push_back(i);
+            free_neurons[i / (storage_.size() / threads_count)].push_back(i);
     }
 
-    _word i, j, thread_number;
+    if(busy_neurons.size() < 2)
+        return;
 
-    while(free_neurons.size())
+    _word i, j, thread_number_counter = 0;
+
+    while(std::any_of(free_neurons.begin(), free_neurons.end(), [](const std::vector<_word> &f){ return f.size(); }))
     {
-        j = busy_neurons.size() / 2;
-
-        for(i = 0; i < busy_neurons.size() && free_neurons.size(); i++)
+        if(!free_neurons[thread_number_counter].size())
         {
-            if(j > busy_neurons.size())
-                j = 0;
+            thread_number_counter++;
 
-            storage_[i].neuron_.out_new = m_sequence_.next();
-            storage_[i].neuron_.out_old = m_sequence_.next();
-            storage_[j].neuron_.out_new = m_sequence_.next();
-            storage_[j].neuron_.out_old = m_sequence_.next();
-
-            thread_number = free_neurons.back() / (quantity_of_neurons / threads_count);
-
-            storage_[free_neurons.back()].binary_.init(*this, thread_number, i, j, storage_);
-
-            temp.push_back(free_neurons.back());
-
-            free_neurons.pop_back();
-
-            j++;
+            continue;
         }
 
-        std::copy(temp.begin(), temp.end(), std::back_inserter(busy_neurons));
+        i = random_->get_ft(0, busy_neurons.size(), random_config);
+        j = random_->get_ft(0, busy_neurons.size(), random_config);
 
-        temp.clear();
+        if(i == j)
+            continue;
+
+        storage_[i].neuron_.out_new = random_->get(1, random_config);
+        storage_[j].neuron_.out_new = random_->get(1, random_config);
+        storage_[i].neuron_.out_old = !storage_[i].neuron_.out_new;
+        storage_[j].neuron_.out_old = !storage_[j].neuron_.out_new;
+
+        storage_[free_neurons[thread_number_counter].back()].binary_.init(*this, thread_number_counter, i, j, storage_);
+
+        free_neurons[thread_number_counter].pop_back();
+
+        thread_number_counter++;
+
+        if(thread_number_counter >= threads_count)
+            thread_number_counter = 0;
     }
 }
 

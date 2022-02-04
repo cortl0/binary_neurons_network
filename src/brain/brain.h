@@ -32,6 +32,8 @@ class thread;
 struct brain
 {
 public:
+    _word candidate_for_create_j;
+    _word candidate_for_create_k;
     _word candidate_for_kill = 0;
     _word quantity_of_neurons_in_power_of_two;
     _word quantity_of_neurons;
@@ -42,6 +44,7 @@ public:
     state state_ = state::stopped;
 
     std::unique_ptr<random::random> random_;
+    random::config random_config;
     std::vector<storage> storage_;
     std::vector<bool> world_input;
     std::vector<bool> world_output;

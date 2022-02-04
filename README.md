@@ -27,52 +27,62 @@ cd ./src/brain; sudo make install;
 
 main.cpp
 ```
+#include "unistd.h"
 #include <iostream>
-
 #include "/usr/local/include/bnn/brain.h"
-
-static bnn::brain brn(24, // random_array_length_in_power_of_two
-                      16, // quantity_of_neurons_in_power_of_two
-                      31, // input_length
-                      8,  // output_length
-                      1   // threads_count_in_power_of_two (2^1 = 2)
-                      );
-
-void cycle()
-{
-    static long int count = 0;
-
-    std::cout << std::endl << "iteration = " << std::to_string(count++) << std::endl;
-
-    for (_word i = 0; i < brn.get_input_length(); i++)
-    {
-        // Put your data here
-        bool value = true;
-        brn.set_input(i, value);
-    }
-
-    for (_word i = 0; i < brn.get_output_length(); i++)
-    {
-        // Get the result from the brain
-        bool value = brn.get_output(i);
-    }
-}
 
 int main()
 {
-    brn.start();
-    while(1)
+    const _word input_length = 31;
+    const _word output_length = 8;
+
+    char input[input_length + 1];
+    char output[output_length + 1];
+    input[input_length] = '\0';
+    output[output_length] = '\0';
+    bool value;
+
+    bnn::brain brain_(22, // random_array_length_in_power_of_two
+                      12, // quantity_of_neurons_in_power_of_two
+                      input_length,
+                      output_length,
+                      1 // quantity_of_threads_in_power_of_two (2^1=2)
+                      );
+
+    brain_.start();
+
+    while(true)
     {
+        for (_word i = 0; i < input_length; i++)
+        {
+            value = rand() % 2;
+
+            // Put data in bnn
+            brain_.set_input(i, value);
+
+            input[i] = value + 48;
+        }
+
+        for (_word i = 0; i < output_length; i++)
+        {
+            // Get data from bnn
+            value = brain_.get_output(i);
+
+            output[i] = value + 48;
+        }
+
+        std::cout << "input=" << input << " output=" << output << std::endl;
+
         usleep(100000);
-        cycle();
     }
+
     return 0;
 }
 ```
 
 Building the application
 ```
-g++ -std=c++17 -pthread main.cpp /usr/local/lib/libbnn.so
+g++ -lpthread main.cpp -lbnn
 ```
 
 ## Example projects for BNN

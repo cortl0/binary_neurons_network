@@ -118,6 +118,10 @@ brain::brain(_word random_array_length_in_power_of_two,
 
         start_neuron += quantity_of_neurons_per_thread;
     }
+
+    random_config.put_offset_start = 0;
+
+    random_config.put_offset_end = simple_math::two_pow_x(random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
 }
 
 const _word& brain::get_iteration() const
@@ -148,21 +152,25 @@ void brain::function(brain *me)
 
         while(state::started == me->state_)
         {
+            usleep(1000);
+
             if(iteration_old < iteration)
             {
-                // TODO replace with bnn::random
-                static std::mt19937 gen;
-                static std::uniform_int_distribution<> uid = std::uniform_int_distribution<>(0, 1);
-                _word candidate_for_kill = 0;
-                for(_word i = 0; i < me->quantity_of_neurons_in_power_of_two; i++)
                 {
-                    candidate_for_kill <<= 1;
-                    candidate_for_kill |= static_cast<bool>(uid(gen));
+                    _word candidate_for_kill = 0;
+
+                    for(_word i = 0; i < me->quantity_of_neurons_in_power_of_two; i++)
+                    {
+                        candidate_for_kill <<= 1;
+
+                        candidate_for_kill |= me->random_->get(1, me->random_config);;
+                    }
+
+                    me->candidate_for_kill = candidate_for_kill;
                 }
-                me->candidate_for_kill = candidate_for_kill;
+
                 iteration_old = iteration;
             }
-
 
             iteration = 0;
 
