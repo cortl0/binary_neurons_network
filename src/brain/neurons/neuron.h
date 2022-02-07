@@ -19,21 +19,21 @@ struct brain;
 
 struct neuron
 {
-    enum neuron_type
+    enum class type : int
     {
-        neuron_type_neuron = 0,
-        neuron_type_sensor = 1,
-        neuron_type_binary = 2,
-        neuron_type_motor = 3
+        neuron,
+        sensor,
+        binary,
+        motor
     };
-    neuron_type neuron_type_;
+    type type_;
     _word level = 1;
     _word life_number = 0;
     bool out_new;
     bool out_old;
     char char_reserve_neuron[2]; // reserve
     neuron();
-    const neuron_type &get_type() const;
+    const type &get_type() const;
     void solve(brain &brn, _word me, _word thread_number);
 
 #ifdef DEBUG

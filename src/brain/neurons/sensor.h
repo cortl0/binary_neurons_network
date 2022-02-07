@@ -20,7 +20,6 @@ namespace bnn
 struct sensor final : neuron
 {
     _word world_input_address;
-    char char_reserve_sensor[28]; // reserve
     sensor(std::vector<bool>& world_input, _word world_input_address);
     void solve(brain &brn);
 };

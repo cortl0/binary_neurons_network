@@ -36,21 +36,19 @@ public:
     random::config random_config;
     state state_ = state::stopped;
 
+    thread();
+
     thread(brain*,
            _word thread_number,
            _word start_neuron,
            _word length_in_us_in_power_of_two,
-           random::config &random_config);
+           random::config &);
     void start();
 
 private:
-    brain *brain_;
     _word length_in_us_in_power_of_two;
     _word start_neuron;
-    std::thread thread_;
     _word thread_number;
-
-    static void function(thread* thread_, brain* brn, _word start_in_us, _word length_in_us_in_power_of_two);
 
 #ifdef DEBUG
 public:
@@ -61,6 +59,13 @@ public:
     _word debug_max_consensus_binary_num = 0;
     _word debug_max_consensus_motor_num = 0;
 #endif
+
+public:
+    brain *brain_;
+    std::thread thread_;
+
+private:
+    static void function(thread* thread_, brain* brn, _word start_in_us, _word length_in_us_in_power_of_two);
 };
 
 } // namespace bnn

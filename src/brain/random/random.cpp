@@ -47,8 +47,8 @@ random::random(_word random_array_length_in_power_of_two, m_sequence& m_sequence
 void random::put(bool i, config& config_) noexcept
 {
 #ifdef DEBUG
-    debug_sum_put += i * 2 - 1;
-    debug_count_put++;
+    config_.debug_sum_put += i * 2 - 1;
+    config_.debug_count_put++;
 #endif
     _word offset = config_.put_offset_start + config_.put_offset;
     array[offset] = (array[offset] & (~(1 << config_.put_offset_in_word))) | (static_cast<_word>(i) << config_.put_offset_in_word);
@@ -65,7 +65,7 @@ void random::put(bool i, config& config_) noexcept
 _word random::get(_word bits, config& config_) noexcept
 {
 #ifdef DEBUG
-    debug_count_get += bits;
+    config_.debug_count_get += bits;
 #endif
     _word returnValue = array[config_.get_offset] >> config_.get_offset_in_word;
     if(bits > QUANTITY_OF_BITS_IN_WORD - config_.get_offset_in_word)

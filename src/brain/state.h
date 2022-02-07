@@ -13,7 +13,7 @@
 namespace bnn
 {
 
-enum state
+enum class state : int
 {
     start = 1,
     started,

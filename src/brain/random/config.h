@@ -23,6 +23,12 @@ struct config
     _word put_offset_end;
     _word put_offset = 0;
     _word put_offset_in_word = 0;
+
+#ifdef DEBUG
+    unsigned long long int debug_count_get = 0;
+    unsigned long long int debug_count_put = 0;
+    long long int debug_sum_put = 0;
+#endif
 };
 
 } // namespace bnn::random

@@ -32,16 +32,11 @@ struct motor final : neuron
     int accumulator = 0;
     std::map<_word, binary_neuron>* binary_neurons;
 
-#ifndef DEBUG
-    char char_reserve_motor[12]; // reserve
-#endif
-
     motor(std::vector<bool>& world_output, _word world_output_address_);
     void solve(brain &brn, const _word &me, const _word &thread_number);
 
 #ifdef DEBUG
     _word debug_average_consensus = 0;
-    char char_reserve_motor[8]; // reserve
 #endif
 };
 

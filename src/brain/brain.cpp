@@ -28,7 +28,7 @@ brain::~brain()
 
     std::for_each(storage_.begin(), storage_.end(), [](const storage& s)
     {
-        if(s.neuron_.neuron_type_ == neuron::neuron_type::neuron_type_motor)
+        if(s.neuron_.type_ == neuron::type::motor)
             delete s.motor_.binary_neurons;
     });
 }
@@ -89,8 +89,8 @@ brain::brain(_word random_array_length_in_power_of_two,
 
     for(_word i = 0; i < quantity_of_neurons_binary; i++)
     {
-        if(storage_[n].neuron_.get_type() != neuron::neuron_type::neuron_type_sensor &&
-                storage_[n].neuron_.get_type() != neuron::neuron_type::neuron_type_motor)
+        if(storage_[n].neuron_.get_type() != neuron::type::sensor &&
+                storage_[n].neuron_.get_type() != neuron::type::motor)
             storage_[n].binary_ = binary();
 
         n += quantity_of_neurons_per_thread;
@@ -216,33 +216,6 @@ void brain::start()
 
     if(state::start == state_ || state::started == state_ || state::stopped != state_)
         return;
-
-#if(0)
-    _word quantity_of_neurons_per_thread = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two) / threads_count;
-
-    if(!std::any_of(storage_.begin(), storage_.end(), [](const storage& u)
-    {
-                    if(u.neuron_.get_type() == neuron::neuron_type_binary)
-                    if(u.binary_.get_type_binary() == binary::neuron_binary_type_in_work)
-                    return true;
-                    return false;
-}))
-    {
-        iteration = 0;
-    }
-    else
-    {
-        for(_word i = 0; i < threads_count; i++)
-        {
-            threads[i].quantity_of_initialized_neurons_binary = 0;
-
-            for(_word j = 0; j < quantity_of_neurons_per_thread; j++)
-                if(storage_[j + threads[i].start_neuron].neuron_.get_type()==neuron::neuron_type_binary)
-                    if(storage_[j + threads[i].start_neuron].binary_.get_type_binary()==binary::neuron_binary_type_in_work)
-                        threads[i].quantity_of_initialized_neurons_binary++;
-        }
-    }
-#endif
 
     main_thread = std::thread(function, this);
 

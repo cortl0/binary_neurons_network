@@ -15,7 +15,7 @@ namespace bnn
 
 sensor::sensor(std::vector<bool>& world_input, _word world_input_address_)
 {
-    neuron_type_ = neuron_type_sensor;
+    type_ = type::sensor;
     world_input_address = world_input_address_;
     out_new = world_input[world_input_address];
     out_old = out_new;

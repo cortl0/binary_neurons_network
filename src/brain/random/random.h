@@ -34,13 +34,6 @@ public:
 
 private:
     std::vector<_word> array;
-
-#ifdef DEBUG
-public:
-    unsigned long long int debug_count_get = 0;
-    unsigned long long int debug_count_put = 0;
-    long long int debug_sum_put = 0;
-#endif
 };
 
 } // namespace bnn::random

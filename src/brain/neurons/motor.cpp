@@ -17,7 +17,7 @@ namespace bnn
 
 motor::motor(std::vector<bool>& world_output, _word world_output_address_)
 {
-    neuron_type_ = neuron_type_motor;
+    type_ = neuron::type::motor;
     world_output_address = world_output_address_;
     out_new = world_output[world_output_address];
     out_old = out_new;
@@ -83,8 +83,7 @@ void motor::solve(brain &brn, const _word &me, const _word &thread_number)
 
 
     _word i = brn.random_->get(brn.quantity_of_neurons_in_power_of_two, brn.threads[thread_number].random_config);
-    if(brn.storage_[i].neuron_.get_type()==neuron::neuron_type_binary)
-        if(brn.storage_[i].binary_.get_type_binary()==binary::neuron_binary_type_in_work)
+    if(brn.storage_[i].neuron_.get_type() == neuron::neuron::type::binary && brn.storage_[i].binary_.in_work)
             //            if(std::none_of(binary_neurons->begin(), binary_neurons->end(), [&](const std::pair<_word, binary_neuron>& p)
             //            {
             //                return i == p.first;

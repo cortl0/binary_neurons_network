@@ -22,6 +22,11 @@
 namespace bnn
 {
 
+thread::thread()
+{
+
+}
+
 thread::thread(brain* brain_,
                _word thread_number,
                _word start_neuron,
@@ -80,7 +85,7 @@ void thread::function(thread* me, brain* brain_, _word start_in_us, _word length
 
                 for(_word i = brain_->threads[me->thread_number].start_neuron;
                     i < brain_->threads[me->thread_number].start_neuron + brain_->quantity_of_neurons / brain_->threads_count; i++)
-                    if(brain_->storage_[i].neuron_.neuron_type_ == neuron::neuron_type::neuron_type_motor)
+                    if(brain_->storage_[i].neuron_.type_ == neuron::type::motor)
                     {
                         debug_average_consensus += brain_->storage_[i].motor_.debug_average_consensus;
 

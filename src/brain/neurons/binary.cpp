@@ -17,18 +17,12 @@ namespace bnn
 
 binary::binary()
 {
-    neuron_type_ = neuron_type_binary;
-    neuron_binary_type_ = neuron_binary_type_free;
-}
-
-const binary::neuron_binary_type &binary::get_type_binary() const
-{
-    return neuron_binary_type_;
+    type_ = neuron::type::binary;
 }
 
 void binary::init(brain &brn, _word thread_number, _word j, _word k, std::vector<storage> &us)
 {
-    neuron_binary_type_ = neuron_binary_type_in_work;
+    in_work = true;
     first = j;
     second = k;
     first_mem = us[j].neuron_.out_new;
@@ -60,16 +54,14 @@ void binary::create(brain &brn, _word thread_number)
     if (&(this->char_reserve_neuron) == &(brn.storage_[k].neuron_.char_reserve_neuron))
         return;
 
-    if (!((brn.storage_[j].neuron_.get_type() == neuron_type_binary ?
-           brn.storage_[j].binary_.get_type_binary() == neuron_binary_type_in_work : false)||
-          (brn.storage_[j].neuron_.get_type() == neuron_type_motor) ||
-          (brn.storage_[j].neuron_.get_type() == neuron_type_sensor)))
+    if (!((brn.storage_[j].neuron_.get_type() == neuron::type::binary ? brn.storage_[j].binary_.in_work : false) ||
+          (brn.storage_[j].neuron_.get_type() == neuron::type::motor) ||
+          (brn.storage_[j].neuron_.get_type() == neuron::type::sensor)))
         return;
 
-    if (!((brn.storage_[k].neuron_.get_type() == neuron_type_binary ?
-           brn.storage_[k].binary_.get_type_binary() == neuron_binary_type_in_work : false) ||
-          (brn.storage_[k].neuron_.get_type() == neuron_type_motor) ||
-          (brn.storage_[k].neuron_.get_type() == neuron_type_sensor)))
+    if (!((brn.storage_[k].neuron_.get_type() == neuron::type::binary ? brn.storage_[k].binary_.in_work : false) ||
+          (brn.storage_[k].neuron_.get_type() == neuron::type::motor) ||
+          (brn.storage_[k].neuron_.get_type() == neuron::type::sensor)))
         return;
 
     if ((brn.storage_[j].neuron_.out_new == brn.storage_[j].neuron_.out_old) || (brn.storage_[k].neuron_.out_new == brn.storage_[k].neuron_.out_old))
@@ -81,7 +73,7 @@ void binary::create(brain &brn, _word thread_number)
 void binary::kill(brain &brn, _word thread_number)
 {
     life_number++;
-    neuron_binary_type_ = neuron_binary_type_free;
+    in_work = false;
     brn.threads[thread_number].quantity_of_initialized_neurons_binary--;
 #ifdef DEBUG
     brn.threads[thread_number].debug_killed++;
@@ -101,25 +93,15 @@ void binary::solve_body(std::vector<storage> &us)
 
 void binary::solve(brain &brn, _word thread_number)
 {
-    switch (neuron_binary_type_)
-    {
-    case binary::neuron_binary_type_free:
-    {
-        if((brn.random_->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary, brn.threads[thread_number].random_config)) ||
-                (brn.quantity_of_initialized_neurons_binary * 3 < brn.quantity_of_neurons * 2))
-            create(brn, thread_number);
-
-        break;
-    }
-    case neuron_binary_type_in_work:
+    if(in_work)
     {
         bool b = false;
 
-        if (brn.storage_[first].neuron_.get_type() == neuron_type_binary)
+        if (brn.storage_[first].neuron_.get_type() == type::binary)
             if (brn.storage_[first].binary_.life_number != first_life_number)
                 b = true;
 
-        if (brn.storage_[second].neuron_.get_type() == neuron_type_binary)
+        if (brn.storage_[second].neuron_.get_type() == type::binary)
             if (brn.storage_[second].binary_.life_number != second_life_number)
                 b = true;
 
@@ -138,9 +120,12 @@ void binary::solve(brain &brn, _word thread_number)
                 if(brn.quantity_of_initialized_neurons_binary * 3 > brn.quantity_of_neurons * 2)
                     kill(brn, thread_number);
         }
-
-        break;
     }
+    else
+    {
+        if((brn.random_->get_under(brn.quantity_of_neurons_binary - brn.quantity_of_initialized_neurons_binary, brn.threads[thread_number].random_config)) ||
+                (brn.quantity_of_initialized_neurons_binary * 3 < brn.quantity_of_neurons * 2))
+            create(brn, thread_number);
     }
 }
 

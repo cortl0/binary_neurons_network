@@ -24,7 +24,7 @@ union storage final
     binary binary_;
     sensor sensor_;
     motor motor_;
-    _word words[sizeof(binary) / sizeof(_word)];
+    _word words[sizeof(motor_) / sizeof(_word)];
     storage();
 };
 

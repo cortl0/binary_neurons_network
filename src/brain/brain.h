@@ -40,11 +40,20 @@ public:
     _word quantity_of_neurons_binary;
     _word quantity_of_initialized_neurons_binary = 0;
     _word threads_count;
-
     state state_ = state::stopped;
-
-    std::unique_ptr<random::random> random_;
     random::config random_config;
+
+protected:
+    _word quantity_of_neurons_sensor;
+    _word quantity_of_neurons_motor;
+    m_sequence m_sequence_ = m_sequence(QUANTITY_OF_BITS_IN_WORD - 1);
+
+private:
+    _word iteration = 0;
+    _word random_array_length_in_power_of_two;
+
+public:
+    std::unique_ptr<random::random> random_;
     std::vector<storage> storage_;
     std::vector<bool> world_input;
     std::vector<bool> world_output;
@@ -63,16 +72,10 @@ public:
     void start();
 
 protected:
-    _word quantity_of_neurons_sensor;
-    _word quantity_of_neurons_motor;
-    m_sequence m_sequence_ = m_sequence(QUANTITY_OF_BITS_IN_WORD - 1);
-
     const _word &get_iteration() const;
     void stop();
 
 private:
-    _word iteration = 0;
-    _word random_array_length_in_power_of_two;
     std::thread main_thread;
 
     static void function(brain* brn);

@@ -16,12 +16,12 @@ namespace bnn
 
 neuron::neuron()
 {
-    neuron_type_ = neuron_type_neuron;
+    type_ = neuron::type::neuron;
 }
 
-const neuron::neuron_type &neuron::get_type() const
+const neuron::type &neuron::get_type() const
 {
-    return neuron_type_;
+    return type_;
 }
 
 void neuron::solve(brain &brn, _word me, _word thread_number)
@@ -32,13 +32,13 @@ void neuron::solve(brain &brn, _word me, _word thread_number)
 
     switch (brn.storage_[me].neuron_.get_type())
     {
-    case neuron::neuron_type_binary:
+    case type::binary:
         brn.storage_[me].binary_.solve(brn, thread_number);
         break;
-    case neuron::neuron_type_sensor:
+    case type::sensor:
         brn.storage_[me].sensor_.solve(brn);
         break;
-    case neuron::neuron_type_motor:
+    case type::motor:
         brn.storage_[me].motor_.solve(brn, me, thread_number);
         break;
     default:

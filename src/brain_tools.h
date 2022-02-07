@@ -37,6 +37,17 @@ public:
     bool save(std::ofstream&);
     void stop();
 
+protected:
+    const _word brain_save_load_length = 13 * sizeof(_word)
+            + sizeof(random_config)
+            + sizeof(m_sequence_);
+
+    const _word thread_save_load_length = 6 * sizeof(_word)
+        #ifdef DEBUG
+            + 8 * sizeof(_word)
+        #endif
+            + sizeof(random_config);
+
 private:
     std::thread thread_debug_out;
 };
