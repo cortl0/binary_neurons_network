@@ -32,10 +32,10 @@ thread::thread(brain* brain_,
                _word start_neuron,
                _word length_in_us_in_power_of_two,
                random::config &random_config)
-    : thread_number(thread_number),
+    : random_config(random_config),
       length_in_us_in_power_of_two(length_in_us_in_power_of_two),
       start_neuron(start_neuron),
-      random_config(random_config),
+      thread_number(thread_number),
       brain_(brain_)
 {
 

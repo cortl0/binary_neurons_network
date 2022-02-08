@@ -25,11 +25,11 @@ public:
     ~random();
     random() = delete;
     random(_word random_array_length_in_power_of_two, m_sequence& m_sequence);
-    void put(bool i, config&) noexcept;
-    _word get(_word bits, config&) noexcept;
-    _word get_ft(_word from, _word to, config&) noexcept;
+    void put(bool i, config&) noexcept(true);
+    _word get(_word bits, config&) noexcept(true);
+    _word get_ft(_word from, _word to, config&) noexcept(true);
     _word get_length() const;
-    _word get_under(_word to, config&) noexcept;
+    _word get_under(_word to, config&) noexcept(true);
     std::vector<_word>& get_array();
 
 private:

@@ -21,7 +21,7 @@ struct config
     _word get_offset_in_word = 0;
     _word put_offset_start;
     _word put_offset_end;
-    _word put_offset = 0;
+    _word put_offset;
     _word put_offset_in_word = 0;
 
 #ifdef DEBUG
