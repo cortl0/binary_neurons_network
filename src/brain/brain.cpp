@@ -156,8 +156,6 @@ void brain::function(brain *me)
 
         while(state::started == me->state_)
         {
-            usleep(1000);
-
             if(iteration_old < iteration)
             {
                 {
@@ -190,6 +188,8 @@ void brain::function(brain *me)
             me->iteration = iteration / me->threads_count;
 
             me->quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
+
+            usleep(1000);
         }
     }
     catch (...)
@@ -215,10 +215,7 @@ void brain::start()
 {
     logging("brain::start() begin");
 
-    if(state::stop == state_)
-        while(state::stopped != state_);
-
-    if(state::start == state_ || state::started == state_ || state::stopped != state_)
+    if(state::stopped != state_)
         return;
 
     main_thread = std::thread(function, this);
@@ -236,17 +233,12 @@ void brain::stop()
 {
     logging("brain::stop() begin");
 
-    if(state::start == state_)
-        while(state::started != state_);
-
-    if(state::stop == state_ || state::stopped == state_ || state::started != state_)
+    if(state::started != state_)
         return;
 
     state_ = state::stop;
 
     while(state::stopped != state_);
-
-    threads.clear();
 
     logging("brain::stop() end");
 }

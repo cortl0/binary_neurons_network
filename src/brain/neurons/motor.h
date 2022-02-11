@@ -25,7 +25,8 @@ struct motor final : neuron
         _word adress; // binary neuron adress
         _word life_number;
         int consensus = 0;
-        binary_neuron(_word adress, _word life_number);
+        binary_neuron() = delete;
+        explicit binary_neuron(_word adress, _word life_number, int consensus);
     };
 
     _word world_output_address;

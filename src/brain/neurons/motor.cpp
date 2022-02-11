@@ -91,7 +91,13 @@ void motor::solve(brain &brn, const _word &me, const _word &thread_number)
         {
             if (((brn.storage_[i].binary_.out_new ^ brn.storage_[i].binary_.out_old)
                  & (out_new ^ out_old)))
-                binary_neurons->insert(std::pair<_word, binary_neuron>(i, binary_neuron(i, brn.storage_[i].binary_.life_number)));
+                binary_neurons->insert(
+                            std::pair<_word, binary_neuron>(
+                                i,
+                                binary_neuron(
+                                    i,
+                                    brn.storage_[i].binary_.life_number,
+                                    0)));
         }
 
     //std::cout << "binary_neurons->size() " << std::to_string(binary_neurons->size()) << std::endl;
@@ -101,8 +107,8 @@ void motor::solve(brain &brn, const _word &me, const _word &thread_number)
 
 }
 
-motor::binary_neuron::binary_neuron(_word adress, _word life_number)
-    : adress(adress), life_number(life_number)
+motor::binary_neuron::binary_neuron(_word adress, _word life_number, int consensus)
+    : adress(adress), life_number(life_number), consensus(consensus)
 {
 
 }
