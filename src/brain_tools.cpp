@@ -207,6 +207,11 @@ void brain_tools::debug_out()
     thread_debug_out.detach();
 }
 
+const _word& brain_tools::get_iteration() const
+{
+    return brain::get_iteration();
+}
+
 bool brain_tools::load(std::ifstream& ifs)
 {
 #if (1)

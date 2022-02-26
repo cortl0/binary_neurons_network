@@ -19,6 +19,11 @@ random::random(_word random_array_length_in_power_of_two, m_sequence& m_sequence
     _word length = (1 << random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
     array.resize(length);
 
+    config config_;
+    config_.put_offset_start = 0;
+    config_.put_offset = config_.put_offset_start;
+    config_.put_offset_end = array.size();
+
 #define fill_from 2
 #if(fill_from == 0)
     // fill the array with random numbers
@@ -30,16 +35,12 @@ random::random(_word random_array_length_in_power_of_two, m_sequence& m_sequence
     std::mt19937 gen;
     std::uniform_int_distribution<> uid = std::uniform_int_distribution<>(0, 1);
     for (_word i = 0; i < length; i++)
-        for (_word j = 0; j < _word_bits; j++)
-            put(uid(gen));
+        for (_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
+            put(uid(gen), config_);
 #elif(fill_from == 2)
     // fill the array with M-sequence
     // no need to use random number algorithms
-    config config_;
-    config_.put_offset_start = 0;
-    config_.put_offset = config_.put_offset_start;
-    config_.put_offset_end = length;
-    for (_word i = 0; i < length; i++)
+    for (_word i = 0; i < array.size(); i++)
         for (_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
             put(m_sequence.next(), config_);
 #endif

@@ -31,6 +31,7 @@ public:
                  _word output_length,
                  _word threads_count_in_power_of_two = 0);
     void debug_out();
+    const _word& get_iteration() const;
     bool load(std::ifstream&);
     void primary_filling();
     void resize(_word brainBits);
