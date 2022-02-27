@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_STORAGE_H
-#define BNN_STORAGE_H
+#ifndef BNN_STORAGE_HPP
+#define BNN_STORAGE_HPP
 
 #include "neurons/neuron.h"
 #include "neurons/binary.h"
@@ -20,14 +20,14 @@ namespace bnn
 
 union storage final
 {
-    neuron neuron_;
-    binary binary_;
-    sensor sensor_;
-    motor motor_;
-    _word words[sizeof(motor_) / sizeof(_word)];
-    storage();
+    neurons::neuron neuron_;
+    neurons::binary binary_;
+    neurons::sensor sensor_;
+    neurons::motor motor_;
+    u_word words[sizeof(motor_) / sizeof(u_word)];
+    storage() { }
 };
 
 } // namespace bnn
 
-#endif // BNN_STORAGE_H
+#endif // BNN_STORAGE_HPP

@@ -70,12 +70,12 @@ void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
             for(int k=0;k<gradation_bit;k++)
             {
                 if (black_white)
-                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*gradation_bit+k), ((r + g + b)/3/kgr)&(k+1));
+                    brn.set_input(static_cast<u_word>((j*qImage.size().width()+i)*gradation_bit+k), ((r + g + b)/3/kgr)&(k+1));
                 else
                 {
-                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k), (r/kgr)&(k+1));
-                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit), (g/kgr)&(k+1));
-                    brn.set_input(static_cast<_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2), (b/kgr)&(k+1));
+                    brn.set_input(static_cast<u_word>((j*qImage.size().width()+i)*3*gradation_bit+k), (r/kgr)&(k+1));
+                    brn.set_input(static_cast<u_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit), (g/kgr)&(k+1));
+                    brn.set_input(static_cast<u_word>((j*qImage.size().width()+i)*3*gradation_bit+k + gradation_bit * 2), (b/kgr)&(k+1));
                 }
             }
         }
@@ -116,16 +116,16 @@ DeviceAI::~DeviceAI()
     delete [] stepOld;
 }
 
-DeviceAI::DeviceAI(_word random_array_length_in_power_of_two,
-                   _word motorCount,
-                   _word quantity_of_neurons_in_power_of_two,
+DeviceAI::DeviceAI(u_word random_array_length_in_power_of_two,
+                   u_word motorCount,
+                   u_word quantity_of_neurons_in_power_of_two,
                    QSize qSize, QSize qSizeBig,
                    QWebEngineView* qwev_)
 {
     qwev = qwev_;
     stepOld_count = motorCount;
     stepOld = new bool[stepOld_count];
-    for(_word i = 0; i < stepOld_count; i++)
+    for(u_word i = 0; i < stepOld_count; i++)
         stepOld[i] = 0;
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)

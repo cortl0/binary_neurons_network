@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_CONFIG_H
-#define BNN_CONFIG_H
+#ifndef BNN_CONFIG_HPP
+#define BNN_CONFIG_HPP
 
 #include <iostream>
 
@@ -19,9 +19,10 @@
 
 #define QUANTITY_OF_BITS_IN_BYTE 8
 
-#define _word unsigned int
+#define u_word unsigned int
+#define s_word signed int
 
-#define QUANTITY_OF_BITS_IN_WORD (sizeof(_word) * QUANTITY_OF_BITS_IN_BYTE)
+#define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
 
 #define get_time_def bnn::get_time()
 #define place_string std::string().append(std::string(__FUNCTION__)).append(": ").append(__FILE__).append(": ").append(std::to_string(__LINE__))
@@ -57,4 +58,4 @@ static std::string get_time()
 
 } // namespace bnn
 
-#endif // BNN_CONFIG_H
+#endif // BNN_CONFIG_HPP

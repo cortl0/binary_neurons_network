@@ -15,7 +15,7 @@
 
 #include "brain.h"
 #include "neurons/neuron.h"
-#include "storage.h"
+#include "storage.hpp"
 #include "m_sequence.h"
 #include "random/random.h"
 
@@ -28,10 +28,10 @@ thread::thread()
 }
 
 thread::thread(brain* brain_,
-               _word thread_number,
-               _word start_neuron,
-               _word length_in_us_in_power_of_two,
-               random::config &random_config)
+               u_word thread_number,
+               u_word start_neuron,
+               u_word length_in_us_in_power_of_two,
+               random::config& random_config)
     : random_config(random_config),
       length_in_us_in_power_of_two(length_in_us_in_power_of_two),
       start_neuron(start_neuron),
@@ -54,15 +54,15 @@ void thread::start()
     logging("thread[" + std::to_string(thread_number) + "]::start() end");
 }
 
-void thread::function(thread* me, brain* brain_, _word start_in_us, _word length_in_us_in_power_of_two)
+void thread::function(thread* me, brain* b, const u_word start_in_us, const u_word length_in_us_in_power_of_two)
 {
     try
     {
-        _word reaction_rate = 0;
+        u_word reaction_rate = 0;
 
-        _word j;
+        u_word j;
 
-        _word quantity_of_neurons = brain_->quantity_of_neurons / brain_->threads_count;
+        u_word quantity_of_neurons = b->quantity_of_neurons / b->threads_count;
 
         while(state::start != me->state_);
 
@@ -79,30 +79,30 @@ void thread::function(thread* me, brain* brain_, _word start_in_us, _word length
                 me->iteration++;
 
 #ifdef DEBUG
-                _word debug_average_consensus = 0;
+                u_word debug_average_consensus = 0;
 
-                _word debug_count = 0;
+                u_word debug_count = 0;
 
-                for(_word i = brain_->threads[me->thread_number].start_neuron;
-                    i < brain_->threads[me->thread_number].start_neuron + brain_->quantity_of_neurons / brain_->threads_count; i++)
-                    if(brain_->storage_[i].neuron_.type_ == neuron::type::motor)
+                for(u_word i = b->threads[me->thread_number].start_neuron;
+                    i < b->threads[me->thread_number].start_neuron + b->quantity_of_neurons / b->threads_count; i++)
+                    if(b->storage_[i].neuron_.type_ == neurons::neuron::type::motor)
                     {
-                        debug_average_consensus += brain_->storage_[i].motor_.debug_average_consensus;
+                        debug_average_consensus += b->storage_[i].motor_.debug_average_consensus;
 
                         debug_count++;
                     }
 
                 if(debug_count > 0)
-                    brain_->threads[me->thread_number].debug_average_consensus = debug_average_consensus / debug_count;
+                    b->threads[me->thread_number].debug_average_consensus = debug_average_consensus / debug_count;
 
-                if(brain_->threads[me->thread_number].debug_max_consensus > 0)
-                    brain_->threads[me->thread_number].debug_max_consensus--;
+                if(b->threads[me->thread_number].debug_max_consensus > 0)
+                    b->threads[me->thread_number].debug_max_consensus--;
 #endif
             }
 
-            j = start_in_us + brain_->random_->get(length_in_us_in_power_of_two, me->random_config);
+            j = start_in_us + b->random_->get(length_in_us_in_power_of_two, me->random_config);
 
-            brain_->storage_[j].neuron_.solve(*brain_, j, me->thread_number);
+            b->storage_[j].neuron_.solve(*b, j, me->thread_number);
         }
     }
     catch (...)

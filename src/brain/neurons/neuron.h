@@ -10,36 +10,44 @@
 #ifndef BNN_NEURONS_NEURON_H
 #define BNN_NEURONS_NEURON_H
 
-#include "../config.h"
+#include "../config.hpp"
 
 namespace bnn
 {
 
 struct brain;
 
+union storage;
+
+namespace neurons
+{
+
 struct neuron
 {
-    enum class type : int
+    enum class type : s_word
     {
         neuron,
         sensor,
         binary,
         motor
     };
+
     type type_;
-    _word level = 1;
-    _word life_number = 0;
-    bool out_new;
-    bool out_old;
-    char char_reserve_neuron[2]; // reserve
+    u_word level = 1;
+    u_word life_counter = 0;
+    bool output_new;
+    bool output_old;
+    char char_reserve_neuron[2];
     neuron();
-    const type &get_type() const;
-    void solve(brain &brn, _word me, _word thread_number);
+    const type& get_type() const;
+    void solve(brain&, u_word me, u_word thread_number);
 
 #ifdef DEBUG
-    _word calculation_count = 0;
+    u_word calculation_count = 0;
 #endif
 };
+
+} // namespace neurons
 
 } // namespace bnn
 

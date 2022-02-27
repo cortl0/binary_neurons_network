@@ -33,8 +33,8 @@ main.cpp
 
 int main()
 {
-    const _word input_length = 31;
-    const _word output_length = 8;
+    const u_word input_length = 31;
+    const u_word output_length = 8;
 
     char input[input_length + 1];
     char output[output_length + 1];
@@ -53,7 +53,7 @@ int main()
 
     while(true)
     {
-        for (_word i = 0; i < input_length; i++)
+        for (u_word i = 0; i < input_length; i++)
         {
             value = rand() % 2;
 
@@ -63,7 +63,7 @@ int main()
             input[i] = value + 48;
         }
 
-        for (_word i = 0; i < output_length; i++)
+        for (u_word i = 0; i < output_length; i++)
         {
             // Get data from bnn
             value = brain_.get_output(i);

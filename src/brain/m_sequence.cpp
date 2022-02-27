@@ -17,7 +17,7 @@ m_sequence::m_sequence()
     length = 3;
 }
 
-m_sequence::m_sequence(unsigned int triggers_length)
+m_sequence::m_sequence(u_word triggers_length)
 {
     if((triggers_length < 2)||(triggers_length > sizeof (int) * 8 - 1))
         throw_error("error");
@@ -27,7 +27,7 @@ m_sequence::m_sequence(unsigned int triggers_length)
 
 bool m_sequence::next()
 {
-    unsigned int return_value = triggers & 1;
+    u_word return_value = triggers & 1;
 
     triggers >>= 1;
 
@@ -36,17 +36,17 @@ bool m_sequence::next()
     return return_value;
 }
 
-bool m_sequence::get_at(unsigned int future)
+bool m_sequence::get_at(u_word future)
 {
     return ((triggers >> future) & 1);
 }
 
-unsigned int m_sequence::get_registers()
+u_word m_sequence::get_registers()
 {
     return triggers;
 }
 
-void m_sequence::set_triggers_length(unsigned int triggers_length)
+void m_sequence::set_triggers_length(u_word triggers_length)
 {
     length = triggers_length;
 }

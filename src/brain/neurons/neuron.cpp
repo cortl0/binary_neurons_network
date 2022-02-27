@@ -9,9 +9,9 @@
 
 #include "neuron.h"
 #include "../brain.h"
-#include "../storage.h"
+#include "../storage.hpp"
 
-namespace bnn
+namespace bnn::neurons
 {
 
 neuron::neuron()
@@ -19,31 +19,31 @@ neuron::neuron()
     type_ = neuron::type::neuron;
 }
 
-const neuron::type &neuron::get_type() const
+const neuron::type& neuron::get_type() const
 {
     return type_;
 }
 
-void neuron::solve(brain &brn, _word me, _word thread_number)
+void neuron::solve(brain& b, const u_word me, const u_word thread_number)
 {
 #ifdef DEBUG
     calculation_count++;
 #endif
 
-    switch (brn.storage_[me].neuron_.get_type())
+    switch (b.storage_[me].neuron_.get_type())
     {
     case type::binary:
-        brn.storage_[me].binary_.solve(brn, thread_number);
+        b.storage_[me].binary_.solve(b, thread_number);
         break;
     case type::sensor:
-        brn.storage_[me].sensor_.solve(brn);
+        b.storage_[me].sensor_.solve(b);
         break;
     case type::motor:
-        brn.storage_[me].motor_.solve(brn, me, thread_number);
+        b.storage_[me].motor_.solve(b, me, thread_number);
         break;
     default:
         break;
     }
 }
 
-} // namespace bnn
+} // namespace bnn::neurons

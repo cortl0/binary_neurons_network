@@ -8,7 +8,7 @@
  */
 
 #include "brain_tools_web.h"
-#include "../../brain/storage.h"
+#include "../../brain/storage.hpp"
 
 namespace bnn
 {
@@ -18,16 +18,16 @@ brain_tools_web::~brain_tools_web()
 
 }
 
-brain_tools_web::brain_tools_web(_word random_array_length_in_power_of_two,
-                                   _word quantity_of_neurons_in_power_of_two,
-                                   _word input_length,
-                                   _word output_length,
-                                   _word threads_count_in_power_of_two)
+brain_tools_web::brain_tools_web(u_word random_array_length_in_power_of_two,
+                                 u_word quantity_of_neurons_in_power_of_two,
+                                 u_word input_length,
+                                 u_word output_length,
+                                 u_word threads_count_in_power_of_two)
     : brain_tools(random_array_length_in_power_of_two,
-                   quantity_of_neurons_in_power_of_two,
-                   input_length,
-                   output_length,
-                   threads_count_in_power_of_two)
+                  quantity_of_neurons_in_power_of_two,
+                  input_length,
+                  output_length,
+                  threads_count_in_power_of_two)
 {
 
 }
@@ -67,8 +67,8 @@ QString brain_tools_web::brain_get_state()
 QString brain_tools_web::brain_get_representation()
 {
     QString qString;
-    _word s = quantity_of_neurons_sensor + quantity_of_neurons_motor;
-    _word e = quantity_of_neurons_binary + quantity_of_neurons_sensor + quantity_of_neurons_motor;
+    u_word s = quantity_of_neurons_sensor + quantity_of_neurons_motor;
+    u_word e = quantity_of_neurons_binary + quantity_of_neurons_sensor + quantity_of_neurons_motor;
     int consensus = 0;
     int count = 0;
     /*
@@ -95,9 +95,8 @@ std::map<int, int> brain_tools_web::graphical_representation()
     std::vector<int> v;
     std::map<int, int> m;
     std::map<int, int>::iterator it;
-    for(_word i = 0; i < quantity_of_neurons; i++)
-        if(storage_[i].neuron_.get_type() == neuron::neuron_type_binary)
-            if(storage_[i].binary_.get_type_binary() == binary::neuron_binary_type_in_work)
+    for(u_word i = 0; i < quantity_of_neurons; i++)
+        if(storage_[i].neuron_.get_type() == neurons::neuron::type::binary && storage_[i].binary_.in_work)
             {
                 it = m.find(static_cast<int>(storage_[i].binary_.level));
                 if (it == m.end())
@@ -123,18 +122,18 @@ void brain_tools_web::load()
     }
 }
 
-void brain_tools_web::resize(_word brainBits_)
+void brain_tools_web::resize(u_word brainBits_)
 {
     brain::stop();
     if(brainBits_ > quantity_of_neurons_in_power_of_two)
     {
-        _word quantity_of_neuron_end_temp = 1 << (brainBits_);
+        u_word quantity_of_neuron_end_temp = 1 << (brainBits_);
         std::vector<storage> us_temp = std::vector<storage>(quantity_of_neuron_end_temp);
-        for(_word i = 0; i < quantity_of_neurons; i++)
-            for(_word j = 0; j < sizeof(storage) / sizeof(_word); j++)
+        for(u_word i = 0; i < quantity_of_neurons; i++)
+            for(u_word j = 0; j < sizeof(storage) / sizeof(u_word); j++)
                 us_temp[i].words[j] = storage_[i].words[j];
-        for (_word i = quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
-            us_temp[i].binary_ = binary();
+        for (u_word i = quantity_of_neurons; i < quantity_of_neuron_end_temp; i++)
+            us_temp[i].binary_ = neurons::binary();
         std::swap(storage_, us_temp);
         quantity_of_neurons_in_power_of_two = brainBits_;
         quantity_of_neurons = quantity_of_neuron_end_temp;

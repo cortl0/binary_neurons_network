@@ -14,16 +14,16 @@
 
 #include "neuron.h"
 
-namespace bnn
+namespace bnn::neurons
 {
 
 struct sensor final : neuron
 {
-    _word world_input_address;
-    sensor(std::vector<bool>& world_input, _word world_input_address);
-    void solve(brain &brn);
+    u_word world_input_address;
+    sensor(std::vector<bool>& world_input, u_word world_input_address);
+    void solve(brain&);
 };
 
-} // namespace bnn
+} // namespace bnn::neurons
 
 #endif // BNN_NEURONS_SENSOR_H

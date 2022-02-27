@@ -7,14 +7,20 @@
  *   licensed by GPL v3.0
  */
 
-#include "storage.h"
+#ifndef BNN_STATE_HPP
+#define BNN_STATE_HPP
 
 namespace bnn
 {
 
-storage::storage()
+enum class state : int
 {
-
-}
+    start = 1,
+    started,
+    stop,
+    stopped
+};
 
 } // namespace bnn
+
+#endif // BNN_STATE_HPP

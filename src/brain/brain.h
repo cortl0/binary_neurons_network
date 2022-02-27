@@ -14,10 +14,11 @@
 #include <thread>
 #include <vector>
 
-#include "config.h"
-#include "state.h"
+#include "config.hpp"
+#include "state.hpp"
 #include "random/random.h"
-#include "simple_math.h"
+#include "simple_math.hpp"
+#include "storage.hpp"
 
 #include "neurons/neuron.h"
 #include "neurons/binary.h"
@@ -32,25 +33,25 @@ class thread;
 struct brain
 {
 public:
-    _word candidate_for_create_j;
-    _word candidate_for_create_k;
-    _word candidate_for_kill = 0;
-    _word quantity_of_neurons_in_power_of_two;
-    _word quantity_of_neurons;
-    _word quantity_of_neurons_binary;
-    _word quantity_of_initialized_neurons_binary = 0;
-    _word threads_count;
+    u_word candidate_for_create_j;
+    u_word candidate_for_create_k;
+    u_word candidate_for_kill = 0;
+    u_word quantity_of_neurons_in_power_of_two;
+    u_word quantity_of_neurons;
+    u_word quantity_of_neurons_binary;
+    u_word quantity_of_initialized_neurons_binary = 0;
+    u_word threads_count;
     state state_ = state::stopped;
     random::config random_config;
 
 protected:
-    _word quantity_of_neurons_sensor;
-    _word quantity_of_neurons_motor;
+    u_word quantity_of_neurons_sensor;
+    u_word quantity_of_neurons_motor;
     m_sequence m_sequence_ = m_sequence(QUANTITY_OF_BITS_IN_WORD - 1);
 
 private:
-    _word iteration = 0;
-    _word random_array_length_in_power_of_two;
+    u_word iteration = 0;
+    u_word random_array_length_in_power_of_two;
 
 public:
     std::unique_ptr<random::random> random_;
@@ -62,17 +63,17 @@ public:
 public:
     virtual ~brain();
     brain() = delete;
-    explicit brain(_word random_array_length_in_power_of_two,
-                   _word quantity_of_neurons_in_power_of_two,
-                   _word input_length,
-                   _word output_length,
-                   _word threads_count_in_power_of_two = 0);
-    bool get_output(_word offset) const;
-    void set_input(_word offset, bool value);
+    explicit brain(u_word random_array_length_in_power_of_two,
+                   u_word quantity_of_neurons_in_power_of_two,
+                   u_word input_length,
+                   u_word output_length,
+                   u_word threads_count_in_power_of_two = 0);
+    bool get_output(u_word offset) const;
+    void set_input(u_word offset, bool value);
     void start();
 
 protected:
-    const _word &get_iteration() const;
+    const u_word& get_iteration() const;
     void stop();
 
 private:

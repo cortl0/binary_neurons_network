@@ -15,32 +15,32 @@
 
 #include "neuron.h"
 
-namespace bnn
+namespace bnn::neurons
 {
 
 struct motor final : neuron
 {
     struct binary_neuron
     {
-        _word adress; // binary neuron adress
-        _word life_number;
-        int consensus = 0;
+        u_word address;
+        u_word life_counter;
+        s_word consensus = 0;
         binary_neuron() = delete;
-        explicit binary_neuron(_word adress, _word life_number, int consensus);
+        explicit binary_neuron(u_word address, u_word life_counter, s_word consensus);
     };
 
-    _word world_output_address;
-    int accumulator = 0;
-    std::map<_word, binary_neuron>* binary_neurons;
+    u_word world_output_address;
+    s_word accumulator = 0;
+    std::map<u_word, binary_neuron>* binary_neurons;
 
-    motor(std::vector<bool>& world_output, _word world_output_address_);
-    void solve(brain &brn, const _word &me, const _word &thread_number);
+    motor(const std::vector<bool>& world_output, u_word world_output_address);
+    void solve(brain&, u_word me, u_word thread_number);
 
 #ifdef DEBUG
-    _word debug_average_consensus = 0;
+    u_word debug_average_consensus = 0;
 #endif
 };
 
-} // namespace bnn
+} // namespace bnn::neurons
 
 #endif // BNN_NEURONS_MOTOR_H

@@ -7,22 +7,22 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_RANDOM_CONFIG_H
-#define BNN_RANDOM_CONFIG_H
+#ifndef BNN_RANDOM_CONFIG_HPP
+#define BNN_RANDOM_CONFIG_HPP
 
-#include "../config.h"
+#include "../config.hpp"
 
 namespace bnn::random
 {
 
 struct config
 {
-    _word get_offset = 0;
-    _word get_offset_in_word = 0;
-    _word put_offset_start;
-    _word put_offset_end;
-    _word put_offset;
-    _word put_offset_in_word = 0;
+    u_word get_offset = 0;
+    u_word get_offset_in_word = 0;
+    u_word put_offset_start;
+    u_word put_offset_end;
+    u_word put_offset;
+    u_word put_offset_in_word = 0;
 
 #ifdef DEBUG
     unsigned long long int debug_count_get = 0;
@@ -33,4 +33,4 @@ struct config
 
 } // namespace bnn::random
 
-#endif // BNN_RANDOM_CONFIG_H
+#endif // BNN_RANDOM_CONFIG_HPP

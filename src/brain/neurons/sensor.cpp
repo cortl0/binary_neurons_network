@@ -10,21 +10,21 @@
 #include "sensor.h"
 #include "../brain.h"
 
-namespace bnn
+namespace bnn::neurons
 {
 
-sensor::sensor(std::vector<bool>& world_input, _word world_input_address_)
+sensor::sensor(std::vector<bool>& world_input, u_word world_input_address)
+    : world_input_address(world_input_address)
 {
     type_ = type::sensor;
-    world_input_address = world_input_address_;
-    out_new = world_input[world_input_address];
-    out_old = out_new;
+    output_new = world_input[world_input_address];
+    output_old = output_new;
 }
 
-void sensor::solve(brain &brn)
+void sensor::solve(brain& b)
 {
-    out_old = out_new;
-    out_new = brn.world_input[world_input_address];
+    output_old = output_new;
+    output_new = b.world_input[world_input_address];
 }
 
-} // namespace bnn
+} // namespace bnn::neurons

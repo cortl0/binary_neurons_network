@@ -16,16 +16,15 @@ neurons/binary.cpp \
 neurons/motor.cpp \
 neurons/sensor.cpp \
 random/random.cpp \
-storage.cpp \
 thread.cpp
 
 HDRS= \
 brain.h \
-config.h \
+config.hpp \
 m_sequence.h \
-simple_math.h \
-state.h \
-storage.h \
+simple_math.hpp \
+state.hpp \
+storage.hpp \
 thread.h
 
 HDRS_N= \
@@ -35,7 +34,7 @@ neurons/motor.h \
 neurons/sensor.h
 
 HDRS_R= \
-random/config.h \
+random/config.hpp \
 random/random.h
 
 ifeq ($(PREFIX),)

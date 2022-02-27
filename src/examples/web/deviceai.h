@@ -49,16 +49,16 @@ class DeviceAI
 {
 public:
     bool* stepOld = nullptr;
-    _word stepOld_count = 0;
+    u_word stepOld_count = 0;
     void Go();
     QWebEngineView* qwev;
     std::unique_ptr<SensorPixmap> sensorPixmap;
     std::unique_ptr<bnn::brain_tools_web> brain_;
     ~DeviceAI();
     DeviceAI() = delete;
-    DeviceAI(_word random_array_length_in_power_of_two,
-             _word motorCount,
-             _word brainBits,
+    DeviceAI(u_word random_array_length_in_power_of_two,
+             u_word motorCount,
+             u_word brainBits,
              QSize qSize,
              QSize qSizeBig,
              QWebEngineView* qwev_);
