@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <algorithm>
 #include <iostream>
+#include <map>
+#include <set>
 #include <vector>
 
 #include "brain/thread.h"
@@ -25,13 +27,11 @@ brain_tools::~brain_tools()
 
 }
 
-brain_tools::brain_tools(u_word random_array_length_in_power_of_two,
-                         u_word quantity_of_neurons_in_power_of_two,
+brain_tools::brain_tools(u_word quantity_of_neurons_in_power_of_two,
                          u_word input_length,
                          u_word output_length,
                          u_word threads_count_in_power_of_two)
-    : brain(random_array_length_in_power_of_two,
-            quantity_of_neurons_in_power_of_two,
+    : brain(quantity_of_neurons_in_power_of_two,
             input_length,
             output_length,
             threads_count_in_power_of_two)
@@ -438,6 +438,155 @@ bool brain_tools::save(std::ofstream& ofs)
     }
 #endif
     return false;
+}
+
+void brain_tools::save_random()
+{
+    save_random_bin();
+    //save_random_csv();
+    save_random_csv_line();
+}
+
+void brain_tools::save_random_bin()
+{
+    std::ofstream ofs(fs::current_path() / "random.bin", std::ios::binary);
+
+    auto random_array = random_->get_array();
+
+    u_word w;
+
+    for(u_word j = 0; j < random_array.size(); j++)
+    {
+        w = random_array[j];
+        ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+    }
+
+    ofs.close();
+}
+
+union converter
+{
+    u_word w;
+    unsigned char c[4];
+} conv;
+
+void brain_tools::save_random_csv()
+{
+    std::ofstream ofs(fs::current_path() / "random.csv", std::ios::binary);
+
+    auto random_array = random_->get_array();
+
+    for(u_word j = 0; j < /*random_array.size()*/1024; j++)
+    {
+        conv.w = random_array[j];
+
+        ofs << (int)conv.c[0] << "\n";
+        ofs << (int)conv.c[1] << "\n";
+        ofs << (int)conv.c[2] << "\n";
+        ofs << (int)conv.c[3] << "\n";
+    }
+
+    ofs.close();
+}
+
+void brain_tools::save_random_csv_line()
+{
+    std::ofstream ofs(fs::current_path() / "random_line.csv", std::ios::binary);
+
+    union converter
+    {
+        u_word w;
+        u_char c[4];
+        u_short s[2];
+    } conv;
+
+    u_char c;
+
+    auto& random_array = random_->get_array();
+
+    if(0)
+    {
+        auto s = std::multiset<u_char>();
+
+        for(u_word j = 0; j < /*random_array.size()*/1024; j++)
+        {
+            conv.w = random_array[j];
+
+            for(int i = 0; i < 4; i++)
+                s.insert(conv.c[i]);
+        }
+
+        for(auto i : s)
+            ofs << (int)i << ";";
+
+        ofs << "\n";
+    }
+
+    {
+        size_t max_size = random_array.size();// / 4096;
+
+        auto char_map = std::map<u_char, u_int>();
+        auto char_vector = std::vector<u_char>(max_size * sizeof(u_word));
+
+//        auto m_short = std::map<u_short, u_int>();
+
+        //if(0)
+        for(u_word j = 0; j < max_size; j++)
+        {
+            conv.w = random_array[j];
+
+            for(int i = 0; i < 4; i++)
+            {
+                auto it = char_map.find(conv.c[i]);
+
+                if(it == char_map.end())
+                    char_map.insert(std::pair(conv.c[i], 1));
+                else
+                    it->second++;
+
+                char_vector[j * sizeof(u_word) + i] = conv.c[i];
+            }
+
+//            for(int i = 0; i < 2; i++)
+//            {
+//                auto it = m_short.find(conv.s[i]);
+
+//                if(it == m_short.end())
+//                    m_short.insert(std::make_pair(conv.s[i], 1));
+//                else
+//                    it->second++;
+//            }
+        }
+
+        size_t counter_c = 0;
+
+        //int counter_s = 0;
+
+        auto c = char_map.begin();
+
+//        auto s = m_short.begin();
+
+        while(counter_c < max_size * sizeof(u_word))//c != char_map.end())// || s != m_short.end())
+        {
+//            if(s != m_short.end())
+//                ofs << counter_s++ << ";" << (int)s++->second << ";";
+
+
+            ofs << counter_c << ";" << (int)char_vector[counter_c] << ";";
+
+            if(counter_c < char_map.size() && c != char_map.end())
+                ofs << (int)c++->second << ";";
+
+            ofs << "\n";
+
+            counter_c++;
+
+            if(counter_c>=256)
+                break;
+        }
+    }
+
+    ofs.close();
 }
 
 void brain_tools::stop()

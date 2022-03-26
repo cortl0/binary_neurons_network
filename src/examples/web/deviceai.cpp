@@ -116,8 +116,7 @@ DeviceAI::~DeviceAI()
     delete [] stepOld;
 }
 
-DeviceAI::DeviceAI(u_word random_array_length_in_power_of_two,
-                   u_word motorCount,
+DeviceAI::DeviceAI(u_word motorCount,
                    u_word quantity_of_neurons_in_power_of_two,
                    QSize qSize, QSize qSizeBig,
                    QWebEngineView* qwev_)
@@ -129,20 +128,19 @@ DeviceAI::DeviceAI(u_word random_array_length_in_power_of_two,
         stepOld[i] = 0;
     sensorPixmap.reset(new SensorPixmap(qSize, qSizeBig, 2, true));
     if(sensorPixmap->black_white)
-        brain_.reset(new bnn::brain_tools_web(random_array_length_in_power_of_two,
-                                                      quantity_of_neurons_in_power_of_two,
-                                                      static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
-                                                      motorCount,
-                                                      1));
+        brain_.reset(new bnn::brain_tools_web(quantity_of_neurons_in_power_of_two,
+                                              static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
+                                              motorCount,
+                                              1));
 //        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
 //                                 quantity_of_neurons_in_power_of_two,
 //                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit),
 //                                 motorCount));
     else
-        brain_.reset(new bnn::brain_tools_web(random_array_length_in_power_of_two,
-                                                      quantity_of_neurons_in_power_of_two,
-                                                      static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
-                                                      motorCount));
+        brain_.reset(new bnn::brain_tools_web(quantity_of_neurons_in_power_of_two,
+                                              static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),
+                                              motorCount,
+                                              1));
 //        brn.reset(new bnn::brain(random_array_length_in_power_of_two,
 //                                 quantity_of_neurons_in_power_of_two,
 //                                 static_cast<uint>(qSize.width() * qSize.height() * sensorPixmap->gradation_bit*3),

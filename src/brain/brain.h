@@ -47,7 +47,6 @@ public:
 protected:
     u_word quantity_of_neurons_sensor;
     u_word quantity_of_neurons_motor;
-    m_sequence m_sequence_ = m_sequence(QUANTITY_OF_BITS_IN_WORD - 1);
 
 private:
     u_word iteration = 0;
@@ -63,8 +62,7 @@ public:
 public:
     virtual ~brain();
     brain() = delete;
-    explicit brain(u_word random_array_length_in_power_of_two,
-                   u_word quantity_of_neurons_in_power_of_two,
+    explicit brain(u_word quantity_of_neurons_in_power_of_two,
                    u_word input_length,
                    u_word output_length,
                    u_word threads_count_in_power_of_two = 0);

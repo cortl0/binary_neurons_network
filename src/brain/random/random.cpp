@@ -14,7 +14,7 @@ namespace bnn::random
 
 random::~random() { }
 
-random::random(u_word random_array_length_in_power_of_two, m_sequence& m_sequence)
+random::random(u_word random_array_length_in_power_of_two)
 {
     u_word length = (1 << random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
     array.resize(length);
@@ -40,9 +40,12 @@ random::random(u_word random_array_length_in_power_of_two, m_sequence& m_sequenc
 #elif(fill_from == 2)
     // fill the array with M-sequence
     // no need to use random number algorithms
+    m_sequence m_sequence_(random_array_length_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD ?
+                           QUANTITY_OF_BITS_IN_WORD - 1 : random_array_length_in_power_of_two);
+
     for (u_word i = 0; i < array.size(); i++)
         for (u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
-            put(m_sequence.next(), config_);
+            put(m_sequence_.next(), config_);
 #endif
 }
 

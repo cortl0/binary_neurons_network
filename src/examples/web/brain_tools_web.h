@@ -30,8 +30,7 @@ struct brain_tools_web : brain_tools
 
     virtual ~brain_tools_web();
     brain_tools_web() = delete;
-    brain_tools_web(u_word random_array_length_in_power_of_two,
-                    u_word quantity_of_neurons_in_power_of_two,
+    brain_tools_web(u_word quantity_of_neurons_in_power_of_two,
                     u_word input_length,
                     u_word output_length,
                     u_word threads_count_in_power_of_two = 0);

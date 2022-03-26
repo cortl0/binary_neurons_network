@@ -26,8 +26,7 @@ struct brain_tools : public brain
 public:
     virtual ~brain_tools();
     brain_tools() = delete;
-    brain_tools(u_word random_array_length_in_power_of_two,
-                u_word quantity_of_neurons_in_power_of_two,
+    brain_tools(u_word quantity_of_neurons_in_power_of_two,
                 u_word input_length,
                 u_word output_length,
                 u_word threads_count_in_power_of_two = 0);
@@ -37,12 +36,15 @@ public:
     void primary_filling();
     void resize(u_word brainBits);
     bool save(std::ofstream&);
+    void save_random();
+    void save_random_bin();
+    void save_random_csv();
+    void save_random_csv_line();
     void stop();
 
 protected:
     const u_word brain_save_load_length = 13 * sizeof(u_word)
-            + sizeof(random_config)
-            + sizeof(m_sequence_);
+            + sizeof(random_config);
 
     const u_word thread_save_load_length = 6 * sizeof(u_word)
         #ifdef DEBUG

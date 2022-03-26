@@ -19,7 +19,7 @@ m_sequence::m_sequence()
 
 m_sequence::m_sequence(u_word triggers_length)
 {
-    if((triggers_length < 2)||(triggers_length > sizeof (int) * 8 - 1))
+    if((triggers_length < 2) || (triggers_length > QUANTITY_OF_BITS_IN_WORD - 1))
         throw_error("error");
 
     length = triggers_length;
@@ -38,7 +38,7 @@ bool m_sequence::next()
 
 bool m_sequence::get_at(u_word future)
 {
-    return ((triggers >> future) & 1);
+    return (triggers >> future) & 1;
 }
 
 u_word m_sequence::get_registers()

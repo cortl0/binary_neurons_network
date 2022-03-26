@@ -56,8 +56,7 @@ public:
     std::unique_ptr<bnn::brain_tools_web> brain_;
     ~DeviceAI();
     DeviceAI() = delete;
-    DeviceAI(u_word random_array_length_in_power_of_two,
-             u_word motorCount,
+    DeviceAI(u_word motorCount,
              u_word brainBits,
              QSize qSize,
              QSize qSizeBig,

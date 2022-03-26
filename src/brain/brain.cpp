@@ -33,25 +33,28 @@ brain::~brain()
     });
 }
 
-brain::brain(u_word random_array_length_in_power_of_two,
-             u_word quantity_of_neurons_in_power_of_two,
+brain::brain(u_word quantity_of_neurons_in_power_of_two,
              u_word input_length,
              u_word output_length,
              u_word threads_count_in_power_of_two)
     : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
       threads_count(simple_math::two_pow_x(threads_count_in_power_of_two)),
       quantity_of_neurons_sensor(input_length),
-      quantity_of_neurons_motor(output_length),
-      random_array_length_in_power_of_two(random_array_length_in_power_of_two)
+      quantity_of_neurons_motor(output_length)
 {
+    random_array_length_in_power_of_two = quantity_of_neurons_in_power_of_two + 7;
+
+    if(random_array_length_in_power_of_two > QUANTITY_OF_BITS_IN_WORD)
+        random_array_length_in_power_of_two = QUANTITY_OF_BITS_IN_WORD;
+
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
 
     quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
 
-    if (quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
+    if(quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
         throw_error("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
 
-    random_.reset(new random::random(random_array_length_in_power_of_two, m_sequence_));
+    random_.reset(new random::random(random_array_length_in_power_of_two));
 
     storage_.resize(quantity_of_neurons);
 
@@ -63,7 +66,7 @@ brain::brain(u_word random_array_length_in_power_of_two,
 
     for(u_word i = 0; i < quantity_of_neurons_sensor; i++)
     {
-        world_input[i] = m_sequence_.next();
+        world_input[i] = random_.get();
 
         storage_[n].sensor_ = neurons::sensor(world_input, i);
 
@@ -77,7 +80,7 @@ brain::brain(u_word random_array_length_in_power_of_two,
 
     for(u_word i = 0; i < quantity_of_neurons_motor; i++)
     {
-        world_output[i] = m_sequence_.next();
+        world_output[i] = random_.get();
 
         storage_[n].motor_ = neurons::motor(world_output, i);
 
