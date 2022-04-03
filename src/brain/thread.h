@@ -36,7 +36,7 @@ public:
     u_word iteration = 0;
     u_word quantity_of_initialized_neurons_binary = 0;
     random::config random_config;
-    state state_ = state::stopped;
+    bool in_work = false;
 
     thread();
 
@@ -62,12 +62,14 @@ public:
     u_word debug_max_consensus_motor_num = 0;
 #endif
 
+    u_word save_load_size;
+
 public:
     brain *brain_;
-    std::thread thread_;
+    std::unique_ptr<std::thread> thread_;
 
 private:
-    static void function(thread* thread_, brain*, u_word start_in_us, u_word length_in_us_in_power_of_two);
+    static void function(thread* thread_, brain*);
 };
 
 } // namespace bnn

@@ -42,16 +42,6 @@ public:
     void save_random_csv_line();
     void stop();
 
-protected:
-    const u_word brain_save_load_length = 13 * sizeof(u_word)
-            + sizeof(random_config);
-
-    const u_word thread_save_load_length = 6 * sizeof(u_word)
-        #ifdef DEBUG
-            + 8 * sizeof(u_word)
-        #endif
-            + sizeof(random_config);
-
 private:
     std::thread thread_debug_out;
 };

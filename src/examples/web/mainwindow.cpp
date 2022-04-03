@@ -130,7 +130,7 @@ void MainWindow::on_pushButtonAddress_clicked()
 void MainWindow::on_pushButton_graphical_representation_pressed()
 {
     deviceAi->brain_->stop();
-    std::map<int, int> m = deviceAi->brain_->graphical_representation();
+    std::map<u_word, u_word> m = deviceAi->brain_->graphical_representation();
     QPixmap qPixmap;
     qPixmap = QPixmap(QSize(64*4, 36*4));
     QPainter qPainter(&qPixmap);

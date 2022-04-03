@@ -120,9 +120,7 @@ u_word random::get_under(u_word to, config& config_) noexcept(true)
     u_word count = 0;
 
     while(to >>= 1)
-    {
         count++;
-    }
 
     return get(count, config_);
 }

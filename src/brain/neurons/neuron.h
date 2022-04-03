@@ -32,15 +32,14 @@ struct neuron
         motor
     };
 
-    type type_;
+    type type_ = type::neuron;
     u_word level = 1;
     u_word life_counter = 0;
     bool output_new;
     bool output_old;
-    char char_reserve_neuron[2];
     neuron();
     const type& get_type() const;
-    void solve(brain&, u_word me, u_word thread_number);
+    virtual void solve(brain&, const u_word thread_number, const u_word me);
 
 #ifdef DEBUG
     u_word calculation_count = 0;

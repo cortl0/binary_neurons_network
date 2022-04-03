@@ -16,7 +16,7 @@ namespace bnn::neurons
 
 neuron::neuron()
 {
-    type_ = neuron::type::neuron;
+
 }
 
 const neuron::type& neuron::get_type() const
@@ -24,26 +24,11 @@ const neuron::type& neuron::get_type() const
     return type_;
 }
 
-void neuron::solve(brain& b, const u_word me, const u_word thread_number)
+void neuron::solve(brain&, const u_word, const u_word)
 {
 #ifdef DEBUG
     calculation_count++;
 #endif
-
-    switch (b.storage_[me].neuron_.get_type())
-    {
-    case type::binary:
-        b.storage_[me].binary_.solve(b, thread_number);
-        break;
-    case type::sensor:
-        b.storage_[me].sensor_.solve(b);
-        break;
-    case type::motor:
-        b.storage_[me].motor_.solve(b, me, thread_number);
-        break;
-    default:
-        break;
-    }
 }
 
 } // namespace bnn::neurons

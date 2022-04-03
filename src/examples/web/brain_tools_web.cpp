@@ -53,8 +53,9 @@ QString brain_tools_web::brain_get_state()
         qString += QString::number(brain_.storage_[i + brain_.quantity_of_neurons_sensor].motor_.slots_occupied) + "\t";
     */
     qString += "\naccum\t";
-    for (uint i = 0; i < quantity_of_neurons_motor; i++)
-        qString += QString::number(storage_[i + quantity_of_neurons_sensor].motor_.accumulator) + "\t";
+    for (uint i = 0; i < quantity_of_neurons; i++)
+        if(storage_[i]->get_type() == neurons::neuron::type::motor)
+            qString += QString::number(dynamic_cast<neurons::motor*>(storage_[i].get())->accumulator) + "\t";
     /*
     qString += "\ncountPut=" + QString::number(brain_.rndm->debug_count_put);
     qString += "\tcountGet=" + QString::number(brain_.rndm->debug_count_get);
@@ -88,20 +89,23 @@ QString brain_tools_web::brain_get_representation()
     return qString;
 }
 
-std::map<int, int> brain_tools_web::graphical_representation()
+std::map<u_word, u_word> brain_tools_web::graphical_representation()
 {
     std::vector<int> v;
-    std::map<int, int> m;
-    std::map<int, int>::iterator it;
+    std::map<u_word, u_word> m;
+    std::map<u_word, u_word>::iterator it;
+
     for(u_word i = 0; i < quantity_of_neurons; i++)
-        if(storage_[i].neuron_.get_type() == neurons::neuron::type::binary && storage_[i].binary_.in_work)
-            {
-                it = m.find(static_cast<int>(storage_[i].binary_.level));
-                if (it == m.end())
-                    m.insert(std::make_pair(static_cast<int>(storage_[i].binary_.level), 1));
-                else
-                    it->second++;
-            }
+        if(storage_[i]->get_type() == neurons::neuron::type::binary && dynamic_cast<neurons::binary*>(storage_[i].get())->in_work)
+        {
+            it = m.find(storage_[i]->level);
+
+            if (it == m.end())
+                m.insert(std::make_pair(storage_[i].get()->level, 1));
+            else
+                it->second++;
+        }
+
     return m;
 }
 
@@ -122,6 +126,7 @@ void brain_tools_web::load()
 
 void brain_tools_web::resize(u_word brainBits_)
 {
+#if 0
     brain::stop();
     if(brainBits_ > quantity_of_neurons_in_power_of_two)
     {
@@ -138,6 +143,7 @@ void brain_tools_web::resize(u_word brainBits_)
         quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
         //brain_.reaction_rate = brain_.quantity_of_neurons;
     }
+#endif
 }
 
 void brain_tools_web::save()

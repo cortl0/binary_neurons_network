@@ -41,7 +41,9 @@ public:
     u_word quantity_of_neurons_binary;
     u_word quantity_of_initialized_neurons_binary = 0;
     u_word threads_count;
-    state state_ = state::stopped;
+    bool to_work = false;
+    bool in_work = false;
+    bool treads_to_work;
     random::config random_config;
 
 protected:
@@ -50,11 +52,12 @@ protected:
 
 private:
     u_word iteration = 0;
-    u_word random_array_length_in_power_of_two;
 
 public:
+    u_word save_load_size;
+
     std::unique_ptr<random::random> random_;
-    std::vector<storage> storage_;
+    std::vector<std::shared_ptr<neurons::neuron>> storage_;
     std::vector<bool> world_input;
     std::vector<bool> world_output;
     std::vector<bnn::thread> threads;

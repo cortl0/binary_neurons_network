@@ -21,7 +21,7 @@ struct sensor final : neuron
 {
     u_word world_input_address;
     sensor(std::vector<bool>& world_input, u_word world_input_address);
-    void solve(brain&);
+    void solve(brain&, const u_word = -1, const u_word = -1) override;
 };
 
 } // namespace bnn::neurons

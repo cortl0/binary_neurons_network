@@ -17,7 +17,7 @@
 namespace bnn::neurons
 {
 
-struct binary final : neurons::neuron
+struct binary final : neuron
 {
     u_word first_input_address;
     u_word second_input_address;
@@ -27,11 +27,11 @@ struct binary final : neurons::neuron
     bool second_input_memory;
     bool in_work = false;
     binary();
-    void init(brain&, u_word thread_number, u_word first, u_word second, const std::vector<storage>&);
-    void create(brain&, u_word thread_number);
+    void init(brain&, u_word thread_number, u_word first, u_word second, const std::vector<std::shared_ptr<neuron>>&);
+    void create(brain&, u_word thread_number, const u_word me);
     void kill(brain&, u_word thread_number);
-    void solve_body(const std::vector<storage>&);
-    void solve(brain&, u_word thread_number);
+    void solve_body(const std::vector<std::shared_ptr<neuron>>&);
+    void solve(brain&, const u_word thread_number, const u_word me) override;
 };
 
 } // namespace bnn::neurons

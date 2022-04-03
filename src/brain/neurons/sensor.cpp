@@ -21,8 +21,9 @@ sensor::sensor(std::vector<bool>& world_input, u_word world_input_address)
     output_old = output_new;
 }
 
-void sensor::solve(brain& b)
+void sensor::solve(brain& b, const u_word, const u_word)
 {
+    neuron::solve(b, -1, -1);
     output_old = output_new;
     output_new = b.world_input[world_input_address];
 }

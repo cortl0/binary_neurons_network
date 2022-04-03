@@ -26,7 +26,7 @@ struct brain_tools_web : brain_tools
     QString brain_get_representation();
     QString brain_get_state();
     QString version = QString("0");
-    std::map<int, int> graphical_representation();
+    std::map<u_word, u_word> graphical_representation();
 
     virtual ~brain_tools_web();
     brain_tools_web() = delete;

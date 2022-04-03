@@ -14,7 +14,6 @@
 
 #include "../m_sequence.h"
 #include "config.hpp"
-#include "config.hpp"
 
 namespace bnn::random
 {

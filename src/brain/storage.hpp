@@ -24,7 +24,7 @@ union storage final
     neurons::binary binary_;
     neurons::sensor sensor_;
     neurons::motor motor_;
-    u_word words[sizeof(motor_) / sizeof(u_word)];
+    u_word words[sizeof(neurons::motor) / sizeof(u_word)];
     storage() { }
 };
 

@@ -23,25 +23,25 @@ binary::binary()
     type_ = neuron::type::binary;
 }
 
-void binary::init(brain& b, const u_word thread_number, const u_word first, const u_word second, const std::vector<storage>& s)
+void binary::init(brain& b, const u_word thread_number, const u_word first, const u_word second, const std::vector<std::shared_ptr<neuron>>& s)
 {
-    in_work = true;
     first_input_address = first;
     second_input_address = second;
-    first_input_memory = s[first].neuron_.output_new;
-    second_input_memory = s[second].neuron_.output_new;
+    first_input_memory = s[first]->output_new;
+    second_input_memory = s[second]->output_new;
     solve_body(s);
     output_old = output_new;
-    level = s[first].neuron_.level > s[second].neuron_.level ? s[first].neuron_.level + 1 : s[second].neuron_.level + 1;
-    first_input_life_counter = s[first].neuron_.life_counter;
-    second_input_life_counter = s[second].neuron_.life_counter;
+    level = s[first]->level > s[second]->level ? s[first]->level + 1 : s[second]->level + 1;
+    first_input_life_counter = s[first]->life_counter;
+    second_input_life_counter = s[second]->life_counter;
     b.threads[thread_number].quantity_of_initialized_neurons_binary++;
 #ifdef DEBUG
     b.threads[thread_number].debug_created++;
 #endif
+    in_work = true;
 }
 
-void binary::create(brain& b, const u_word thread_number)
+void binary::create(brain& b, const u_word thread_number, const u_word me)
 {
     u_word first, second;
 
@@ -51,23 +51,23 @@ void binary::create(brain& b, const u_word thread_number)
     if (first == second)
         return;
 
-    if (&(this->char_reserve_neuron) == &(b.storage_[first].neuron_.char_reserve_neuron))
+    if (me == first)
         return;
 
-    if (&(this->char_reserve_neuron) == &(b.storage_[second].neuron_.char_reserve_neuron))
+    if (me == second)
         return;
 
-    if (!((b.storage_[first].neuron_.get_type() == neuron::type::binary ? b.storage_[first].binary_.in_work : false) ||
-          (b.storage_[first].neuron_.get_type() == neuron::type::motor) ||
-          (b.storage_[first].neuron_.get_type() == neuron::type::sensor)))
+    if (!((b.storage_[first]->get_type() == neuron::type::binary ? ((neurons::binary*)(b.storage_[first].get()))->in_work : false) ||
+          (b.storage_[first]->get_type() == neuron::type::motor) ||
+          (b.storage_[first]->get_type() == neuron::type::sensor)))
         return;
 
-    if (!((b.storage_[second].neuron_.get_type() == neuron::type::binary ? b.storage_[second].binary_.in_work : false) ||
-          (b.storage_[second].neuron_.get_type() == neuron::type::motor) ||
-          (b.storage_[second].neuron_.get_type() == neuron::type::sensor)))
+    if (!((b.storage_[second]->get_type() == neuron::type::binary ? ((neurons::binary*)(b.storage_[second].get()))->in_work : false) ||
+          (b.storage_[second]->get_type() == neuron::type::motor) ||
+          (b.storage_[second]->get_type() == neuron::type::sensor)))
         return;
 
-    if ((b.storage_[first].neuron_.output_new == b.storage_[first].neuron_.output_old) || (b.storage_[second].neuron_.output_new == b.storage_[second].neuron_.output_old))
+    if ((b.storage_[first]->output_new == b.storage_[first]->output_old) || (b.storage_[second]->output_new == b.storage_[second]->output_old))
         return;
 
     init(b, thread_number, first, second, b.storage_);
@@ -75,37 +75,39 @@ void binary::create(brain& b, const u_word thread_number)
 
 void binary::kill(brain& b, const u_word thread_number)
 {
-    life_counter++;
     in_work = false;
+    life_counter++;
     b.threads[thread_number].quantity_of_initialized_neurons_binary--;
 #ifdef DEBUG
     b.threads[thread_number].debug_killed++;
 #endif
 }
 
-void binary::solve_body(const std::vector<storage>& s)
+void binary::solve_body(const std::vector<std::shared_ptr<neuron>>& s)
 {
-    static bool solve_tab[2][2][2][2] = {{{{1, 0}, {0, 0}},
+    static constexpr bool solve_tab[2][2][2][2] = {{{{1, 0}, {0, 0}},
                                           {{1, 0}, {1, 1}}},
                                          {{{0, 0}, {1, 0}},
                                           {{1, 1}, {1, 0}}}};
 
     output_new = solve_tab[first_input_memory][second_input_memory]
-            [s[first_input_address].neuron_.output_new][s[second_input_address].neuron_.output_new];
+            [s[first_input_address]->output_new][s[second_input_address]->output_new];
 }
 
-void binary::solve(brain& b, const u_word thread_number)
+void binary::solve(brain& b, const u_word thread_number, const u_word me)
 {
+    neuron::solve(b, thread_number, -1);
+
     if(in_work)
     {
         bool ft = false;
 
-        if (b.storage_[first_input_address].neuron_.get_type() == type::binary)
-            if (b.storage_[first_input_address].binary_.life_counter != first_input_life_counter)
+        if (b.storage_[first_input_address]->get_type() == type::binary)
+            if (b.storage_[first_input_address]->life_counter != first_input_life_counter)
                 ft = true;
 
-        if (b.storage_[second_input_address].neuron_.get_type() == type::binary)
-            if (b.storage_[second_input_address].binary_.life_counter != second_input_life_counter)
+        if (b.storage_[second_input_address]->get_type() == type::binary)
+            if (b.storage_[second_input_address]->life_counter != second_input_life_counter)
                 ft = true;
 
         if (ft)
@@ -119,7 +121,7 @@ void binary::solve(brain& b, const u_word thread_number)
             if (output_new != output_old)
                 b.random_->put(output_new, b.threads[thread_number].random_config);
 
-            if (&(this->char_reserve_neuron) == &(b.storage_[b.candidate_for_kill].neuron_.char_reserve_neuron))
+            if (me == b.candidate_for_kill)
                 if(b.quantity_of_initialized_neurons_binary * 3 > b.quantity_of_neurons * 2)
                     kill(b, thread_number);
         }
@@ -128,7 +130,7 @@ void binary::solve(brain& b, const u_word thread_number)
     {
         if((b.random_->get_under(b.quantity_of_neurons_binary - b.quantity_of_initialized_neurons_binary, b.threads[thread_number].random_config)) ||
                 (b.quantity_of_initialized_neurons_binary * 3 < b.quantity_of_neurons * 2))
-            create(b, thread_number);
+            create(b, thread_number, me);
     }
 }
 

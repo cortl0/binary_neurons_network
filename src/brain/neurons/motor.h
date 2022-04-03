@@ -31,14 +31,17 @@ struct motor final : neuron
 
     u_word world_output_address;
     s_word accumulator = 0;
-    std::map<u_word, binary_neuron>* binary_neurons;
-
-    motor(const std::vector<bool>& world_output, u_word world_output_address);
-    void solve(brain&, u_word me, u_word thread_number);
 
 #ifdef DEBUG
     u_word debug_average_consensus = 0;
 #endif
+
+    u_word save_load_size;
+
+    std::map<u_word, binary_neuron> binary_neurons_;
+
+    motor(const std::vector<bool>& world_output, u_word world_output_address);
+    void solve(brain&, const u_word thread_number, const u_word me) override;
 };
 
 } // namespace bnn::neurons

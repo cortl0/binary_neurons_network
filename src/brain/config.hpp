@@ -17,6 +17,7 @@
 
 #define DEBUG
 
+#define BNN_LITTLE_TIME 1000
 #define QUANTITY_OF_BITS_IN_BYTE 8
 
 #define u_word unsigned int
