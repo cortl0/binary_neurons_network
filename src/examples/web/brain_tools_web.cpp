@@ -38,11 +38,11 @@ QString brain_tools_web::brain_get_state()
     qString += "\t bits=" + QString::number(quantity_of_neurons_in_power_of_two);
     qString += "\t n_init=" + QString::number(quantity_of_initialized_neurons_binary);
     qString += "\nquantity_of_neuron_binary=" + QString::number(quantity_of_neurons_binary) + "\t";
-    qString += "quantity_of_neuron_sensor=" + QString::number(quantity_of_neurons_sensor) + "\t";
+    qString += "quantity_of_neuron_sensor=" + QString::number(world_input.size()) + "\t";
     for (uint i = 0; i < 8*16/*quantity_of_neuron_sensor*/; i+=16)
         if (world_input[i]) qString += "1"; else qString += "0";
-    qString += "\nquantity_of_neuron_motor=" + QString::number(quantity_of_neurons_motor) + "\t";
-    for (uint i = 0; i < quantity_of_neurons_motor; i++)
+    qString += "\nquantity_of_neuron_motor=" + QString::number(world_output.size()) + "\t";
+    for (uint i = 0; i < world_output.size(); i++)
         if (world_output[i]) qString += "1"; else qString += "0";
     /*
     qString += "\nsignals\t";
@@ -66,8 +66,8 @@ QString brain_tools_web::brain_get_state()
 QString brain_tools_web::brain_get_representation()
 {
     QString qString;
-    u_word s = quantity_of_neurons_sensor + quantity_of_neurons_motor;
-    u_word e = quantity_of_neurons_binary + quantity_of_neurons_sensor + quantity_of_neurons_motor;
+    u_word s = world_input.size() + world_output.size();
+    u_word e = quantity_of_neurons_binary + world_input.size() + world_output.size();
     int consensus = 0;
     int count = 0;
     /*

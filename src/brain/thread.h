@@ -19,7 +19,7 @@
 namespace bnn
 {
 
-struct brain;
+class brain;
 
 class m_sequence;
 
@@ -39,7 +39,6 @@ public:
     bool in_work = false;
 
     thread();
-
     thread(brain*,
            u_word thread_number,
            u_word start_neuron,
@@ -62,14 +61,14 @@ public:
     u_word debug_max_consensus_motor_num = 0;
 #endif
 
-    u_word save_load_size;
+    char save_load_size;
 
 public:
-    brain *brain_;
+    brain* brain_;
     std::unique_ptr<std::thread> thread_;
 
 private:
-    static void function(thread* thread_, brain*);
+    static void function(thread*, brain*);
 };
 
 } // namespace bnn

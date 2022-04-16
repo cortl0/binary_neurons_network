@@ -15,54 +15,46 @@
 #include <vector>
 
 #include "config.hpp"
-#include "state.hpp"
-#include "random/random.h"
-#include "simple_math.hpp"
-#include "storage.hpp"
-
-#include "neurons/neuron.h"
 #include "neurons/binary.h"
-#include "neurons/sensor.h"
 #include "neurons/motor.h"
+#include "neurons/sensor.h"
+#include "random/random.h"
+#include "state.hpp"
+#include "storage.hpp"
 
 namespace bnn
 {
 
 class thread;
 
-struct brain
+class brain
 {
 public:
     u_word candidate_for_create_j;
     u_word candidate_for_create_k;
-    u_word candidate_for_kill = 0;
+    u_word candidate_for_kill = -1;
     u_word quantity_of_neurons_in_power_of_two;
     u_word quantity_of_neurons;
     u_word quantity_of_neurons_binary;
     u_word quantity_of_initialized_neurons_binary = 0;
-    u_word threads_count;
     bool to_work = false;
     bool in_work = false;
     bool treads_to_work;
     random::config random_config;
 
-protected:
-    u_word quantity_of_neurons_sensor;
-    u_word quantity_of_neurons_motor;
-
 private:
     u_word iteration = 0;
 
-public:
-    u_word save_load_size;
+protected:
+    char save_load_size;
 
+public:
     std::unique_ptr<random::random> random_;
     std::vector<std::shared_ptr<neurons::neuron>> storage_;
     std::vector<bool> world_input;
     std::vector<bool> world_output;
     std::vector<bnn::thread> threads;
 
-public:
     virtual ~brain();
     brain() = delete;
     explicit brain(u_word quantity_of_neurons_in_power_of_two,
@@ -74,13 +66,14 @@ public:
     void start();
 
 protected:
+    void fill_threads(u_word threads_count);
     const u_word& get_iteration() const;
     void stop();
 
 private:
     std::thread main_thread;
 
-    static void function(brain* brn);
+    static void function(brain*);
 };
 
 } // namespace bnn

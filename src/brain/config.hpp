@@ -20,8 +20,8 @@
 #define BNN_LITTLE_TIME 1000
 #define QUANTITY_OF_BITS_IN_BYTE 8
 
-#define u_word unsigned int
-#define s_word signed int
+typedef unsigned int u_word;
+typedef signed int s_word;
 
 #define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
 

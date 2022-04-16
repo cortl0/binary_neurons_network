@@ -14,8 +14,9 @@
 #include <algorithm>
 #include <iostream>
 
-#include "thread.h"
+#include "simple_math.hpp"
 #include "storage.hpp"
+#include "thread.h"
 
 namespace bnn
 {
@@ -23,33 +24,49 @@ namespace bnn
 brain::~brain()
 {
     logging("");
+    stop();
 }
 
 brain::brain(u_word quantity_of_neurons_in_power_of_two,
              u_word input_length,
              u_word output_length,
              u_word threads_count_in_power_of_two)
-    : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two),
-      threads_count(simple_math::two_pow_x(threads_count_in_power_of_two)),
-      quantity_of_neurons_sensor(input_length),
-      quantity_of_neurons_motor(output_length)
+    : quantity_of_neurons_in_power_of_two(quantity_of_neurons_in_power_of_two)
 {
-    u_word random_array_length_in_power_of_two = quantity_of_neurons_in_power_of_two + 7;
+    const u_word experimental_coefficient = simple_math::log2_1(QUANTITY_OF_BITS_IN_WORD) + 5;
 
-    if(random_array_length_in_power_of_two > QUANTITY_OF_BITS_IN_WORD)
-        random_array_length_in_power_of_two = QUANTITY_OF_BITS_IN_WORD;
+    u_word random_array_length_in_power_of_two = quantity_of_neurons_in_power_of_two + experimental_coefficient;
+
+    if(random_array_length_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD)
+    {
+        random_array_length_in_power_of_two = QUANTITY_OF_BITS_IN_WORD - 1;
+        logging("random_array_length_in_power_of_two does not satisfy of experimental_coefficient");
+    }
+
+    if(random_array_length_in_power_of_two > 29)
+    {
+        random_array_length_in_power_of_two = 29;
+        logging("random_array_length_in_power_of_two hardware limitation");
+    }
 
     quantity_of_neurons = simple_math::two_pow_x(quantity_of_neurons_in_power_of_two);
-    quantity_of_neurons_binary = quantity_of_neurons - quantity_of_neurons_sensor - quantity_of_neurons_motor;
+    quantity_of_neurons_binary = quantity_of_neurons - input_length - output_length;
 
-    if(quantity_of_neurons <= quantity_of_neurons_sensor + quantity_of_neurons_motor)
+    if(quantity_of_neurons <= input_length + output_length)
         throw_error("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
 
     random_.reset(new random::random(random_array_length_in_power_of_two));
     storage_.resize(quantity_of_neurons);
     u_word n = 0;
+
+    random_config.put_offset_start = 0;
+    random_config.put_offset = random_config.put_offset_start;
+    random_config.put_offset_end = simple_math::two_pow_x(random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
+
+    u_word threads_count = simple_math::two_pow_x(threads_count_in_power_of_two);
     u_word quantity_of_neurons_per_thread = quantity_of_neurons / threads_count;
-    world_input.resize(quantity_of_neurons_sensor);
+
+    world_input.resize(input_length);
 
     auto increment_n = [&]()
     {
@@ -59,18 +76,18 @@ brain::brain(u_word quantity_of_neurons_in_power_of_two,
             n = n - quantity_of_neurons + 1;
     };
 
-    for(u_word i = 0; i < quantity_of_neurons_sensor; i++)
+    for(u_word i = 0; i < input_length; i++)
     {
-        world_input[i] = random_.get();
+        world_input[i] = random_->get(1, random_config);
         storage_[n].reset(new neurons::sensor(world_input, i));
         increment_n();
     }
 
-    world_output.resize(quantity_of_neurons_motor);
+    world_output.resize(output_length);
 
-    for(u_word i = 0; i < quantity_of_neurons_motor; i++)
+    for(u_word i = 0; i < output_length; i++)
     {
-        world_output[i] = random_.get();
+        world_output[i] = random_->get(1, random_config);
         storage_[n].reset(new neurons::motor(world_output, i));
         increment_n();
     }
@@ -81,25 +98,7 @@ brain::brain(u_word quantity_of_neurons_in_power_of_two,
         increment_n();
     }
 
-    u_word random_array_length_per_thread = simple_math::two_pow_x(random_array_length_in_power_of_two)
-            / threads_count / QUANTITY_OF_BITS_IN_WORD;
-
-    u_word start_neuron = 0;
-    u_word length_in_us_in_power_of_two = simple_math::log2_1(quantity_of_neurons_per_thread);
-
-    for(u_word i = 0; i < threads_count; i++)
-    {
-        random::config random_config;
-        random_config.put_offset_start = random_array_length_per_thread * i;
-        random_config.put_offset = random_config.put_offset_start;
-        random_config.put_offset_end = random_array_length_per_thread * (i + 1);
-        threads.push_back(bnn::thread(this, i, start_neuron, length_in_us_in_power_of_two, random_config));
-        start_neuron += quantity_of_neurons_per_thread;
-    }
-
-    random_config.put_offset_start = 0;
-    random_config.put_offset = random_config.put_offset_start;
-    random_config.put_offset_end = simple_math::two_pow_x(random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
+    fill_threads(threads_count);
 }
 
 const u_word& brain::get_iteration() const
@@ -116,12 +115,13 @@ void brain::function(brain* me)
 {
     try
     {
-        me->in_work = true;
         u_word iteration_old = 0, iteration = 0, quantity_of_initialized_neurons_binary;
         me->treads_to_work = true;
 
         for(auto& t : me->threads)
             t.start();
+
+        me->in_work = true;
 
         logging("brain started");
 
@@ -136,13 +136,13 @@ void brain::function(brain* me)
             iteration = 0;
             quantity_of_initialized_neurons_binary = 0;
 
-            std::for_each(me->threads.begin(), me->threads.end(), [&](const thread& t)
+            for(const auto& t : me->threads)
             {
                 iteration += t.iteration;
                 quantity_of_initialized_neurons_binary += t.quantity_of_initialized_neurons_binary;
-            });
+            }
 
-            me->iteration = iteration / me->threads_count;
+            me->iteration = iteration / me->threads.size();
             me->quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
             usleep(BNN_LITTLE_TIME);
         }
@@ -175,6 +175,28 @@ void brain::start()
 
     main_thread = std::thread(function, this);
     main_thread.detach();
+
+    while(!in_work)
+        usleep(BNN_LITTLE_TIME);
+}
+
+void brain::fill_threads(u_word threads_count)
+{
+    threads.clear();
+    u_word random_array_length_per_thread = random_->get_array().size() / threads_count;
+    u_word start_neuron = 0;
+    u_word quantity_of_neurons_per_thread = quantity_of_neurons / threads_count;
+    u_word length_in_us_in_power_of_two = simple_math::log2_1(quantity_of_neurons_per_thread);
+
+    for(u_word i = 0; i < threads_count; i++)
+    {
+        random::config random_config;
+        random_config.put_offset_start = random_array_length_per_thread * i;
+        random_config.put_offset = random_config.put_offset_start;
+        random_config.put_offset_end = random_array_length_per_thread * (i + 1);
+        threads.push_back(bnn::thread(this, i, start_neuron, length_in_us_in_power_of_two, random_config));
+        start_neuron += quantity_of_neurons_per_thread;
+    }
 }
 
 void brain::stop()

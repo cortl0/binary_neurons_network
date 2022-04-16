@@ -10,22 +10,20 @@
 #ifndef BNN_STORAGE_HPP
 #define BNN_STORAGE_HPP
 
-#include "neurons/neuron.h"
 #include "neurons/binary.h"
-#include "neurons/sensor.h"
 #include "neurons/motor.h"
+#include "neurons/sensor.h"
 
 namespace bnn
 {
 
 union storage final
 {
-    neurons::neuron neuron_;
     neurons::binary binary_;
-    neurons::sensor sensor_;
     neurons::motor motor_;
+    neurons::neuron neuron_;
+    neurons::sensor sensor_;
     u_word words[sizeof(neurons::motor) / sizeof(u_word)];
-    storage() { }
 };
 
 } // namespace bnn

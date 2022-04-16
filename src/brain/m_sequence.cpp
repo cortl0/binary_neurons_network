@@ -9,20 +9,19 @@
 
 #include "m_sequence.h"
 
+#include <stdexcept>
+
 namespace bnn
 {
 
-m_sequence::m_sequence()
+m_sequence::m_sequence(u_word length)
+    : length(length)
 {
-    length = 3;
-}
-
-m_sequence::m_sequence(u_word triggers_length)
-{
-    if((triggers_length < 2) || (triggers_length > QUANTITY_OF_BITS_IN_WORD - 1))
-        throw_error("error");
-
-    length = triggers_length;
+    if((length < 2) || (length > QUANTITY_OF_BITS_IN_WORD - 1))
+        throw std::range_error(
+                log_string("invalid value ["
+                           + std::to_string(length)
+                           + "] of triggers_length"));
 }
 
 bool m_sequence::next()
@@ -34,21 +33,6 @@ bool m_sequence::next()
     triggers |= ((triggers & 1) ^ return_value) << (length - 1);
 
     return return_value;
-}
-
-bool m_sequence::get_at(u_word future)
-{
-    return (triggers >> future) & 1;
-}
-
-u_word m_sequence::get_registers()
-{
-    return triggers;
-}
-
-void m_sequence::set_triggers_length(u_word triggers_length)
-{
-    length = triggers_length;
 }
 
 } // namespace bnn

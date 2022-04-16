@@ -9,15 +9,31 @@
 
 #include "random.h"
 
+#include <exception>
+#include <random>
+
+#include "../simple_math.hpp"
+
 namespace bnn::random
 {
 
-random::~random() { }
+random::~random()
+{
+    logging("");
+}
 
 random::random(u_word random_array_length_in_power_of_two)
 {
+    if((random_array_length_in_power_of_two < simple_math::log2_1(QUANTITY_OF_BITS_IN_WORD))
+            || (random_array_length_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD))
+        throw std::range_error(
+                log_string("invalid value ["
+                           + std::to_string(random_array_length_in_power_of_two)
+                           + "] of random_array_length_in_power_of_two"));
+
     u_word length = (1 << random_array_length_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
     array.resize(length);
+    logging("array size is " + std::to_string(length));
 
     config config_;
     config_.put_offset_start = 0;
@@ -27,21 +43,20 @@ random::random(u_word random_array_length_in_power_of_two)
 #define fill_from 2
 #if(fill_from == 0)
     // fill the array with random numbers
-    for (_word i = 0; i < length; i++)
-        for (_word j = 0; j < _word_bits; j++)
+    for (u_word i = 0; i < length; i++)
+        for (u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
             put(rand() % 2);
 #elif(fill_from == 1)
     // fill the array with random numbers Mersenne Twister
     std::mt19937 gen;
     std::uniform_int_distribution<> uid = std::uniform_int_distribution<>(0, 1);
-    for (_word i = 0; i < length; i++)
-        for (_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
+    for (u_word i = 0; i < length; i++)
+        for (u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
             put(uid(gen), config_);
 #elif(fill_from == 2)
     // fill the array with M-sequence
     // no need to use random number algorithms
-    m_sequence m_sequence_(random_array_length_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD ?
-                           QUANTITY_OF_BITS_IN_WORD - 1 : random_array_length_in_power_of_two);
+    m_sequence m_sequence_(random_array_length_in_power_of_two);
 
     for (u_word i = 0; i < array.size(); i++)
         for (u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)

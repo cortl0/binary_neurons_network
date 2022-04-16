@@ -10,10 +10,10 @@
 #ifndef BNN_RANDOM_RANDOM_H
 #define BNN_RANDOM_RANDOM_H
 
-#include <random>
+#include <vector>
 
-#include "../m_sequence.h"
 #include "config.hpp"
+#include "../m_sequence.h"
 
 namespace bnn::random
 {
@@ -23,7 +23,7 @@ class random final
 public:
     ~random();
     random() = delete;
-    random(u_word random_array_length_in_power_of_two);
+    explicit random(u_word random_array_length_in_power_of_two);
     void put(bool i, config&) noexcept(true);
     u_word get(u_word bits, config&) noexcept(true);
     u_word get_ft(u_word from, u_word to, config&) noexcept(true);

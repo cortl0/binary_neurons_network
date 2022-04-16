@@ -23,7 +23,7 @@ namespace bnn
 
 thread::thread()
 {
-
+    logging("");
 }
 
 thread::thread(brain* brain_,
@@ -56,7 +56,7 @@ void thread::function(thread* me, brain* b)
         me->in_work = true;
         u_word reaction_rate = 0;
         u_word j;
-        u_word quantity_of_neurons = b->quantity_of_neurons / b->threads_count;
+        u_word quantity_of_neurons = b->quantity_of_neurons / b->threads.size();
         logging("thread [" + std::to_string(me->thread_number) + "] started");
 
         while(b->treads_to_work)
@@ -71,7 +71,7 @@ void thread::function(thread* me, brain* b)
                 u_word debug_count = 0;
 
                 for(u_word i = b->threads[me->thread_number].start_neuron;
-                    i < b->threads[me->thread_number].start_neuron + b->quantity_of_neurons / b->threads_count; i++)
+                    i < b->threads[me->thread_number].start_neuron + b->quantity_of_neurons / b->threads.size(); i++)
                     if(b->storage_[i]->get_type() == neurons::neuron::type::motor)
                     {
                         debug_average_consensus += ((neurons::motor*)(b->storage_[i].get()))->debug_average_consensus;

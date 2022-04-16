@@ -15,7 +15,7 @@
 namespace bnn
 {
 
-struct brain;
+class brain;
 
 union storage;
 

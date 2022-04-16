@@ -21,7 +21,7 @@ namespace fs = std::experimental::filesystem;
 namespace bnn
 {
 
-struct brain_tools : public brain
+class brain_tools : public brain
 {
 public:
     virtual ~brain_tools();
@@ -30,7 +30,7 @@ public:
                 u_word input_length,
                 u_word output_length,
                 u_word threads_count_in_power_of_two = 0);
-    void debug_out();
+    void debug_out(std::string&);
     const u_word& get_iteration() const;
     bool load(std::ifstream&);
     void primary_filling();
@@ -41,9 +41,6 @@ public:
     void save_random_csv();
     void save_random_csv_line();
     void stop();
-
-private:
-    std::thread thread_debug_out;
 };
 
 } // namespace bnn

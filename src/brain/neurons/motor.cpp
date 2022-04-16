@@ -9,8 +9,9 @@
 
 #include "motor.h"
 #include "../brain.h"
-#include "../thread.h"
+#include "../simple_math.hpp"
 #include "../storage.hpp"
+#include "../thread.h"
 
 namespace bnn::neurons
 {
