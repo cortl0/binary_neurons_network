@@ -115,12 +115,12 @@ void brain_tools::debug_out(std::string& s)
 
     debug_average_level_counter = 0;
 
-    for (u_word i = 0; i < storage_.size(); i++)
+    for(u_word i = 0; i < storage_.size(); i++)
     {
-        switch (storage_[i]->get_type())
+        switch(storage_[i]->get_type())
         {
         case neurons::neuron::type::motor:
-            debug_motors_slots_ocupied += ((neurons::motor*)(storage_[i].get()))->binary_neurons_.size();
+            debug_motors_slots_ocupied += ((neurons::motor*)(storage_[i].get()))->binary_neurons.size();
             break;
         case neurons::neuron::type::binary:
             if(((neurons::binary*)(storage_[i].get()))->in_work)
@@ -197,84 +197,71 @@ bool brain_tools::load(std::ifstream& ifs)
     u_word w;
     bool b;
     ifs.read(reinterpret_cast<char*>(this), &save_load_size - reinterpret_cast<char*>(this));
-    ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
-    auto random_array = random_->get_array();
+    ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
+    auto& random_array = random_->get_array();
     random_array.resize(w);
 
     for(u_word j = 0; j < random_array.size(); j++)
     {
-        ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+        ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
         random_array[j] = w;
     }
 
-    ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+    ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
     world_input.resize(w);
 
     for(u_word i = 0; i < w; i++)
     {
-        ifs.read(reinterpret_cast<char*>(&b), sizeof(b));
+        ifs.read(reinterpret_cast<char*>(&b), sizeof(bool));
         world_input[i] = b;
     }
 
-    ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+    ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
     world_output.resize(w);
 
     for(u_word i = 0; i < w; i++)
     {
-        ifs.read(reinterpret_cast<char*>(&b), sizeof(b));
+        ifs.read(reinterpret_cast<char*>(&b), sizeof(bool));
         world_output[i] = b;
     }
 
     storage_.resize(quantity_of_neurons);
-    neurons::motor::binary_neuron binary_neuron_(0, 0, 0);
-    char temp[sizeof(storage)];
-    //storage* stor = (storage*)temp;
+    neurons::motor::binary_neuron motor_binary_neuron(0, 0, 0);
 
     for(u_word i = 0; i < quantity_of_neurons; i++)
     {
-        ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+        ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
 
         switch(static_cast<neurons::neuron::type>(w))
         {
         case neurons::neuron::type::binary:
         {
-            ifs.read(temp, sizeof(neurons::binary));
             storage_[i].reset(new neurons::binary());
-            std::memcpy(reinterpret_cast<void*>(storage_[i].get()), temp, sizeof(neurons::binary));
+            ifs.read(reinterpret_cast<char*>(storage_[i].get()), sizeof(neurons::binary));
             break;
         }
         case neurons::neuron::type::sensor:
         {
-            ifs.read(temp, sizeof(neurons::sensor));
-            storage_[i].reset(new neurons::sensor(world_input, (reinterpret_cast<storage*>(temp))->sensor_.world_input_address));
-            std::memcpy(reinterpret_cast<void*>(storage_[i].get()), temp, sizeof(neurons::sensor));
+            storage_[i].reset(new neurons::sensor(world_input, 0));
+            ifs.read(reinterpret_cast<char*>(storage_[i].get()), sizeof(neurons::sensor));
             break;
         }
         case neurons::neuron::type::motor:
         {
-            ifs.read(temp, reinterpret_cast<char*>(&(dynamic_cast<neurons::motor*>(storage_[i].get()))->save_load_size)
-                     - reinterpret_cast<char*>(storage_[i].get()));
+            storage_[i].reset(new neurons::motor(world_output, 0));
 
-            storage_[i].reset(new neurons::motor(world_output, ((storage*)temp)->motor_.world_output_address));
+            ifs.read(reinterpret_cast<char*>(storage_[i].get()),
+                     &(dynamic_cast<neurons::motor*>(storage_[i].get()))->save_load_size -
+                     reinterpret_cast<char*>(storage_[i].get()));
 
-            std::memcpy(reinterpret_cast<void*>(storage_[i].get()), temp,
-                        reinterpret_cast<char*>(&(dynamic_cast<neurons::motor*>(storage_[i].get()))->save_load_size)
-                        - reinterpret_cast<char*>(storage_[i].get()));
-
-            ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+            ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
 
             for(u_word j = 0; j < w; j++)
             {
-                ifs.read(reinterpret_cast<char*>(&binary_neuron_), sizeof(neurons::motor::binary_neuron));
+                ifs.read(reinterpret_cast<char*>(&motor_binary_neuron), sizeof(neurons::motor::binary_neuron));
 
-//                dynamic_cast<neurons::motor*>(storage_[i].get())->binary_neurons_.insert(
-//                            std::make_pair(binary_neuron_.address, neurons::motor::binary_neuron(0,0,0)));
-                auto fff0 = storage_[i].get();
-auto fff = reinterpret_cast<neurons::motor*>(storage_[i].get());
-std::cout << fff0 << std::endl;
-std::cout << fff << std::endl;
-                reinterpret_cast<neurons::motor*>(storage_[i].get())->binary_neurons_.insert(
-                            std::make_pair(binary_neuron_.address, neurons::motor::binary_neuron(binary_neuron_)));
+                reinterpret_cast<neurons::motor*>(storage_[i].get())->binary_neurons.insert(
+                            std::make_pair(motor_binary_neuron.address, neurons::motor::binary_neuron(motor_binary_neuron)));
             };
 
             break;
@@ -284,13 +271,14 @@ std::cout << fff << std::endl;
         }
     }
 
-    ifs.read(reinterpret_cast<char*>(&w), sizeof(w));
+    ifs.read(reinterpret_cast<char*>(&w), sizeof(u_word));
     fill_threads(w);
 
-    for(u_word i = 0; i < threads.size(); i++)
+    for(u_word i = 0; i < w; i++)
     {
-        ifs.read(reinterpret_cast<char*>(&threads[i].iteration), &threads[i].save_load_size - reinterpret_cast<char*>(&threads[i].iteration));
-        threads[i].brain_ = this;
+        ifs.read(reinterpret_cast<char*>(&threads[i].iteration),
+                 &threads[i].save_load_size -
+                 reinterpret_cast<char*>(&threads[i].iteration));
     }
 
     return true;
@@ -383,38 +371,38 @@ bool brain_tools::save(std::ofstream& ofs)
     u_word w;
     bool b;
     ofs.write(reinterpret_cast<char*>(this), &save_load_size - reinterpret_cast<char*>(this));
-    auto random_array = random_->get_array();
+    auto& random_array = random_->get_array();
     w = random_array.size();
-    ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+    ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
 
     for(u_word j = 0; j < random_array.size(); j++)
     {
         w = random_array[j];
-        ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+        ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
     }
 
     w = world_input.size();
-    ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+    ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
 
     for(u_word i = 0; i < w; i++)
     {
         b = world_input[i];
-        ofs.write(reinterpret_cast<char*>(&b), sizeof(b));
+        ofs.write(reinterpret_cast<char*>(&b), sizeof(bool));
     }
 
     w = world_output.size();
-    ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+    ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
 
     for(u_word i = 0; i < w; i++)
     {
         b = world_output[i];
-        ofs.write(reinterpret_cast<char*>(&b), sizeof(b));
+        ofs.write(reinterpret_cast<char*>(&b), sizeof(bool));
     }
 
     for(u_word i = 0; i < quantity_of_neurons; i++)
     {
         w = static_cast<u_word>(storage_[i]->get_type());
-        ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+        ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
 
         switch(storage_[i]->get_type())
         {
@@ -426,17 +414,16 @@ bool brain_tools::save(std::ofstream& ofs)
             break;
         case neurons::neuron::type::motor:
             ofs.write(reinterpret_cast<char*>(storage_[i].get()),
-                      reinterpret_cast<char*>(&(dynamic_cast<neurons::motor*>(storage_[i].get()))->save_load_size)
-                      - reinterpret_cast<char*>(storage_[i].get()));
+                      &(dynamic_cast<neurons::motor*>(storage_[i].get()))->save_load_size -
+                      reinterpret_cast<char*>(storage_[i].get()));
 
-            w = (reinterpret_cast<neurons::motor*>(storage_[i].get()))->binary_neurons_.size();
-            ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+            w = (reinterpret_cast<neurons::motor*>(storage_[i].get()))->binary_neurons.size();
+            ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
 
-            for(auto& binary_neuron : (static_cast<neurons::motor*>(storage_[i].get()))->binary_neurons_)
+            for(auto& binary_neuron : (dynamic_cast<neurons::motor*>(storage_[i].get()))->binary_neurons)
             {
-                neurons::motor::binary_neuron binary_neuron__(binary_neuron.second);
-                //binary_neuron__ = neurons::motor::binary_neuron(binary_neuron.second);
-                ofs.write(reinterpret_cast<char*>(&binary_neuron__), sizeof(neurons::motor::binary_neuron));
+                neurons::motor::binary_neuron motor_binary_neuron(binary_neuron.second);
+                ofs.write(reinterpret_cast<char*>(&motor_binary_neuron), sizeof(neurons::motor::binary_neuron));
             }
 
             break;
@@ -446,10 +433,14 @@ bool brain_tools::save(std::ofstream& ofs)
     }
 
     w = threads.size();
-    ofs.write(reinterpret_cast<char*>(&w), sizeof(w));
+    ofs.write(reinterpret_cast<char*>(&w), sizeof(u_word));
 
-    for(u_word i = 0; i < threads.size(); i++)
-        ofs.write(reinterpret_cast<char*>(&threads[i].iteration), &threads[i].save_load_size - reinterpret_cast<char*>(&threads[i].iteration));
+    for(u_word i = 0; i < w; i++)
+    {
+        ofs.write(reinterpret_cast<char*>(&threads[i].iteration),
+                  &threads[i].save_load_size -
+                  reinterpret_cast<char*>(&threads[i].iteration));
+    }
 
     return true;
 }

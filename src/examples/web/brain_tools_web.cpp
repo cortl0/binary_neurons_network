@@ -39,11 +39,11 @@ QString brain_tools_web::brain_get_state()
     qString += "\t n_init=" + QString::number(quantity_of_initialized_neurons_binary);
     qString += "\nquantity_of_neuron_binary=" + QString::number(quantity_of_neurons_binary) + "\t";
     qString += "quantity_of_neuron_sensor=" + QString::number(world_input.size()) + "\t";
-    for (uint i = 0; i < 8*16/*quantity_of_neuron_sensor*/; i+=16)
-        if (world_input[i]) qString += "1"; else qString += "0";
+    for(uint i = 0; i < 8*16/*quantity_of_neuron_sensor*/; i+=16)
+        if(world_input[i]) qString += "1"; else qString += "0";
     qString += "\nquantity_of_neuron_motor=" + QString::number(world_output.size()) + "\t";
-    for (uint i = 0; i < world_output.size(); i++)
-        if (world_output[i]) qString += "1"; else qString += "0";
+    for(uint i = 0; i < world_output.size(); i++)
+        if(world_output[i]) qString += "1"; else qString += "0";
     /*
     qString += "\nsignals\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
@@ -53,7 +53,7 @@ QString brain_tools_web::brain_get_state()
         qString += QString::number(brain_.storage_[i + brain_.quantity_of_neurons_sensor].motor_.slots_occupied) + "\t";
     */
     qString += "\naccum\t";
-    for (uint i = 0; i < quantity_of_neurons; i++)
+    for(uint i = 0; i < quantity_of_neurons; i++)
         if(storage_[i]->get_type() == neurons::neuron::type::motor)
             qString += QString::number(dynamic_cast<neurons::motor*>(storage_[i].get())->accumulator) + "\t";
     /*

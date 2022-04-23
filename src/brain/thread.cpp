@@ -45,58 +45,57 @@ void thread::start()
     if(in_work)
         return;
 
-    thread_.reset(new std::thread(function, this, brain_));
-    thread_->detach();
+    std::thread(&thread::function, this).detach();
 }
 
-void thread::function(thread* me, brain* b)
+void thread::function()
 {
     try
     {
-        me->in_work = true;
+        in_work = true;
         u_word reaction_rate = 0;
         u_word j;
-        u_word quantity_of_neurons = b->quantity_of_neurons / b->threads.size();
-        logging("thread [" + std::to_string(me->thread_number) + "] started");
+        u_word quantity_of_neurons = brain_->quantity_of_neurons / brain_->threads.size();
+        logging("thread [" + std::to_string(thread_number) + "] started");
 
-        while(b->treads_to_work)
+        while(brain_->treads_to_work)
         {
             if(!reaction_rate--)
             {
                 reaction_rate = quantity_of_neurons;
-                me->iteration++;
+                iteration++;
 
 #ifdef DEBUG
                 u_word debug_average_consensus = 0;
                 u_word debug_count = 0;
 
-                for(u_word i = b->threads[me->thread_number].start_neuron;
-                    i < b->threads[me->thread_number].start_neuron + b->quantity_of_neurons / b->threads.size(); i++)
-                    if(b->storage_[i]->get_type() == neurons::neuron::type::motor)
+                for(u_word i = brain_->threads[thread_number].start_neuron;
+                    i < brain_->threads[thread_number].start_neuron + brain_->quantity_of_neurons / brain_->threads.size(); i++)
+                    if(brain_->storage_[i]->get_type() == neurons::neuron::type::motor)
                     {
-                        debug_average_consensus += ((neurons::motor*)(b->storage_[i].get()))->debug_average_consensus;
+                        debug_average_consensus += ((neurons::motor*)(brain_->storage_[i].get()))->debug_average_consensus;
                         debug_count++;
                     }
 
                 if(debug_count > 0)
-                    b->threads[me->thread_number].debug_average_consensus = debug_average_consensus / debug_count;
+                    brain_->threads[thread_number].debug_average_consensus = debug_average_consensus / debug_count;
 
-                if(b->threads[me->thread_number].debug_max_consensus > 0)
-                    b->threads[me->thread_number].debug_max_consensus--;
+                if(brain_->threads[thread_number].debug_max_consensus > 0)
+                    brain_->threads[thread_number].debug_max_consensus--;
 #endif
             }
 
-            j = me->start_neuron + b->random_->get(me->length_in_us_in_power_of_two, me->random_config);
-            b->storage_[j]->solve(*b, me->thread_number, j);
+            j = start_neuron + brain_->random_->get(length_in_us_in_power_of_two, random_config);
+            brain_->storage_[j]->solve(*brain_, thread_number, j);
         }
     }
     catch (...)
     {
-        logging("error in thread [" + std::to_string(me->thread_number) + "]");
+        logging("error in thread [" + std::to_string(thread_number) + "]");
     }
 
-    logging("thread [" + std::to_string(me->thread_number) + "] stopped");
-    me->in_work = false;
+    logging("thread [" + std::to_string(thread_number) + "] stopped");
+    in_work = false;
 }
 
 } // namespace bnn

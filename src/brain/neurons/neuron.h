@@ -24,7 +24,7 @@ namespace neurons
 
 struct neuron
 {
-    enum class type : s_word
+    enum class type : u_word
     {
         neuron,
         sensor,

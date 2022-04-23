@@ -65,10 +65,9 @@ public:
 
 public:
     brain* brain_;
-    std::unique_ptr<std::thread> thread_;
 
 private:
-    static void function(thread*, brain*);
+    void function();
 };
 
 } // namespace bnn

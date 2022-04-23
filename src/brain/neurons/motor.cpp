@@ -33,11 +33,11 @@ void motor::solve(brain& b, const u_word thread_number, const u_word me)
     s_word debug_count = 0;
 #endif
 
-    for(auto it = binary_neurons_.begin(); it != binary_neurons_.end();)
+    for(auto it = binary_neurons.begin(); it != binary_neurons.end();)
     {
         if(it->second.life_counter != b.storage_[it->first]->life_counter)
         {
-            it = binary_neurons_.erase(it);
+            it = binary_neurons.erase(it);
             continue;
         }
 
@@ -90,7 +90,7 @@ void motor::solve(brain& b, const u_word thread_number, const u_word me)
         {
             if (((b.storage_[i]->output_new ^ b.storage_[i]->output_old)
                  & (output_new ^ output_old)))
-                binary_neurons_.insert(
+                binary_neurons.insert(
                             std::pair<u_word, binary_neuron>(
                                 i,
                                 binary_neuron(

@@ -71,9 +71,7 @@ protected:
     void stop();
 
 private:
-    std::thread main_thread;
-
-    static void function(brain*);
+    void function();
 };
 
 } // namespace bnn

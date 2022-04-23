@@ -44,8 +44,8 @@ void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
     QImage qImage = (qPixmapSmall).toImage();
     int kgr = (256 >> gradation_bit);
     int d = kgr / 2 - 1;
-    for (int j=0; j<qPixmapSmall.size().height(); j++)
-        for (int i=0; i<qPixmapSmall.size().width(); i++)
+    for(int j=0; j<qPixmapSmall.size().height(); j++)
+        for(int i=0; i<qPixmapSmall.size().width(); i++)
         {
             QRgb qRgb1 = qImageWeb.pixel(
                         static_cast<int>(x + i / zoom - (qPixmapSmall.size().width() >> 1) / zoom),

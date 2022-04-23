@@ -111,39 +111,39 @@ bool brain::get_output(u_word offset) const
     return world_output[offset];
 }
 
-void brain::function(brain* me)
+void brain::function()
 {
     try
     {
-        u_word iteration_old = 0, iteration = 0, quantity_of_initialized_neurons_binary;
-        me->treads_to_work = true;
+        u_word iteration_old = 0, iteration_new = 0, quantity_of_initialized_neurons_binary_temp;
+        treads_to_work = true;
 
-        for(auto& t : me->threads)
+        for(auto& t : threads)
             t.start();
 
-        me->in_work = true;
+        in_work = true;
 
         logging("brain started");
 
-        while(me->to_work)
+        while(to_work)
         {
-            if(iteration_old < iteration)
+            if(iteration_old < iteration_new)
             {
-                me->candidate_for_kill = me->random_->get(me->quantity_of_neurons_in_power_of_two, me->random_config);
-                iteration_old = iteration;
+                candidate_for_kill = random_->get(quantity_of_neurons_in_power_of_two, random_config);
+                iteration_old = iteration_new;
             }
 
-            iteration = 0;
-            quantity_of_initialized_neurons_binary = 0;
+            iteration_new = 0;
+            quantity_of_initialized_neurons_binary_temp = 0;
 
-            for(const auto& t : me->threads)
+            for(const auto& t : threads)
             {
-                iteration += t.iteration;
-                quantity_of_initialized_neurons_binary += t.quantity_of_initialized_neurons_binary;
+                iteration_new += t.iteration;
+                quantity_of_initialized_neurons_binary_temp += t.quantity_of_initialized_neurons_binary;
             }
 
-            me->iteration = iteration / me->threads.size();
-            me->quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
+            iteration = iteration_new / threads.size();
+            quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary_temp;
             usleep(BNN_LITTLE_TIME);
         }
     }
@@ -152,13 +152,13 @@ void brain::function(brain* me)
         logging("error in brain");
     }
 
-    me->treads_to_work = false;
+    treads_to_work = false;
 
-    while(std::any_of(me->threads.begin(), me->threads.end(), [](const thread& t){ return t.in_work; }))
+    while(std::any_of(threads.begin(), threads.end(), [](const thread& t){ return t.in_work; }))
         usleep(BNN_LITTLE_TIME);
 
     logging("brain stopped");
-    me->in_work = false;
+    in_work = false;
 }
 
 void brain::set_input(u_word offset, bool value)
@@ -173,8 +173,7 @@ void brain::start()
 
     to_work = true;
 
-    main_thread = std::thread(function, this);
-    main_thread.detach();
+    std::thread(&brain::function, this).detach();
 
     while(!in_work)
         usleep(BNN_LITTLE_TIME);
