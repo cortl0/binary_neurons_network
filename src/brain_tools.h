@@ -30,7 +30,7 @@ public:
                 u_word input_length,
                 u_word output_length,
                 u_word threads_count_in_power_of_two = 0);
-    void debug_out(std::string&);
+    void get_debug_string(std::string&);
     const u_word& get_iteration() const;
     bool load(std::ifstream&);
     void primary_filling();

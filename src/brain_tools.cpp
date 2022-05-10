@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
-#include <map>
 #include <set>
 #include <vector>
 
@@ -65,7 +64,7 @@ void recursion(u_word num, brain* b, std::string& s)
     }
 };
 
-void brain_tools::debug_out(std::string& s)
+void brain_tools::get_debug_string(std::string& s)
 {
     static u_word debug_average_level_counter;
 
@@ -115,6 +114,9 @@ void brain_tools::debug_out(std::string& s)
 
     debug_average_level_counter = 0;
 
+    auto levels = std::vector<u_word>(50, 0);
+    auto life_counters = std::vector<u_word>(100, 0);
+
     for(u_word i = 0; i < storage_.size(); i++)
     {
         switch(storage_[i]->get_type())
@@ -126,7 +128,6 @@ void brain_tools::debug_out(std::string& s)
             if(((neurons::binary*)(storage_[i].get()))->in_work)
             {
                 debug_average_level += storage_[i]->level;
-
                 debug_average_level_counter++;
 
                 if(debug_max_level < storage_[i]->level)
@@ -134,12 +135,35 @@ void brain_tools::debug_out(std::string& s)
                     debug_max_level = storage_[i]->level;
                     debug_max_level_binary_num = i;
                 }
+
+                if(levels.size() > storage_[i]->level)
+                    levels[storage_[i]->level]++;
             }
+
+            if(life_counters.size() > storage_[i]->life_counter)
+                life_counters[storage_[i]->life_counter]++;
+
             break;
         default:
             break;
         }
     }
+
+    s += "levels: ";
+    for(u_word i = 0; i < 50; i++)
+    {
+        s += std::to_string(levels[i]);
+        s += " ";
+    }
+    s += "\n";
+
+    s += "life_counters: ";
+    for(u_word i = 0; i < 100; i++)
+    {
+        s += std::to_string(life_counters[i]);
+        s += " ";
+    }
+    s += "\n";
 
     if(debug_average_level_counter)
         debug_average_level /= debug_average_level_counter;
