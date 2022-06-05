@@ -7,12 +7,13 @@
  *   licensed by GPL v3.0
  */
 
-#include "random.h"
+#include "headers/random.h"
 
 #include <exception>
 #include <random>
 
-#include "../simple_math.hpp"
+#include "../common/headers/simple_math.hpp"
+#include "../common/headers/m_sequence.h"
 
 namespace bnn::random
 {

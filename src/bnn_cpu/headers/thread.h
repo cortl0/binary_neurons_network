@@ -12,9 +12,8 @@
 
 #include <thread>
 
-#include "config.hpp"
-#include "state.hpp"
-#include "random/config.hpp"
+#include "../../common/headers/config.hpp"
+#include "random.h"
 
 namespace bnn
 {
@@ -35,7 +34,7 @@ class thread final
 public:
     u_word iteration = 0;
     u_word quantity_of_initialized_neurons_binary = 0;
-    random::config random_config;
+    random::random::config random_config;
     bool in_work = false;
 
     thread();
@@ -43,7 +42,7 @@ public:
            u_word thread_number,
            u_word start_neuron,
            u_word length_in_us_in_power_of_two,
-           random::config&);
+           random::random::config&);
     void start();
 
 private:

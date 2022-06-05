@@ -14,13 +14,12 @@
 #include <thread>
 #include <vector>
 
-#include "config.hpp"
+#include "../../common/headers/config.hpp"
 #include "neurons/binary.h"
 #include "neurons/motor.h"
 #include "neurons/sensor.h"
-#include "random/random.h"
-#include "state.hpp"
-#include "storage.hpp"
+#include "random.h"
+#include "neurons/storage.hpp"
 
 namespace bnn
 {
@@ -40,7 +39,7 @@ public:
     bool to_work = false;
     bool in_work = false;
     bool treads_to_work;
-    random::config random_config;
+    random::random::config random_config;
 
 private:
     u_word iteration = 0;

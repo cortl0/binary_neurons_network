@@ -7,13 +7,13 @@
  *   licensed by GPL v3.0
  */
 
-#include "binary.h"
+#include "headers/neurons/binary.h"
 
 #include <algorithm>
 
-#include "../brain.h"
-#include "../thread.h"
-#include "../storage.hpp"
+#include "headers/brain.h"
+#include "headers/thread.h"
+#include "headers/neurons/storage.hpp"
 
 namespace bnn::neurons
 {

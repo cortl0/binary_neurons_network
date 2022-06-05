@@ -10,7 +10,7 @@
 #ifndef BNN_NEURONS_NEURON_H
 #define BNN_NEURONS_NEURON_H
 
-#include "../config.hpp"
+#include "../../../common/headers/config.hpp"
 
 namespace bnn
 {

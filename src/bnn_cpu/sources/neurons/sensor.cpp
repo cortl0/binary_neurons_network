@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#include "sensor.h"
-#include "../brain.h"
+#include "headers/neurons/sensor.h"
+#include "headers/brain.h"
 
 namespace bnn::neurons
 {

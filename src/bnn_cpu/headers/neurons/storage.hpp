@@ -10,9 +10,9 @@
 #ifndef BNN_STORAGE_HPP
 #define BNN_STORAGE_HPP
 
-#include "neurons/binary.h"
-#include "neurons/motor.h"
-#include "neurons/sensor.h"
+#include "binary.h"
+#include "motor.h"
+#include "sensor.h"
 
 namespace bnn
 {

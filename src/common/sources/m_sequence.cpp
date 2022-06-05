@@ -7,7 +7,7 @@
  *   licensed by GPL v3.0
  */
 
-#include "m_sequence.h"
+#include "../headers/m_sequence.h"
 
 #include <stdexcept>
 

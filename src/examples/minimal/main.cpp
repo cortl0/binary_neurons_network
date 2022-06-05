@@ -9,7 +9,8 @@
 
 #include "unistd.h"
 #include <iostream>
-#include "/usr/local/include/bnn/brain.h"
+
+#include "brain.h"
 
 int main()
 {

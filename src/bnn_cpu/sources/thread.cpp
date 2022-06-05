@@ -7,16 +7,15 @@
  *   licensed by GPL v3.0
  */
 
-#include "thread.h"
+#include "headers/thread.h"
 
 #include <unistd.h>
 #include <iostream>
 
-#include "brain.h"
-#include "neurons/neuron.h"
-#include "storage.hpp"
-#include "m_sequence.h"
-#include "random/random.h"
+#include "headers/brain.h"
+#include "headers/neurons/neuron.h"
+#include "headers/neurons/storage.hpp"
+#include "../common/headers/m_sequence.h"
 
 namespace bnn
 {
@@ -30,7 +29,7 @@ thread::thread(brain* brain_,
                u_word thread_number,
                u_word start_neuron,
                u_word length_in_us_in_power_of_two,
-               random::config& random_config)
+               random::random::config& random_config)
     : random_config(random_config),
       length_in_us_in_power_of_two(length_in_us_in_power_of_two),
       start_neuron(start_neuron),

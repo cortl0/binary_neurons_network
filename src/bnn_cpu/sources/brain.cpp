@@ -7,16 +7,16 @@
  *   licensed by GPL v3.0
  */
 
-#include "brain.h"
+#include "headers/brain.h"
 
 #include <unistd.h>
 
 #include <algorithm>
 #include <iostream>
 
-#include "simple_math.hpp"
-#include "storage.hpp"
-#include "thread.h"
+#include "../common/headers/simple_math.hpp"
+#include "headers/neurons/storage.hpp"
+#include "headers/thread.h"
 
 namespace bnn
 {
@@ -189,7 +189,7 @@ void brain::fill_threads(u_word threads_count)
 
     for(u_word i = 0; i < threads_count; i++)
     {
-        random::config random_config;
+        random::random::config random_config;
         random_config.put_offset_start = random_array_length_per_thread * i;
         random_config.put_offset = random_config.put_offset_start;
         random_config.put_offset_end = random_array_length_per_thread * (i + 1);

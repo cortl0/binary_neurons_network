@@ -8,28 +8,12 @@ It is AI in the original meaning coinciding with the meanings of the following s
 - True artificial intelligence (True AI).
 
 ## Looking for a sponsor
-Development takes time  
-Time is money
-
-## Build
-- make
-- make clean
-- make install
-- make uninstall
-- QT build
-
-Building and installing the library
-```
-cd ./src/brain; sudo make install;
-```
 
 ## Usage
-
-main.cpp
 ```
 #include "unistd.h"
 #include <iostream>
-#include "/usr/local/include/bnn/brain.h"
+#include "brain.h"
 
 int main()
 {
@@ -79,14 +63,16 @@ int main()
 }
 ```
 
-Building the application
+## CMake build
+
+Build and run the minimal example with helper
 ```
-g++ -lpthread main.cpp -lbnn
+build_run.sh
 ```
 
 ## Example projects for BNN
 - [./src/examples/minimal/](../master/src/examples/minimal/) - Contains minimal project  
-- [./src/examples/web/](../master/src/examples/web/) - The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain  
+- [./src/examples/web/](../master/src/examples/web/) - The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain. QT Creator is required  
 - https://github.com/cortl0/device - The practical implementation of a physical device with the binary neurons  
 - https://github.com/cortl0/device_3d - Testing the BNN in 3d world
 

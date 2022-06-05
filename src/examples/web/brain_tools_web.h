@@ -16,7 +16,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "../../brain_tools.h"
+#include "../../common/headers/brain_tools.h"
 
 namespace bnn
 {

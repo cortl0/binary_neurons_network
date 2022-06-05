@@ -19,37 +19,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 LIBS += -lstdc++fs
 LIBS += -pthread
+LIBS += ../../build-bnn_cpu/libbnn_cpu.a
+
+INCLUDEPATH += ../../bnn_cpu/headers
 
 SOURCES += \
-        ../../brain/brain.cpp \
-        ../../brain/m_sequence.cpp \
-        ../../brain/neurons/binary.cpp \
-        ../../brain/neurons/motor.cpp \
-        ../../brain/neurons/neuron.cpp \
-        ../../brain/neurons/sensor.cpp \
-        ../../brain/random/random.cpp \
-        ../../brain/thread.cpp \
-        ../../brain_tools.cpp \
+        ../../common/sources/brain_tools.cpp \
         brain_tools_web.cpp \
         deviceai.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
-        ../../brain/brain.h \
-        ../../brain/config.hpp \
-        ../../brain/m_sequence.h \
-        ../../brain/neurons/binary.h \
-        ../../brain/neurons/motor.h \
-        ../../brain/neurons/neuron.h \
-        ../../brain/neurons/sensor.h \
-        ../../brain/random/config.hpp \
-        ../../brain/random/random.h \
-        ../../brain/simple_math.hpp \
-        ../../brain/state.hpp \
-        ../../brain/storage.hpp \
-        ../../brain/thread.h \
-        ../../brain_tools.h \
+        ../../common/headers/brain_tools.h \
         brain_tools_web.h \
         deviceai.h \
         mainwindow.h

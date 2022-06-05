@@ -12,8 +12,7 @@
 
 #include <vector>
 
-#include "config.hpp"
-#include "../m_sequence.h"
+#include "../../common/headers/config.hpp"
 
 namespace bnn::random
 {
@@ -21,6 +20,22 @@ namespace bnn::random
 class random final
 {
 public:
+    struct config
+    {
+        u_word get_offset = 0;
+        u_word get_offset_in_word = 0;
+        u_word put_offset_start;
+        u_word put_offset_end;
+        u_word put_offset;
+        u_word put_offset_in_word = 0;
+
+    #ifdef DEBUG
+        unsigned long long int debug_count_get = 0;
+        unsigned long long int debug_count_put = 0;
+        long long int debug_sum_put = 0;
+    #endif
+    };
+
     ~random();
     random() = delete;
     explicit random(u_word random_array_length_in_power_of_two);
