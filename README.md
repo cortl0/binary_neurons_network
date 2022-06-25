@@ -67,7 +67,7 @@ int main()
 
 Build and run the minimal example with helper
 ```
-build_run.sh
+make_run.sh
 ```
 
 ## Example projects for BNN
