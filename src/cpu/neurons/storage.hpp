@@ -23,7 +23,14 @@ union storage final
     neurons::motor motor_;
     neurons::neuron neuron_;
     neurons::sensor sensor_;
-    u_word words[sizeof(neurons::motor) / sizeof(u_word)];
+    u_word words
+    [
+        (sizeof(neurons::motor) >= sizeof(neurons::binary) && sizeof(neurons::motor) >= sizeof(neurons::sensor) ?
+             sizeof(neurons::motor) :
+             sizeof(neurons::binary) >= sizeof(neurons::sensor) ?
+                 sizeof(neurons::binary) : sizeof(neurons::sensor))
+        / sizeof(u_word)
+    ];
 };
 
 } // namespace bnn

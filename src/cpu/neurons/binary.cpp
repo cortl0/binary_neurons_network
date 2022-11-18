@@ -7,13 +7,13 @@
  *   licensed by GPL v3.0
  */
 
-#include "headers/neurons/binary.h"
+#include "binary.h"
 
 #include <algorithm>
 
-#include "headers/brain.h"
-#include "headers/thread.h"
-#include "headers/neurons/storage.hpp"
+#include "brain.h"
+#include "thread.h"
+#include "storage.hpp"
 
 namespace bnn::neurons
 {
@@ -23,7 +23,18 @@ binary::binary()
     type_ = neuron::type::binary;
 }
 
-void binary::init(brain& b, const u_word thread_number, const u_word first, const u_word second, const std::vector<std::shared_ptr<neuron>>& s)
+void binary::construct(binary* me)
+{
+    me->type_ = neuron::type::binary;
+}
+
+void binary::init(
+        brain& b,
+        const u_word thread_number,
+        const u_word first,
+        const u_word second,
+        const std::vector<std::shared_ptr<neuron>>& s
+        )
 {
     first_input_address = first;
     second_input_address = second;

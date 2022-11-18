@@ -7,27 +7,29 @@
  *   licensed by GPL v3.0
  */
 
-#include "unistd.h"
+#include <unistd.h>
 #include <iostream>
 
 #include "brain.h"
 
 int main()
 {
+	int quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
+	int quantity_of_threads_in_power_of_two = 1; // 2^1=2
     const u_word input_length = 31;
     const u_word output_length = 8;
-
     char input[input_length + 1];
     char output[output_length + 1];
     input[input_length] = '\0';
     output[output_length] = '\0';
     bool value;
 
-    bnn::brain brain_(12, // quantity_of_neurons_in_power_of_two (2^12=4096)
-                      input_length,
-                      output_length,
-                      1 // quantity_of_threads_in_power_of_two (2^1=2)
-                      );
+    bnn::brain brain_(
+        quantity_of_neurons_in_power_of_two,
+        input_length,
+        output_length,
+        quantity_of_threads_in_power_of_two
+        );
 
     brain_.start();
 

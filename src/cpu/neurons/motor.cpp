@@ -7,11 +7,11 @@
  *   licensed by GPL v3.0
  */
 
-#include "headers/neurons/motor.h"
-#include "headers/brain.h"
+#include "motor.h"
+#include "brain.h"
 #include "../common/headers/simple_math.hpp"
-#include "headers/neurons/storage.hpp"
-#include "headers/thread.h"
+#include "storage.hpp"
+#include "thread.h"
 
 namespace bnn::neurons
 {

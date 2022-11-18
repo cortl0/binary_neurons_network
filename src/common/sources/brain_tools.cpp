@@ -16,8 +16,8 @@
 #include <set>
 #include <vector>
 
-#include "../headers/thread.h"
-#include "../headers/neurons/storage.hpp"
+#include "thread.h"
+#include "neurons/storage.hpp"
 
 namespace bnn
 {
@@ -261,6 +261,7 @@ bool brain_tools::load(std::ifstream& ifs)
         case neurons::neuron::type::binary:
         {
             storage_[i].reset(new neurons::binary());
+            //neurons::binary::construct(dynamic_cast<neurons::binary*>(storage_[i].get()));
             ifs.read(reinterpret_cast<char*>(storage_[i].get()), sizeof(neurons::binary));
             break;
         }

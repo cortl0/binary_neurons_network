@@ -7,7 +7,7 @@
 #
 
 rm -r build-bnn_cpu
-cmake -S bnn_cpu -B build-bnn_cpu
+cmake -S cpu -B build-bnn_cpu
 make -C build-bnn_cpu
 
 rm -r examples/build-minimal

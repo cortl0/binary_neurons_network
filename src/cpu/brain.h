@@ -14,7 +14,7 @@
 #include <thread>
 #include <vector>
 
-#include "../../common/headers/config.hpp"
+#include "../common/headers/config.hpp"
 #include "neurons/binary.h"
 #include "neurons/motor.h"
 #include "neurons/sensor.h"

@@ -12,7 +12,7 @@
 
 #include <thread>
 
-#include "../../common/headers/config.hpp"
+#include "../common/headers/config.hpp"
 #include "random.h"
 
 namespace bnn

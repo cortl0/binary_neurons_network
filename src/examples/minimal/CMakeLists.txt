@@ -14,7 +14,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(${CMAKE_SOURCE_DIR}/../../bnn_cpu/headers)
+include_directories(${CMAKE_SOURCE_DIR}/../../cpu)
 
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
 

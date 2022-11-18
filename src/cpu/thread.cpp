@@ -7,14 +7,14 @@
  *   licensed by GPL v3.0
  */
 
-#include "headers/thread.h"
+#include "thread.h"
 
 #include <unistd.h>
 #include <iostream>
 
-#include "headers/brain.h"
-#include "headers/neurons/neuron.h"
-#include "headers/neurons/storage.hpp"
+#include "brain.h"
+#include "neurons/neuron.h"
+#include "neurons/storage.hpp"
 #include "../common/headers/m_sequence.h"
 
 namespace bnn

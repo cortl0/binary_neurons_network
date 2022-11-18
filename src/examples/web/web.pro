@@ -21,7 +21,7 @@ LIBS += -lstdc++fs
 LIBS += -pthread
 LIBS += ../../build-bnn_cpu/libbnn_cpu.a
 
-INCLUDEPATH += ../../bnn_cpu/headers
+INCLUDEPATH += ../../cpu
 
 SOURCES += \
         ../../common/sources/brain_tools.cpp \

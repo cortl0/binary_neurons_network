@@ -8,7 +8,7 @@
  */
 
 #include "brain_tools_web.h"
-#include "../../bnn_cpu/headers/neurons/storage.hpp"
+#include "neurons/storage.hpp"
 
 namespace bnn
 {

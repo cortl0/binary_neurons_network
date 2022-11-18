@@ -12,7 +12,7 @@
 
 #include <vector>
 
-#include "../../common/headers/config.hpp"
+#include "../common/headers/config.hpp"
 
 namespace bnn::random
 {

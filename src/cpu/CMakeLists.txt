@@ -16,29 +16,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(HEADERS
     ${HEADERS}
-    ${CMAKE_SOURCE_DIR}/headers/brain.h
+    ${CMAKE_SOURCE_DIR}/brain.h
     ${CMAKE_SOURCE_DIR}/../common/headers/config.hpp
     ${CMAKE_SOURCE_DIR}/../common/headers/m_sequence.h
     ${CMAKE_SOURCE_DIR}/../common/headers/simple_math.hpp
     ${CMAKE_SOURCE_DIR}/../common/headers/state.hpp
-    ${CMAKE_SOURCE_DIR}/headers/neurons/neuron.h
-    ${CMAKE_SOURCE_DIR}/headers/neurons/binary.h
-    ${CMAKE_SOURCE_DIR}/headers/neurons/motor.h
-    ${CMAKE_SOURCE_DIR}/headers/neurons/sensor.h
-    ${CMAKE_SOURCE_DIR}/headers/neurons/storage.hpp
-    ${CMAKE_SOURCE_DIR}/headers/random.h
-    ${CMAKE_SOURCE_DIR}/headers/thread.h
+    ${CMAKE_SOURCE_DIR}/neurons/neuron.h
+    ${CMAKE_SOURCE_DIR}/neurons/binary.h
+    ${CMAKE_SOURCE_DIR}/neurons/motor.h
+    ${CMAKE_SOURCE_DIR}/neurons/sensor.h
+    ${CMAKE_SOURCE_DIR}/neurons/storage.hpp
+    ${CMAKE_SOURCE_DIR}/random.h
+    ${CMAKE_SOURCE_DIR}/thread.h
 )
 
 set(SOURCES
-    ${CMAKE_SOURCE_DIR}/sources/brain.cpp
+    ${CMAKE_SOURCE_DIR}/brain.cpp
     ${CMAKE_SOURCE_DIR}/../common/sources/m_sequence.cpp
-    ${CMAKE_SOURCE_DIR}/sources/neurons/neuron.cpp
-    ${CMAKE_SOURCE_DIR}/sources/neurons/binary.cpp
-    ${CMAKE_SOURCE_DIR}/sources/neurons/motor.cpp
-    ${CMAKE_SOURCE_DIR}/sources/neurons/sensor.cpp
-    ${CMAKE_SOURCE_DIR}/sources/random.cpp
-    ${CMAKE_SOURCE_DIR}/sources/thread.cpp
+    ${CMAKE_SOURCE_DIR}/neurons/neuron.cpp
+    ${CMAKE_SOURCE_DIR}/neurons/binary.cpp
+    ${CMAKE_SOURCE_DIR}/neurons/motor.cpp
+    ${CMAKE_SOURCE_DIR}/neurons/sensor.cpp
+    ${CMAKE_SOURCE_DIR}/random.cpp
+    ${CMAKE_SOURCE_DIR}/thread.cpp
 )
 
 add_library(${CMAKE_PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})

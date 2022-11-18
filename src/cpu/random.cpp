@@ -7,7 +7,7 @@
  *   licensed by GPL v3.0
  */
 
-#include "headers/random.h"
+#include "random.h"
 
 #include <exception>
 #include <random>

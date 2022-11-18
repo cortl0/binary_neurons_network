@@ -7,7 +7,7 @@
  *   licensed by GPL v3.0
  */
 
-#include "headers/brain.h"
+#include "brain.h"
 
 #include <unistd.h>
 
@@ -15,8 +15,8 @@
 #include <iostream>
 
 #include "../common/headers/simple_math.hpp"
-#include "headers/neurons/storage.hpp"
-#include "headers/thread.h"
+#include "neurons/storage.hpp"
+#include "thread.h"
 
 namespace bnn
 {
