@@ -11,7 +11,7 @@
 
 #include <algorithm>
 
-#include "brain.h"
+#include "bnn.h"
 #include "thread.h"
 #include "storage.hpp"
 
@@ -52,7 +52,7 @@ void binary::init(
     in_work = true;
 }
 
-void binary::create(brain& b, const u_word thread_number, const u_word me)
+bool binary::create(brain& b, const u_word thread_number, const u_word me)
 {
     u_word first, second;
 
@@ -60,28 +60,30 @@ void binary::create(brain& b, const u_word thread_number, const u_word me)
     second = b.random_->get(b.quantity_of_neurons_in_power_of_two, b.threads[thread_number].random_config);
 
     if (first == second)
-        return;
+        return false;
 
     if (me == first)
-        return;
+        return false;
 
     if (me == second)
-        return;
+        return false;
 
     if (!((b.storage_[first]->get_type() == neuron::type::binary ? ((neurons::binary*)(b.storage_[first].get()))->in_work : false) ||
           (b.storage_[first]->get_type() == neuron::type::motor) ||
           (b.storage_[first]->get_type() == neuron::type::sensor)))
-        return;
+        return false;
 
     if (!((b.storage_[second]->get_type() == neuron::type::binary ? ((neurons::binary*)(b.storage_[second].get()))->in_work : false) ||
           (b.storage_[second]->get_type() == neuron::type::motor) ||
           (b.storage_[second]->get_type() == neuron::type::sensor)))
-        return;
+        return false;
 
     if ((b.storage_[first]->output_new == b.storage_[first]->output_old) || (b.storage_[second]->output_new == b.storage_[second]->output_old))
-        return;
+        return false;
 
     init(b, thread_number, first, second, b.storage_);
+
+    return true;
 }
 
 void binary::kill(brain& b, const u_word thread_number)
@@ -109,40 +111,53 @@ void binary::solve(brain& b, const u_word thread_number, const u_word me)
 {
     neuron::solve(b, thread_number, -1);
 
+    auto update_output_new_for_random_filling = [&]() -> void
+    {
+        output_old = output_new;
+        output_new = b.random_->get(1, b.threads[thread_number].random_config);
+    };
+
     if(in_work)
     {
-        bool ft = false;
+        bool need_to_kill = false;
 
         if (b.storage_[first_input_address]->get_type() == type::binary)
             if (b.storage_[first_input_address]->life_counter != first_input_life_counter)
-                ft = true;
+                need_to_kill = true;
 
         if (b.storage_[second_input_address]->get_type() == type::binary)
             if (b.storage_[second_input_address]->life_counter != second_input_life_counter)
-                ft = true;
+                need_to_kill = true;
 
-        if (ft)
+        if (need_to_kill)
+        {
             kill(b, thread_number);
+            update_output_new_for_random_filling();
+        }
         else
         {
-            output_old = output_new;
-
-            solve_body(b.storage_);
-
-            if (output_new != output_old)
-                b.random_->put(output_new, b.threads[thread_number].random_config);
-
-            if (me == b.candidate_for_kill)
-                if(b.quantity_of_initialized_neurons_binary * 3 > b.quantity_of_neurons * 2)
-                    kill(b, thread_number);
+            if((me == b.candidate_for_kill) &&
+                (b.quantity_of_initialized_neurons_binary * 3 > b.quantity_of_neurons * 2))
+            {
+                kill(b, thread_number);
+                update_output_new_for_random_filling();
+            }
+            else
+            {
+                output_old = output_new;
+                solve_body(b.storage_);
+            }
         }
     }
     else
     {
         if((b.random_->get_under(b.quantity_of_neurons_binary - b.quantity_of_initialized_neurons_binary, b.threads[thread_number].random_config)) ||
                 (b.quantity_of_initialized_neurons_binary * 3 < b.quantity_of_neurons * 2))
-            create(b, thread_number, me);
+            if(!create(b, thread_number, me))
+                update_output_new_for_random_filling();
     }
+
+    neuron::put_random(b, thread_number);
 }
 
 } // namespace bnn::neurons

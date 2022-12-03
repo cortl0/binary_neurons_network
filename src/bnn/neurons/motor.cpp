@@ -8,7 +8,7 @@
  */
 
 #include "motor.h"
-#include "brain.h"
+#include "bnn.h"
 #include "../common/headers/simple_math.hpp"
 #include "storage.hpp"
 #include "thread.h"
@@ -70,6 +70,8 @@ void motor::solve(brain& b, const u_word thread_number, const u_word me)
         output_new = false;
     else
         output_new = true;
+
+    neuron::put_random(b, thread_number);
     b.world_output[world_output_address] = output_new;
     accumulator >>= 1;
     accumulator += (b.random_->get(1, b.threads[thread_number].random_config) << 1) - 1;

@@ -14,7 +14,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "brain.h"
+#include "bnn.h"
 
 namespace fs = std::experimental::filesystem;
 

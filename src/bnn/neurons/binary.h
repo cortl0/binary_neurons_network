@@ -37,7 +37,7 @@ struct binary final : neuron
             const std::vector<std::shared_ptr<neuron>>&
             );
 
-    void create(brain&, u_word thread_number, const u_word me);
+    bool create(brain&, u_word thread_number, const u_word me);
     void kill(brain&, u_word thread_number);
     void solve_body(const std::vector<std::shared_ptr<neuron>>&);
     void solve(brain&, const u_word thread_number, const u_word me) override;

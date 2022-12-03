@@ -10,7 +10,7 @@
 #ifndef BNN_STORAGE_HPP
 #define BNN_STORAGE_HPP
 
-#include "binary.h"
+#include "bnn.h"
 #include "motor.h"
 #include "sensor.h"
 

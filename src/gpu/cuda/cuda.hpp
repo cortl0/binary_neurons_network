@@ -12,6 +12,12 @@ namespace bnn::gpu::cuda
 
 __device__ void fff(int *g_data, int inc_value)
 {
+
+#include "c.h"
+    B b;
+    b.a.x;
+    foooooo();
+
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     for(int i = inc_value; i; i--)
         g_data[idx]++;

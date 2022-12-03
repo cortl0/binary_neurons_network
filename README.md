@@ -13,12 +13,12 @@ It is AI in the original meaning coinciding with the meanings of the following s
 ```
 #include <unistd.h>
 #include <iostream>
-#include "brain.h"
+#include "bnn.h"
 
 int main()
 {
-	int quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
-	int quantity_of_threads_in_power_of_two = 1; // 2^1=2
+    int quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
+    int quantity_of_threads_in_power_of_two = 1; // 2^1=2
     const u_word input_length = 31;
     const u_word output_length = 8;
     char input[input_length + 1];
@@ -69,7 +69,7 @@ int main()
 
 Build and run the minimal example with helper
 ```
-bnn_cpu_make_run.sh
+run.sh
 ```
 
 ## Example projects for BNN

@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "brain.h"
+#include "bnn.h"
 #include "neurons/neuron.h"
 #include "neurons/storage.hpp"
 #include "../common/headers/m_sequence.h"

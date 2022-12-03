@@ -8,7 +8,8 @@
  */
 
 #include "sensor.h"
-#include "brain.h"
+#include "bnn.h"
+#include "sensor.c"
 
 namespace bnn::neurons
 {
@@ -33,11 +34,13 @@ void sensor::construct(
     me->world_input_address = world_input_address;
 }
 
-void sensor::solve(brain& b, const u_word, const u_word)
+void sensor::solve(brain& b, const u_word thread_number, const u_word)
 {
     neuron::solve(b, -1, -1);
+//    bnn_calculate_sensor(this, &b, world_input_address);
     output_old = output_new;
     output_new = b.world_input[world_input_address];
+    neuron::put_random(b, thread_number);
 }
 
 } // namespace bnn::neurons

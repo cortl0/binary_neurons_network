@@ -39,6 +39,7 @@ struct neuron
     bool output_old;
     neuron();
     const type& get_type() const;
+    void put_random(brain& b, const u_word thread_number);
     virtual void solve(brain&, const u_word thread_number, const u_word me);
 
 #ifdef DEBUG

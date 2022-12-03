@@ -7,7 +7,7 @@
  *   licensed by GPL v3.0
  */
 
-#include "brain.h"
+#include "bnn.h"
 
 #include <unistd.h>
 

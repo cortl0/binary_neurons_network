@@ -1,3 +1,4 @@
+*.cmake
 *.cu
 *.o
 *.out

@@ -19,9 +19,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 LIBS += -lstdc++fs
 LIBS += -pthread
-LIBS += ../../build-bnn_cpu/libbnn_cpu.a
+LIBS += ../../build/cpu/libbnn-cpu.a
 
-INCLUDEPATH += ../../cpu
+INCLUDEPATH += \
+        ../../cpu \
+        ../../bnn \
+        ../../common/headers
 
 SOURCES += \
         ../../common/sources/brain_tools.cpp \
