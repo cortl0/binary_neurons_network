@@ -8,7 +8,6 @@
  */
 
 #include "brain_tools_web.h"
-#include "neurons/storage.hpp"
 
 namespace bnn
 {
@@ -35,15 +34,15 @@ QString brain_tools_web::brain_get_state()
     //debug_out();
 
     QString qString = "8iter=" + QString::number(get_iteration());
-    qString += "\t bits=" + QString::number(quantity_of_neurons_in_power_of_two);
-    qString += "\t n_init=" + QString::number(quantity_of_initialized_neurons_binary);
-    qString += "\nquantity_of_neuron_binary=" + QString::number(quantity_of_neurons_binary) + "\t";
-    qString += "quantity_of_neuron_sensor=" + QString::number(world_input.size()) + "\t";
+    qString += "\t bits=" + QString::number(bnn->storage_.size_in_power_of_two);
+    qString += "\t n_init=" + QString::number(bnn->parameters_.quantity_of_initialized_neurons_binary);
+    qString += "\nquantity_of_neuron_binary=" + QString::number(bnn->parameters_.quantity_of_neurons_binary) + "\t";
+    qString += "quantity_of_neuron_sensor=" + QString::number(bnn->input_.size) + "\t";
     for(uint i = 0; i < 8*16/*quantity_of_neuron_sensor*/; i+=16)
-        if(world_input[i]) qString += "1"; else qString += "0";
-    qString += "\nquantity_of_neuron_motor=" + QString::number(world_output.size()) + "\t";
-    for(uint i = 0; i < world_output.size(); i++)
-        if(world_output[i]) qString += "1"; else qString += "0";
+        if(bnn->input_.data[i]) qString += "1"; else qString += "0";
+    qString += "\nquantity_of_neuron_motor=" + QString::number(bnn->output_.size) + "\t";
+    for(uint i = 0; i < bnn->output_.size; i++)
+        if(bnn->output_.data[i]) qString += "1"; else qString += "0";
     /*
     qString += "\nsignals\t";
     for (uint i = 0; i < brain_.quantity_of_neurons_motor; i++)
@@ -53,9 +52,9 @@ QString brain_tools_web::brain_get_state()
         qString += QString::number(brain_.storage_[i + brain_.quantity_of_neurons_sensor].motor_.slots_occupied) + "\t";
     */
     qString += "\naccum\t";
-    for(uint i = 0; i < quantity_of_neurons; i++)
-        if(storage_[i]->get_type() == neurons::neuron::type::motor)
-            qString += QString::number(dynamic_cast<neurons::motor*>(storage_[i].get())->accumulator) + "\t";
+    for(uint i = 0; i < bnn->storage_.size; ++i)
+        if(bnn->storage_.data[i].neuron_.type_ == bnn_neuron::type::motor)
+            qString += QString::number(bnn->storage_.data[i].motor_.accumulator) + "\t";
     /*
     qString += "\ncountPut=" + QString::number(brain_.rndm->debug_count_put);
     qString += "\tcountGet=" + QString::number(brain_.rndm->debug_count_get);
@@ -66,8 +65,8 @@ QString brain_tools_web::brain_get_state()
 QString brain_tools_web::brain_get_representation()
 {
     QString qString;
-    u_word s = world_input.size() + world_output.size();
-    u_word e = quantity_of_neurons_binary + world_input.size() + world_output.size();
+    u_word s = bnn->input_.size + bnn->output_.size;
+    u_word e = bnn->parameters_.quantity_of_neurons_binary + bnn->input_.size + bnn->output_.size;
     int consensus = 0;
     int count = 0;
     /*
@@ -78,7 +77,7 @@ QString brain_tools_web::brain_get_representation()
                 if (brain_.storage_[i].binary_.get_type_binary() == brain::union_storage::binary::neuron_binary_type::neuron_binary_type_in_work)
                     if (brain_.storage_[i].binary_.motor_connect)
                     {
-                        consensus += simple_math::abs(brain_.storage_[i].binary_.motor_consensus);
+                        consensus += bnn_math_abs(brain_.storage_[i].binary_.motor_consensus);
                         count++;
                     }
     }
@@ -95,13 +94,13 @@ std::map<u_word, u_word> brain_tools_web::graphical_representation()
     std::map<u_word, u_word> m;
     std::map<u_word, u_word>::iterator it;
 
-    for(u_word i = 0; i < quantity_of_neurons; i++)
-        if(storage_[i]->get_type() == neurons::neuron::type::binary && dynamic_cast<neurons::binary*>(storage_[i].get())->in_work)
+    for(u_word i = 0; i < bnn->storage_.size; i++)
+        if(bnn->storage_.data[i].neuron_.type_ == bnn_neuron::type::binary && bnn->storage_.data[i].binary_.in_work)
         {
-            it = m.find(storage_[i]->level);
+            it = m.find(bnn->storage_.data[i].neuron_.level);
 
             if (it == m.end())
-                m.insert(std::make_pair(storage_[i].get()->level, 1));
+                m.insert(std::make_pair(bnn->storage_.data[i].neuron_.level, 1));
             else
                 it->second++;
         }

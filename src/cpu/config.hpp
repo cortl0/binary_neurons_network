@@ -15,15 +15,7 @@
 #include <ctime>
 #include <thread>
 
-#define DEBUG
-
-#define BNN_LITTLE_TIME 1000
-#define QUANTITY_OF_BITS_IN_BYTE 8
-
-typedef unsigned int u_word;
-typedef signed int s_word;
-
-#define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
+#include "bnn/config.h"
 
 #define get_time_def bnn::get_time()
 #define place_string std::string().append(std::string(__FUNCTION__)).append(": ").append(__FILE__).append(": ").append(std::to_string(__LINE__))

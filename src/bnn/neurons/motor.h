@@ -10,40 +10,34 @@
 #ifndef BNN_NEURONS_MOTOR_H
 #define BNN_NEURONS_MOTOR_H
 
-#include <map>
-#include <vector>
-
 #include "neuron.h"
 
-namespace bnn::neurons
+struct bnn_motor
 {
-
-struct motor final : neuron
-{
-    struct binary_neuron
+    struct binary
     {
-        u_word address;
-        u_word life_counter;
-        s_word consensus = 0;
-        binary_neuron() = delete;
-        explicit binary_neuron(u_word address, u_word life_counter, s_word consensus);
+        u_word address{~u_word{0}};
+        u_word life_counter{0};
+        s_word consensus{0};
+        bool present{false};
     };
 
-    u_word world_output_address;
-    s_word accumulator = 0;
+    struct binaries
+    {
+        bnn_motor::binary* data{nullptr};
+        u_word size{0};
+        u_word size_per_motor{0};
+    };
+
+    bnn_neuron neuron_;
+    u_word world_output_address{~u_word{0}};
+    s_word accumulator{0};
+    u_word binaries_offset{~u_word{0}};
+    //std::map<u_word, binary_neuron> binary_neurons;
 
 #ifdef DEBUG
-    u_word debug_average_consensus = 0;
+    u_word debug_average_consensus{0};
 #endif
-
-    char save_load_size;
-
-    std::map<u_word, binary_neuron> binary_neurons;
-
-    motor(const std::vector<bool>& world_output, u_word world_output_address);
-    void solve(brain&, const u_word thread_number, const u_word me) override;
 };
-
-} // namespace bnn::neurons
 
 #endif // BNN_NEURONS_MOTOR_H

@@ -14,7 +14,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(external)
+include_directories(
+    ../../bnn
+    external
+    )
 
 set(HEADERS
     ${CMAKE_SOURCE_DIR}/settings.hpp

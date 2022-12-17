@@ -14,7 +14,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "bnn.h"
+#include "cpu/brain.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -33,7 +33,9 @@ public:
     void get_debug_string(std::string&);
     const u_word& get_iteration() const;
     bool load(std::ifstream&);
+#if(0)
     void primary_filling();
+#endif
     void resize(u_word brainBits);
     bool save(std::ofstream&);
     void save_random();

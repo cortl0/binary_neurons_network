@@ -1,9 +1,20 @@
+#
+#   Binary Neurons Network
+#   created by Ilya Shishkin
+#   cortl@8iter.ru
+#   http://8iter.ru/ai.html
+#   https://github.com/cortl0/binary_neurons_network
+#   licensed by GPL v3.0
+#
+
 include external/Makefile.cuda
 
 # Target rules
 all: build
 
 project_name=bnn_gpu_cuda_test
+
+BNN_INC_PATH=-I../..
 
 build: $(project_name).out
 
@@ -18,7 +29,7 @@ $(project_name).cu: main.cpp
 	ln -s main.cpp $(project_name).cu
 	
 $(project_name).o:$(project_name).cu
-	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+	$(EXEC) $(NVCC) $(INCLUDES) $(BNN_INC_PATH) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 $(project_name).out: $(project_name).o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)

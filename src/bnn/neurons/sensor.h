@@ -10,21 +10,12 @@
 #ifndef BNN_NEURONS_SENSOR_H
 #define BNN_NEURONS_SENSOR_H
 
-#include <vector>
-
 #include "neuron.h"
 
-namespace bnn::neurons
+struct bnn_sensor
 {
-
-struct sensor final : neuron
-{
-    u_word world_input_address;
-    sensor(std::vector<bool>& world_input, u_word world_input_address);
-    static void construct(sensor*, std::vector<bool>& world_input, u_word world_input_address);
-    void solve(brain&, const u_word thread_number, const u_word = -1) override;
+    bnn_neuron neuron_;
+    u_word world_input_address{~u_word{0}};
 };
-
-} // namespace bnn::neurons
 
 #endif // BNN_NEURONS_SENSOR_H

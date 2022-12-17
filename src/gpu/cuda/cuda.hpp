@@ -1,3 +1,12 @@
+/*
+ *   Binary Neurons Network
+ *   created by Ilya Shishkin
+ *   cortl@8iter.ru
+ *   http://8iter.ru/ai.html
+ *   https://github.com/cortl0/binary_neurons_network
+ *   licensed by GPL v3.0
+ */
+
 #ifndef BNN_GPU_CUDA_GPU_HPP
 #define BNN_GPU_CUDA_GPU_HPP
 
@@ -10,22 +19,51 @@
 namespace bnn::gpu::cuda
 {
 
-__device__ void fff(int *g_data, int inc_value)
+//#include "../../bnn/neurons/storage.h"
+
+//#include "../../bnn/neurons/neuron_implementation.h"
+//#include "../../bnn/neurons/sensor_implementation.h"
+//#include "../../bnn/neurons/binary_implementation.h"
+//#include "../../bnn/neurons/motor_implementation.h"
+#include "../../bnn/thread_implementation.h"
+//#include "../../bnn/bnn.h"
+
+//__device__ void fff(int *g_data, int inc_value)
+//{
+//#include "../../bnn/neurons/storage.h"
+
+//#include "../../bnn/neurons/neuron_implementation.h"
+////#include "../../bnn/neurons/sensor_implementation.h"
+////#include "../../bnn/neurons/binary_implementation.h"
+////#include "../../bnn/neurons/motor_implementation.h"
+//#include "../../bnn/thread_implementation.h"
+
+//auto storage_size = sizeof(bnn_storage);
+
+//bnn_neuron bn;
+//bnn_sensor bs;
+//bnn_binary bb;
+//bnn_motor bm;
+//bnn_storage* bst;
+//sizeof(bnn_storage);
+//sizeof(bs);
+
+//#include "c.h"
+//    B b;
+//    b.a.x;
+//    foooooo();
+
+//    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+//    for(int i = inc_value; i; i--)
+//        g_data[idx]++;
+//}
+
+__global__ void increment_kernel(int *g_data, int inc_value, bnn_bnn *b)
 {
-
-#include "c.h"
-    B b;
-    b.a.x;
-    foooooo();
-
-    int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    for(int i = inc_value; i; i--)
-        g_data[idx]++;
-}
-
-__global__ void increment_kernel(int *g_data, int inc_value)
-{
-    fff(g_data, inc_value);
+    //fff(g_data, inc_value);
+        int idx = blockIdx.x * blockDim.x + threadIdx.x;
+        for(int i = inc_value; i; i--)
+            g_data[idx]++;
 }
 
 class gpu
@@ -100,8 +138,9 @@ public:
         // asynchronously issue work to the GPU (all to stream 0)
         cudaEventRecord(start, 0);
 
+        bnn_bnn q;
         memory_copy_host_to_device(memory_);
-        increment_kernel<<<blocks, threads, 0, 0>>>(memory_.device_data, value);
+        increment_kernel<<<blocks, threads, 0, 0>>>(memory_.device_data, value, &q);
         memory_copy_device_to_host(memory_);
 
         cudaEventRecord(stop, 0);

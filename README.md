@@ -13,7 +13,8 @@ It is AI in the original meaning coinciding with the meanings of the following s
 ```
 #include <unistd.h>
 #include <iostream>
-#include "bnn.h"
+
+#include "cpu/brain.h"
 
 int main()
 {
@@ -57,9 +58,11 @@ int main()
         }
 
         std::cout << "input=" << input << " output=" << output << std::endl;
-
         usleep(100000);
     }
+
+    usleep(100000);
+    brain_.stop();
 
     return 0;
 }

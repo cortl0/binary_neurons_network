@@ -105,7 +105,7 @@ void MainWindow::on_pushButtonStart_clicked()
         ui->pushButtonLoad->setEnabled(false);
         ui->pushButtonSave->setEnabled(false);
 
-        deviceAi->brain_->primary_filling();
+        //deviceAi->brain_->primary_filling();
 
         deviceAi->brain_->start(/*this, clock_cycle_handler*/);
     }
@@ -156,6 +156,6 @@ void MainWindow::on_pushButton_graphical_representation_pressed()
 
 void MainWindow::on_pushButton_graphical_representation_released()
 {
-    deviceAi->brain_->primary_filling();
+    //deviceAi->brain_->primary_filling();
     deviceAi->brain_->start();
 }

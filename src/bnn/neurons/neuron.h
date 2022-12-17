@@ -10,21 +10,11 @@
 #ifndef BNN_NEURONS_NEURON_H
 #define BNN_NEURONS_NEURON_H
 
-#include "../../common/headers/config.hpp"
+#include "bnn/config.h"
 
-namespace bnn
+struct bnn_neuron
 {
-
-class brain;
-
-union storage;
-
-namespace neurons
-{
-
-struct neuron
-{
-    enum class type : u_word
+    enum type
     {
         neuron,
         sensor,
@@ -32,23 +22,15 @@ struct neuron
         motor
     };
 
-    type type_ = type::neuron;
-    u_word level = 1;
-    u_word life_counter = 0;
-    bool output_new;
-    bool output_old;
-    neuron();
-    const type& get_type() const;
-    void put_random(brain& b, const u_word thread_number);
-    virtual void solve(brain&, const u_word thread_number, const u_word me);
+    type type_{type::neuron};
+    u_word level{1};
+    u_word life_counter{0};
+    bool output_new{true};
+    bool output_old{false};
 
 #ifdef DEBUG
-    u_word calculation_count = 0;
+    u_word calculation_count{0};
 #endif
 };
-
-} // namespace neurons
-
-} // namespace bnn
 
 #endif // BNN_NEURONS_NEURON_H
