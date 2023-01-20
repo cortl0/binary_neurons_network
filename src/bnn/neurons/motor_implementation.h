@@ -12,7 +12,7 @@
 
 #include "neuron_implementation.h"
 
-auto bnn_motor_set = [](
+auto bnn_motor_set = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_motor* me,
         u_word world_output_address
@@ -33,7 +33,7 @@ auto bnn_motor_set = [](
 #endif
 };
 
-auto bnn_motor_calculate = [](
+auto bnn_motor_calculate = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_motor* me,
         u_word me_offset,
@@ -72,14 +72,14 @@ auto bnn_motor_calculate = [](
                      me->neuron_.output_new) * 2 - 1);
 
 #ifdef DEBUG
-        if(bnn->threads_.data[thread_number].debug_max_consensus < abs(bnn->motor_binaries_.data[ii].consensus))
+        if(bnn->threads_.data[thread_number].debug_max_consensus < bnn_math_abs(bnn->motor_binaries_.data[ii].consensus))
         {
-            bnn->threads_.data[thread_number].debug_max_consensus = abs(bnn->motor_binaries_.data[ii].consensus);
+            bnn->threads_.data[thread_number].debug_max_consensus = bnn_math_abs(bnn->motor_binaries_.data[ii].consensus);
             bnn->threads_.data[thread_number].debug_max_consensus_binary_num = bnn->motor_binaries_.data[ii].address;
             bnn->threads_.data[thread_number].debug_max_consensus_motor_num = me_offset;
         }
 
-        bnn->threads_.data[thread_number].debug_average_consensus += abs(bnn->motor_binaries_.data[ii].consensus);
+        bnn->threads_.data[thread_number].debug_average_consensus += bnn_math_abs(bnn->motor_binaries_.data[ii].consensus);
         debug_count++;
 #endif
     }

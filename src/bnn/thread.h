@@ -38,7 +38,8 @@ struct bnn_threads
 {
     bnn_thread* data{nullptr};
     u_word size{0};
-    u_word size_per_thread{0};
+    u_word size_in_power_of_two{0};
+    u_word neurons_per_thread{0};
 };
 
 #endif // BNN_THREAD_H

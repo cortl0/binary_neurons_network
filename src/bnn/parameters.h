@@ -15,7 +15,6 @@
 struct bnn_parameters
 {
     u_word iteration{0};
-    u_word quantity_of_neurons_binary{0};
     u_word quantity_of_initialized_neurons_binary{0};
     u_word candidate_for_kill{~u_word{0}};
     bnn_random_config random_config;

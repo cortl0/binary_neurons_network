@@ -18,11 +18,18 @@ int main(int argc, char *argv[])
     printf("[%s] - Starting...\n", argv[0]);
     bnn::gpu::cuda::statistic::view_devices_list();
 
-    int n = 1 << 20;
-    bnn::gpu::cuda::memory_.size = n * sizeof(int);
-    int value = 1 << 23;
+    bnn_settings bs;
+    bs.quantity_of_neurons_in_power_of_two = 16; // 2^12=4096
+    bs.threads_count_in_power_of_two = 2; // 2^1=2
+    bs.input_length = 31;
+    bs.output_length = 8;
 
-    bnn::gpu::cuda::gpu::run(bnn::gpu::cuda::memory_, value, n);
+    bnn::gpu::cuda::gpu cuda(bs);
+    cuda.start();
+//    sleep(3);
+//    cuda.stop();
+    //sleep(10);
+    while(cuda.is_active());
 
     return 0;
 }

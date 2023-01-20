@@ -7,7 +7,7 @@
 #
 
 cmake_minimum_required(VERSION 2.8)
-#find_package(CUDA 9.0 REQUIRED)
+find_package(CUDA 9.0 REQUIRED)
 project(bnn_cuda LANGUAGES CUDA CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -18,6 +18,7 @@ include_directories(
     ../../bnn
     external
     )
+include_directories(../../ ../../bnn)
 
 set(HEADERS
     ${CMAKE_SOURCE_DIR}/settings.hpp
@@ -28,26 +29,6 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/main.cpp
 )
 
-#set(LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/usr/local/cuda/lib64})
-add_executable(bnn_cuda ${SOURCES} ${HEADERS})
+add_library(bnn_cuda STATIC main.cpp ${SOURCES} ${HEADERS})
 target_link_libraries(bnn_cuda ${CUDA_LIBRARIES})
-#target_link_libraries(${CMAKE_PROJECT_NAME} /usr/local/cuda/lib64 -pthread)
 
-
-
-
-
-
-
-#execute_process(COMMAND ${CMAKE_SOURCE_DIR}/n.sh
-#OUTPUT_FILE file.txt)
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-#${CMAKE_SOURCE_DIR}/gpu/cuda/
-#include_directories(external)
-
-#add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})
-
-#target_link_libraries(${PROJECT_NAME} -pthread)

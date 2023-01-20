@@ -12,7 +12,7 @@
 
 #include "neuron_implementation.h"
 
-auto bnn_sensor_set = [](
+auto bnn_sensor_set = [BNN_LAMBDA_REFERENCE](
         bnn_sensor* me,
         bool* world_input,
         u_word world_input_address
@@ -28,7 +28,7 @@ auto bnn_sensor_set = [](
     me->world_input_address = world_input_address;
 };
 
-auto bnn_sensor_calculate = [](
+auto bnn_sensor_calculate = [BNN_LAMBDA_REFERENCE](
         bnn_sensor* me,
         bnn_world* input,
         bnn_random* random,

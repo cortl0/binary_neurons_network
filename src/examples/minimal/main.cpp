@@ -8,34 +8,46 @@
  */
 
 #include <unistd.h>
-#include <iostream>
 
-#include "cpu/brain.h"
+#include <iostream>
+#include <thread>
+
+// choose one for cpu or zero for cuda
+//#if(0)
+#include "cpu/cpu.h"
+//#else
+//#include "gpu/cuda/cuda.hpp"
+//#endif
 
 int main()
 {
-    int quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
-    int quantity_of_threads_in_power_of_two = 1; // 2^1=2
-    const u_word input_length = 31;
-    const u_word output_length = 8;
-    char input[input_length + 1];
-    char output[output_length + 1];
-    input[input_length] = '\0';
-    output[output_length] = '\0';
     bool value;
+    bnn_settings bs;
+    bs.quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
+    bs.threads_count_in_power_of_two = 1; // 2^1=2
+    bs.input_length = 31;
+    bs.output_length = 8;
 
-    bnn::brain brain_(
-        quantity_of_neurons_in_power_of_two,
-        input_length,
-        output_length,
-        quantity_of_threads_in_power_of_two
-        );
+    char input[bs.input_length + 1];
+    char output[bs.output_length + 1];
+    input[bs.input_length] = '\0';
+    output[bs.output_length] = '\0';
+
+//#ifdef BNN_ARCHITECTURE_CPU
+    bnn::cpu brain_(bs);
+//#endif
+
+//#ifdef BNN_ARCHITECTURE_CUDA
+//    bnn::gpu::cuda::gpu brain_(bs);
+//#endif
 
     brain_.start();
 
+    //std::thread([&](){ sleep(5); brain_.stop(); }).detach();
+
     while(true)
     {
-        for (u_word i = 0; i < input_length; i++)
+        for (u_word i = 0; i < bs.input_length; i++)
         {
             value = rand() % 2;
 
@@ -45,7 +57,7 @@ int main()
             input[i] = value + 48;
         }
 
-        for (u_word i = 0; i < output_length; i++)
+        for (u_word i = 0; i < bs.output_length; i++)
         {
             // Get data from bnn
             value = brain_.get_output(i);

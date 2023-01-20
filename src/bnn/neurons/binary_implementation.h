@@ -12,7 +12,7 @@
 
 #include "neuron_implementation.h"
 
-auto bnn_binary_set = [](bnn_binary* me) -> void
+auto bnn_binary_set = [BNN_LAMBDA_REFERENCE](bnn_binary* me) -> void
 {
     bnn_neuron_set(
             &me->neuron_,
@@ -22,7 +22,7 @@ auto bnn_binary_set = [](bnn_binary* me) -> void
     me->in_work = false;
 };
 
-auto bnn_binary_calculate_body = [](
+auto bnn_binary_calculate_body = [BNN_LAMBDA_REFERENCE](
         bnn_binary* me,
         const bnn_neuron* first,
         const bnn_neuron* second
@@ -47,7 +47,7 @@ auto bnn_binary_calculate_body = [](
             [second->output_new];
 };
 
-auto bnn_binary_init = [](
+auto bnn_binary_init = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_binary* me,
         bnn_neuron* first,
@@ -73,7 +73,7 @@ auto bnn_binary_init = [](
 #endif
 };
 
-auto bnn_binary_create = [](
+auto bnn_binary_create = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_binary* me,
         bnn_neuron* first,
@@ -120,7 +120,7 @@ auto bnn_binary_create = [](
     return true;
 };
 
-auto bnn_binary_kill = [](
+auto bnn_binary_kill = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_binary* me,
         u_word thread_number
@@ -135,7 +135,7 @@ auto bnn_binary_kill = [](
 #endif
 };
 
-auto bnn_binary_calculate = [](
+auto bnn_binary_calculate = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_binary* me,
         const u_word me_offset,
@@ -190,7 +190,7 @@ auto bnn_binary_calculate = [](
     }
     else
     {
-        if((bnn_random_pull_under(&bnn->random_, bnn->parameters_.quantity_of_neurons_binary - bnn->parameters_.quantity_of_initialized_neurons_binary, random_config)) ||
+        if((bnn_random_pull_under(&bnn->random_, bnn->storage_.size - bnn->parameters_.quantity_of_initialized_neurons_binary, random_config)) ||
                 (bnn->parameters_.quantity_of_initialized_neurons_binary * 3 < bnn->storage_.size * 2))
             if(!bnn_binary_create(bnn, me, first, second, me_offset, thread_number))
                 update_output_new_for_random_filling();

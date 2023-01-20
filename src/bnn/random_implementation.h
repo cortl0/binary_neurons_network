@@ -14,7 +14,7 @@
 #include "m_sequence.h"
 #include "math.h"
 
-auto bnn_random_push = [](
+auto bnn_random_push = [BNN_LAMBDA_REFERENCE](
         bnn_random* random,
         const bool i,
         bnn_random_config* config
@@ -41,28 +41,25 @@ auto bnn_random_push = [](
     }
 };
 
-auto bnn_random_set = [](
+auto bnn_random_set = [BNN_LAMBDA_REFERENCE](
         bnn_random* random,
-        bnn_random_config* config
+        bnn_random_config* config,
+        bnn_m_sequence* m_sequence
         ) -> void
 {
-    if((random->size_in_power_of_two < bnn_math_log2_1(QUANTITY_OF_BITS_IN_WORD))
-            || (random->size_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD))
-//        throw std::range_error(
-//                log_string("invalid value ["
-//                           + std::to_string(random_array_length_in_power_of_two)
-//                           + "] of random_array_length_in_power_of_two"));
-        exit(1);
+    bnn_error_codes bnn_error_code;
+    if((random->size_in_power_of_two < bnn_math_log2_1(&bnn_error_code, QUANTITY_OF_BITS_IN_WORD)) ||
+            (random->size_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD))
+    {
+        random->bnn_error_code = bnn_error_codes::invalid_value;
+    }
 
-    bnn_m_sequence m_sequence;
-    bnn_m_sequence_set(&m_sequence, random->size_in_power_of_two);
-
-    for (u_word i = 0; i < random->size; i++)
-        for (u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; j++)
-            bnn_random_push(random, bnn_m_sequence_next(&m_sequence), config);
+    for(u_word i = 0; i < random->size; ++i)
+        for(u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; ++j)
+            bnn_random_push(random, bnn_m_sequence_next(m_sequence), config);
 };
 
-auto bnn_random_pull = [](
+auto bnn_random_pull = [BNN_LAMBDA_REFERENCE](
         bnn_random* random,
         u_word bits,
         bnn_random_config* config
@@ -100,7 +97,7 @@ auto bnn_random_pull = [](
     return returnValue;
 };
 
-auto bnn_random_pull_under = [](
+auto bnn_random_pull_under = [BNN_LAMBDA_REFERENCE](
         bnn_random* random,
         u_word to,
         bnn_random_config* config

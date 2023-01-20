@@ -10,33 +10,38 @@
 #ifndef BNN_M_SEQUENCE_H
 #define BNN_M_SEQUENCE_H
 
-#include <stdlib.h>
-
 #include "config.h"
 
 struct bnn_m_sequence
 {
     u_word triggers = 1;
     u_word length;
+    bnn_error_codes bnn_error_code{bnn_error_codes::ok};
 };
 
 bool next();
 
-auto bnn_m_sequence_set = [](
+auto bnn_m_sequence_set = [BNN_LAMBDA_REFERENCE](
         bnn_m_sequence* me,
-        u_word length) -> void
+        u_word length
+        ) -> void
 {
-    if((length < 2) || (length > QUANTITY_OF_BITS_IN_WORD - 1))
-//        throw std::range_error(
-//                log_string("invalid value ["
-//                           + std::to_string(length)
-//                           + "] of triggers_length"));
-        exit(1);
+    if(length < 2)
+    {
+        me->bnn_error_code = bnn_error_codes::invalid_value;
+        length = 2;
+    }
+
+    if(length > QUANTITY_OF_BITS_IN_WORD)
+    {
+        me->bnn_error_code = bnn_error_codes::invalid_value;
+        length = QUANTITY_OF_BITS_IN_WORD;
+    }
 
     me->length = length;
 };
 
-auto bnn_m_sequence_next = [](
+auto bnn_m_sequence_next = [BNN_LAMBDA_REFERENCE](
         bnn_m_sequence* me
         ) -> bool
 {

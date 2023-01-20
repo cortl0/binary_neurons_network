@@ -13,7 +13,7 @@
 #include "bnn/bnn.h"
 #include "bnn/random_implementation.h"
 
-auto bnn_neuron_set = [](
+auto bnn_neuron_set = [BNN_LAMBDA_REFERENCE](
         bnn_neuron* me,
         bnn_neuron::type type,
         bool output_new = true,
@@ -31,7 +31,7 @@ auto bnn_neuron_set = [](
 #endif
 };
 
-auto bnn_neuron_push_random = [](
+auto bnn_neuron_push_random = [BNN_LAMBDA_REFERENCE](
         bnn_random* random,
         bnn_neuron* me,
         bnn_random_config* random_config
@@ -41,7 +41,7 @@ auto bnn_neuron_push_random = [](
         bnn_random_push(random, me->output_new, random_config);
 };
 
-auto bnn_neuron_calculate = [](
+auto bnn_neuron_calculate = [BNN_LAMBDA_REFERENCE](
         bnn_neuron* me
         ) -> void
 {

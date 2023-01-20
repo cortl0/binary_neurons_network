@@ -22,6 +22,7 @@ echo ${message_prefix}fin minimal bnn gpu cuda${message_postfix}
 rm -r build
 mkdir build
 cd build
+
 echo ${message_prefix}begin cmake${message_postfix}
 cmake ..
 echo ${message_prefix}end cmake${message_postfix}

@@ -12,7 +12,8 @@
 
 //#include "bnn_implementation.h"
 #include "neurons/storage_implementation.h"
-auto bnn_thread_function = [](
+
+auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         u_word thread_number
         ) -> void
@@ -20,7 +21,7 @@ auto bnn_thread_function = [](
     bnn_thread* me = &bnn->threads_.data[thread_number];
 
     me->in_work = true;
-    u_word reaction_rate = 0;
+    u_word reaction_rate = bnn->threads_.neurons_per_thread;
     u_word j;
     //logging("thread [" + std::to_string(thread_number) + "] started");
 
@@ -31,14 +32,14 @@ auto bnn_thread_function = [](
     {
         if(!reaction_rate--)
         {
-            reaction_rate = bnn->threads_.size_per_thread;
+            reaction_rate = bnn->threads_.neurons_per_thread;
             ++me->iteration;
 
 #ifdef DEBUG
             u_word debug_average_consensus = 0;
             u_word debug_count = 0;
 
-            for(u_word i = me->start_neuron; i < me->start_neuron + bnn->threads_.size_per_thread; ++i)
+            for(u_word i = me->start_neuron; i < me->start_neuron + bnn->threads_.neurons_per_thread; ++i)
                 if(bnn_neuron::type::motor == bnn->storage_.data[i].neuron_.type_)
                 {
                     me->debug_average_consensus += bnn->storage_.data[i].motor_.debug_average_consensus;
@@ -50,6 +51,10 @@ auto bnn_thread_function = [](
 
             if(me->debug_max_consensus > 0)
                 me->debug_max_consensus--;
+#endif
+
+#ifdef BNN_ARCHITECTURE_CUDA
+            break;
 #endif
         }
 
