@@ -14,14 +14,16 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "cpu/brain.h"
+#define BNN_ARCHITECTURE_CPU
+#include "cpu/cpu.h"
+#include "bnn/bnn.h"
 
 namespace fs = std::experimental::filesystem;
 
 namespace bnn
 {
 
-class brain_tools : public brain
+class brain_tools : public cpu
 {
 public:
     virtual ~brain_tools();

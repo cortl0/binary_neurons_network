@@ -18,8 +18,8 @@
 #include <vector>
 
 #include "cpu/config.hpp"
-//#include "cpu/brain.h"
-//#include "bnn/bnn_implementation.h"
+
+#define BNN_ARCHITECTURE_CPU
 
 namespace bnn
 {
@@ -33,12 +33,11 @@ brain_tools::brain_tools(u_word quantity_of_neurons_in_power_of_two,
                          u_word input_length,
                          u_word output_length,
                          u_word threads_count_in_power_of_two)
-    : brain(quantity_of_neurons_in_power_of_two,
-            input_length,
-            output_length,
-            threads_count_in_power_of_two)
+    : cpu(bnn_settings{.quantity_of_neurons_in_power_of_two = quantity_of_neurons_in_power_of_two,
+          .input_length = input_length,
+          .output_length = output_length,
+          .threads_count_in_power_of_two = threads_count_in_power_of_two})
 {
-
 }
 
 void recursion(u_word num, bnn_bnn* b, std::string& s)
@@ -645,7 +644,7 @@ void brain_tools::save_random_csv_line()
 
 void brain_tools::stop()
 {
-    brain::stop();
+    cpu::stop();
 }
 
 } // namespace bnn

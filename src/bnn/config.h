@@ -55,6 +55,6 @@ enum bnn_error_codes
     invalid_value,
     out_of_range,
     malloc_fail
-} bnn_error_code = bnn_error_codes::ok;
+};
 
 #endif // CONFIG_H

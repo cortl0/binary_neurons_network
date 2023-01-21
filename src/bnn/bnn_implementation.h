@@ -114,7 +114,7 @@ auto bnn_calculate_pointers = [BNN_LAMBDA_REFERENCE](
 
     size += sizeof(bnn_thread) * bnn->threads_.size;
     bnn_calculate_alignment(size);
-    void* end = reinterpret_cast<void*>(reinterpret_cast<char*>(bnn) + size);
+    //void* end = reinterpret_cast<void*>(reinterpret_cast<char*>(bnn) + size);
 };
 
 auto bnn_shift_pointers = [BNN_LAMBDA_REFERENCE](

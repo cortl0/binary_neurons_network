@@ -36,7 +36,8 @@ QString brain_tools_web::brain_get_state()
     QString qString = "8iter=" + QString::number(get_iteration());
     qString += "\t bits=" + QString::number(bnn->storage_.size_in_power_of_two);
     qString += "\t n_init=" + QString::number(bnn->parameters_.quantity_of_initialized_neurons_binary);
-    qString += "\nquantity_of_neuron_binary=" + QString::number(bnn->parameters_.quantity_of_neurons_binary) + "\t";
+    qString += "\nquantity_of_neuron_binary=" + QString::number(
+                bnn->storage_.size - bnn->input_.size - bnn->output_.size) + "\t";
     qString += "quantity_of_neuron_sensor=" + QString::number(bnn->input_.size) + "\t";
     for(uint i = 0; i < 8*16/*quantity_of_neuron_sensor*/; i+=16)
         if(bnn->input_.data[i]) qString += "1"; else qString += "0";
@@ -66,7 +67,7 @@ QString brain_tools_web::brain_get_representation()
 {
     QString qString;
     u_word s = bnn->input_.size + bnn->output_.size;
-    u_word e = bnn->parameters_.quantity_of_neurons_binary + bnn->input_.size + bnn->output_.size;
+    u_word e = bnn->storage_.size;
     int consensus = 0;
     int count = 0;
     /*
@@ -164,7 +165,7 @@ void brain_tools_web::save()
 
 void brain_tools_web::stop()
 {
-    brain::stop();
+    cpu::stop();
 }
 
 } // namespace bnn

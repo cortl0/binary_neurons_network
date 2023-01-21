@@ -15,6 +15,8 @@
 //#include <QKeyEvent>
 #include <QWebEngineView>
 
+#define BNN_ARCHITECTURE_CPU
+
 #include "brain_tools_web.h"
 
 class SensorPixmap
@@ -42,7 +44,7 @@ public:
     void Y_minus();
     QPixmap& GetPixmap(){ return qPixmapSmall; }
     void PixmapNormalize();
-    void FillBinary(QPixmap &, bnn::brain &);
+    void FillBinary(QPixmap&, bnn::cpu&);
 };
 
 class DeviceAI
@@ -62,7 +64,7 @@ public:
              QSize qSizeBig,
              QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
-    bnn::brain& GetBrain(){ return *brain_.get(); }
+    bnn::cpu& GetBrain(){ return *brain_.get(); }
 };
 
 #endif // DEVICEAI_H

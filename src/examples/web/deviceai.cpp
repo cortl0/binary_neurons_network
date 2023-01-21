@@ -37,7 +37,7 @@ void SensorPixmap::PixmapNormalize()
         y=qPixmapSmall.size().height()/zoom/2 + epsilon;
 }
 
-void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::brain &brn)
+void SensorPixmap::FillBinary(QPixmap &qPixmapWeb, bnn::cpu &brn)
 {
     QPainter qPainter(&qPixmapSmall);
     QImage qImageWeb = qPixmapWeb.toImage();

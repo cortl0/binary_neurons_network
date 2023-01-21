@@ -30,8 +30,10 @@ public:
     void set_input(u_word i, bool value);
     bool get_output(u_word i);
 
-private:
+protected:
     bnn_bnn* bnn{nullptr};
+
+private:
     std::thread main_tread;
     std::vector<std::thread> treads;
 };

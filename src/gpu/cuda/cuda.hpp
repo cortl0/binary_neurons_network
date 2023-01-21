@@ -65,6 +65,8 @@ public:
         bnn_temp.threads_.size_in_power_of_two = bs.threads_count_in_power_of_two;
         bnn_calculate_settings(&bnn_temp);
 
+//        bnn_error_codes bnn_error_code = bnn_error_codes::ok
+
         auto bnn_memory_allocate = [BNN_LAMBDA_REFERENCE](
                 bnn_bnn** bnn,
                 bnn_bnn* bnn_settings
@@ -72,7 +74,7 @@ public:
         {
             if(!bnn_settings)
             {
-                bnn_error_code = bnn_error_codes::error;
+//                bnn_error_code = bnn_error_codes::error;
                 return;
             }
 

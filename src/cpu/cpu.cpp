@@ -21,6 +21,7 @@
 namespace bnn
 {
 std::thread t;
+//bnn_error_codes bnn_error_code = bnn_error_codes::ok;
 //thread::thread()
 //{
 ////    logging("");
@@ -47,7 +48,7 @@ cpu::cpu(const bnn_settings& bs)
     {
         if(!bnn_settings)
         {
-            bnn_error_code = bnn_error_codes::error;
+            //bnn_error_code = bnn_error_codes::error;
             return;
         }
 

@@ -14,26 +14,23 @@ It is AI in the original meaning coinciding with the meanings of the following s
 #include <unistd.h>
 #include <iostream>
 
-#include "cpu/brain.h"
+#include "cpu/cpu.h"
 
 int main()
 {
-    int quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
-    int quantity_of_threads_in_power_of_two = 1; // 2^1=2
-    const u_word input_length = 31;
-    const u_word output_length = 8;
-    char input[input_length + 1];
-    char output[output_length + 1];
-    input[input_length] = '\0';
-    output[output_length] = '\0';
+    bnn_settings bs;
+    bs.quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
+    bs.threads_count_in_power_of_two = 1; // 2^1=2
+    bs.input_length = 31;
+    bs.output_length = 8;
+
+    char input[bs.input_length + 1];
+    char output[bs.output_length + 1];
+    input[bs.input_length] = '\0';
+    output[bs.output_length] = '\0';
     bool value;
 
-    bnn::brain brain_(
-        quantity_of_neurons_in_power_of_two,
-        input_length,
-        output_length,
-        quantity_of_threads_in_power_of_two
-        );
+    bnn::cpu brain_(bs);
 
     brain_.start();
 

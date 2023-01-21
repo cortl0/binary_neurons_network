@@ -19,14 +19,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 LIBS += -lstdc++fs
 LIBS += -pthread
-#LIBS += ../../build/cpu/libbnn-cpu.a
+LIBS += ../../build/cpu/libbnn-cpu.a
 
 INCLUDEPATH += \
         ../..
 
 SOURCES += \
         ../../common/sources/brain_tools.cpp \
-        ../../cpu/brain.cpp \
+        ../../cpu/cpu.cpp \
         brain_tools_web.cpp \
         deviceai.cpp \
         main.cpp \
@@ -34,7 +34,7 @@ SOURCES += \
 
 HEADERS += \
         common/headers/brain_tools.h \
-        #cpu/brain.h \
+        cpu/cpu.h \
         brain_tools_web.h \
         deviceai.h \
         mainwindow.h

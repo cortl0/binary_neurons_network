@@ -10,7 +10,6 @@
 #include <unistd.h>
 
 #include <iostream>
-#include <thread>
 
 // choose one for cpu or zero for cuda
 //#if(0)
