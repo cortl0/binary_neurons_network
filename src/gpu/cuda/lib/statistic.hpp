@@ -15,7 +15,7 @@
 
 #include "helper_cuda.h"
 
-namespace bnn::gpu::cuda
+namespace bnn::gpu
 {
 
 class statistic
@@ -57,6 +57,6 @@ public:
     }
 };
 
-} // namespace bnn::gpu::cuda
+} // namespace bnn::gpu
 
 #endif // BNN_GPU_CUDA_STATISTIC_H

@@ -1,11 +1,7 @@
-*.cmake
-*.cu
 *.o
 *.out
 *.so
 *.user
 *.autosave
 *build*
-src/brain_obj/*
-src/examples/build-*/*
-src/examples/*_release/*
+*release*

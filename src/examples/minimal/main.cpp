@@ -42,9 +42,10 @@ int main()
 
     brain_.start();
 
-    //std::thread([&](){ sleep(5); brain_.stop(); }).detach();
+    bool stop{false};
+    std::thread([&](){ sleep(1); stop = true; }).detach();
 
-    while(true)
+    while(!stop)
     {
         for (u_word i = 0; i < bs.input_length; i++)
         {

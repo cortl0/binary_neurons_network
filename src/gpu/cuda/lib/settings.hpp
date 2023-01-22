@@ -13,9 +13,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "helper_cuda.h"
+//#include "helper_cuda.h"
 
-namespace bnn::gpu::cuda
+namespace bnn::gpu
 {
 
 class settings
@@ -56,6 +56,6 @@ public:
     }
 };
 
-} // namespace bnn::gpu::cuda
+} // namespace bnn::gpu
 
 #endif // BNN_GPU_CUDA_SETTINGS_H

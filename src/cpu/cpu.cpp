@@ -103,6 +103,7 @@ void cpu::stop()
 {
     bnn->parameters_.start = false;
     bnn->parameters_.stop = true;
+    // TODO
     while(bnn->threads_.data[0].in_work);
 }
 

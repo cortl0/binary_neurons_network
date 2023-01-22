@@ -6,6 +6,6 @@
 #   licensed by GPL v3.0
 #
 
-make clean
-make
-./bnn_gpu_cuda_test.out
+cmake_minimum_required(VERSION 2.8)
+
+add_subdirectory(cuda)
