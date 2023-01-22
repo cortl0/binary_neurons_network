@@ -16,18 +16,12 @@
 #define DEBUG
 #endif
 
-#define BNN_BYTES_ALIGNMENT 8
-
-#ifdef BNN_ARCHITECTURE_CPU
-#ifdef BNN_ARCHITECTURE_CUDA
-#error Only one architecture must be defined
-#endif
-#endif
-
-#ifndef BNN_ARCHITECTURE_CPU
-#ifndef BNN_ARCHITECTURE_CUDA
+#if not defined(BNN_ARCHITECTURE_CPU) && not defined(BNN_ARCHITECTURE_CUDA)
 #error One architecture must be defined
 #endif
+
+#if defined(BNN_ARCHITECTURE_CPU) && defined(BNN_ARCHITECTURE_CUDA)
+#error Only one architecture must be defined
 #endif
 
 #ifdef BNN_ARCHITECTURE_CPU
@@ -44,6 +38,7 @@
 
 #define QUANTITY_OF_BITS_IN_BYTE 8
 #define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
+#define BNN_BYTES_ALIGNMENT 8
 
 enum bnn_error_codes
 {

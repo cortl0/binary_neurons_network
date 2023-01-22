@@ -15,7 +15,9 @@
 
 #include "bnn/bnn_settings.h"
 
+#ifndef BNN_ARCHITECTURE_CPU
 #define BNN_ARCHITECTURE_CPU
+#endif
 
 struct bnn_bnn;
 
@@ -31,6 +33,7 @@ public:
     void stop();
     void set_input(u_word i, bool value);
     bool get_output(u_word i);
+    bool is_active();
 
 protected:
     bnn_bnn* bnn{nullptr};

@@ -16,7 +16,7 @@
 #include "settings.hpp"
 #include "statistic.hpp"
 
-__global__ void increment_kernel(int* g_data, int* debug_data)
+__global__ void bnn_kernel(int* g_data, int* debug_data)
 {
 #include "undef_implementations.h"
 #include "../../../bnn/bnn_implementation.h"
@@ -28,10 +28,7 @@ __global__ void increment_kernel(int* g_data, int* debug_data)
     for(u_word thread_number = 0; thread_number < bnn->threads_.size; ++thread_number)
         debug_data[thread_number] = bnn->threads_.data[thread_number].iteration;
 }
-//void fooo()
-//{
-//    cudaGetDeviceProperties(&cdp, devID);
-//}
+
 namespace bnn::gpu
 {
 
@@ -42,6 +39,7 @@ cuda::~cuda()
     free_host_and_device_memory();
     printf("========================================== ~gpu()\n");
 }
+
 cuda::cuda(const bnn_settings& bs)
 {
 #include "undef_implementations.h"
@@ -96,9 +94,17 @@ cuda::cuda(const bnn_settings& bs)
         bnn_set_neurons_of_thread(bnn_host, thread_number);
     }
 
-    int offset = (memory_.device_data - memory_.host_data) * sizeof(int);
-    bnn_shift_pointers(bnn_host, offset);
     printf("========================================== gpu()\n");
+}
+
+bool cuda::get_output(u_word i)
+{
+    return bnn_host->output_.data[i];
+}
+
+void cuda::set_input(u_word i, bool value)
+{
+    bnn_host->input_.data[i] = value;
 }
 
 void cuda::allocate_host_and_device_memory(memory& m)
@@ -112,7 +118,7 @@ void cuda::allocate_host_and_device_memory(memory& m)
     //checkCudaErrors(
     cudaMemset(m.device_data, 0, m.size);//);
 
-    int offset = (m.device_data - m.host_data) * sizeof(int);
+    offset = (m.device_data - m.host_data) * sizeof(int);
     printf("********************* memory: host [%d], dev [%d], size [%d], delta [%d]\n",
            m.host_data, m.device_data, m.size, offset);
 }
@@ -151,7 +157,6 @@ void cuda::memory_copy_device_to_host()
 void cuda::start()
 {
     printf("========================================== start()\n");
-    active = true;
     bnn_host->parameters_.stop = false;
     bnn_host->parameters_.start = true;
     thread = std::thread(run, this);
@@ -193,25 +198,35 @@ void cuda::run(cuda* me)
     me->bnn_host->parameters_.start = true;
 
     printf("========================================== 001\n");
+    bnn_shift_pointers(me->bnn_host, me->offset);
     me->memory_copy_host_to_device();
+    bnn_shift_pointers(me->bnn_host, -me->offset);
 
-    for(int i = 0; i < 10; ++i)
+    me->active = true;
+
+    while(!me->bnn_host->parameters_.stop)
     {
-        if(me->bnn_host->parameters_.stop)
-            break;
-        printf("========================================== 002\n");
-        increment_kernel<<<blocks, threads, 0, 0>>>(me->memory_.device_data, me->debug_memory.device_data);
-        printf("========================================== 003\n");
-        cudaMemcpy(me->debug_memory.host_data, me->debug_memory.device_data, me->debug_memory.size, cudaMemcpyDeviceToHost);
-        printf("========================================== 004\n");
-        for(u_word thread_number = 0; thread_number < me->bnn_host->threads_.size; ++thread_number)
-            printf("========================================== 005 %d\n", me->debug_memory.host_data[thread_number]);
+        bnn_kernel<<<blocks, threads, 0, 0>>>(me->memory_.device_data, me->debug_memory.device_data);
+
+        cudaMemcpy(me->debug_memory.host_data, me->debug_memory.device_data,
+                   me->debug_memory.size, cudaMemcpyDeviceToHost);
+
+        cudaMemcpy(me->bnn_host->output_.data, me->bnn_host->output_.data + me->offset,
+                   me->bnn_host->output_.size, cudaMemcpyDeviceToHost);
+
+        cudaMemcpy(me->bnn_host->input_.data + me->offset, me->bnn_host->input_.data,
+                   me->bnn_host->input_.size, cudaMemcpyHostToDevice);
+
+//        for(u_word thread_number = 0; thread_number < me->bnn_host->threads_.size; ++thread_number)
+//            printf("========================================== 005 %d\n", me->debug_memory.host_data[thread_number]);
     }
+
+    cudaMemcpy(&me->bnn_host->parameters_.stop + me->offset, &me->bnn_host->parameters_.stop,
+               sizeof(me->bnn_host->parameters_.stop), cudaMemcpyHostToDevice);
 
     printf("========================================== 006\n");
     me->memory_copy_device_to_host();
-    int offset = (me->memory_.device_data - me->memory_.host_data) * sizeof(int);
-    bnn_shift_pointers(me->bnn_host, -offset);
+    bnn_shift_pointers(me->bnn_host, -me->offset);
     printf("========================================== 007\n");
     me->active = false;
 }

@@ -115,4 +115,9 @@ bool cpu::get_output(u_word i)
     return bnn->output_.data[i];
 }
 
+bool cpu::is_active()
+{
+    return true;
+}
+
 } // namespace bnn
