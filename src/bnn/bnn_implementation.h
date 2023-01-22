@@ -308,12 +308,10 @@ auto bnn_bnn_function = [BNN_LAMBDA_REFERENCE](
 
         bnn->parameters_.iteration = iteration_new / bnn->threads_.size;
         bnn->parameters_.quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary_temp;
-        //usleep(BNN_LITTLE_TIME);
     }
 
     while(true)
     {
-        //        usleep(BNN_LITTLE_TIME);
         for(u_word i = 0; i < bnn->threads_.size; ++i)
             if(bnn->threads_.data[i].in_work)
                 continue;

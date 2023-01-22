@@ -15,6 +15,8 @@
 
 #include "bnn/bnn_settings.h"
 
+#define BNN_ARCHITECTURE_CPU
+
 struct bnn_bnn;
 
 namespace bnn

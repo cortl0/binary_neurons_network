@@ -10,6 +10,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "types.h"
+
 #ifndef DEBUG
 #define DEBUG
 #endif
@@ -40,13 +42,8 @@
 //#define debug_print_1(...) printf(__VA_ARGS__);
 //#define debug_print(...)
 
-typedef unsigned int u_word;
-typedef signed int s_word;
-
 #define QUANTITY_OF_BITS_IN_BYTE 8
 #define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
-
-#define LITTLE_TIME 1000
 
 enum bnn_error_codes
 {

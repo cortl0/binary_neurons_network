@@ -25,7 +25,8 @@ INCLUDEPATH += \
         ../..
 
 SOURCES += \
-        ../../common/sources/brain_tools.cpp \
+        ../../common/logger.cpp \
+        ../../common/brain_tools.cpp \
         ../../cpu/cpu.cpp \
         brain_tools_web.cpp \
         deviceai.cpp \
@@ -33,7 +34,8 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
-        common/headers/brain_tools.h \
+        common/logger.h \
+        common/brain_tools.h \
         cpu/cpu.h \
         brain_tools_web.h \
         deviceai.h \

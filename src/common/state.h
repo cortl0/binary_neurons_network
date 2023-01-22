@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_STATE_HPP
-#define BNN_STATE_HPP
+#ifndef BNN_COMMON_STATE_H
+#define BNN_COMMON_STATE_H
 
 namespace bnn
 {
@@ -23,4 +23,4 @@ enum class state : int
 
 } // namespace bnn
 
-#endif // BNN_STATE_HPP
+#endif // BNN_COMMON_STATE_H

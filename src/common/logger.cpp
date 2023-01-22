@@ -7,26 +7,15 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_CONFIG_HPP
-#define BNN_CONFIG_HPP
-
-#include <iostream>
+#include "logger.h"
 
 #include <ctime>
 #include <thread>
 
-#include "bnn/config.h"
-
-#define get_time_def bnn::get_time()
-#define place_string std::string().append(std::string(__FUNCTION__)).append(": ").append(__FILE__).append(": ").append(std::to_string(__LINE__))
-#define log_string(msg) std::string().append(get_time_def).append(" | ").append(msg).append(" | at: ").append(place_string)
-#define throw_error(msg) throw std::runtime_error(log_string(msg))
-#define logging(msg) std::cout << log_string(msg) << std::endl
-
 namespace bnn
 {
 
-static std::string get_time()
+std::string get_time()
 {
     std::string time_str;
 #define LOGGER_TIME_BUFFER_LENGTH 20
@@ -50,5 +39,3 @@ static std::string get_time()
 };
 
 } // namespace bnn
-
-#endif // BNN_CONFIG_HPP

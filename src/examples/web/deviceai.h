@@ -15,8 +15,6 @@
 //#include <QKeyEvent>
 #include <QWebEngineView>
 
-#define BNN_ARCHITECTURE_CPU
-
 #include "brain_tools_web.h"
 
 class SensorPixmap

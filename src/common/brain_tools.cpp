@@ -7,7 +7,7 @@
  *   licensed by GPL v3.0
  */
 
-#include "../headers/brain_tools.h"
+#include "brain_tools.h"
 
 #include <unistd.h>
 #include <algorithm>
@@ -17,9 +17,7 @@
 #include <set>
 #include <vector>
 
-#include "cpu/config.hpp"
-
-#define BNN_ARCHITECTURE_CPU
+#include "common/logger.h"
 
 namespace bnn
 {

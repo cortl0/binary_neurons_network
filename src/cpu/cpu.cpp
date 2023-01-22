@@ -14,8 +14,6 @@
 #include <iostream>
 #include <thread>
 
-#define BNN_ARCHITECTURE_CPU
-
 #include "bnn/bnn_implementation.h"
 
 namespace bnn

@@ -14,7 +14,6 @@
 #include <fstream>
 #include <stdexcept>
 
-#define BNN_ARCHITECTURE_CPU
 #include "cpu/cpu.h"
 #include "bnn/bnn.h"
 
