@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_BRAIN_H
-#define BNN_BRAIN_H
+#ifndef BNN_CPU_CPU_H
+#define BNN_CPU_CPU_H
 
 #include <thread>
 #include <vector>
@@ -45,4 +45,4 @@ private:
 
 } // namespace bnn
 
-#endif // BNN_BRAIN_H
+#endif // BNN_CPU_CPU_H

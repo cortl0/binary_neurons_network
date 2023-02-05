@@ -18,6 +18,7 @@ struct memory
     int* host_data{nullptr};
     int* device_data{nullptr};
     int size{0};
+    int offset;
 };
 
 } // namespace bnn::gpu::cuda

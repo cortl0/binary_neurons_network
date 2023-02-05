@@ -9,6 +9,8 @@
 
 #include "brain_tools_web.h"
 
+namespace fs = std::filesystem;
+
 namespace bnn
 {
 

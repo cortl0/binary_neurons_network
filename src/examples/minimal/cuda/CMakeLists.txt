@@ -6,11 +6,10 @@
 #   licensed by GPL v3.0
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
 project(minimal-cuda LANGUAGES CXX CUDA)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -20,5 +19,4 @@ include_directories(../../..)
 
 add_executable(${PROJECT_NAME} ../main.cpp)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-target_link_libraries(${PROJECT_NAME} PRIVATE -pthread ${CUDA_LIBRARIES} bnn-cuda)
+target_link_libraries(${PROJECT_NAME} PRIVATE pthread bnn-cuda)

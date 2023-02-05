@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef BNN_CONFIG_H
+#define BNN_CONFIG_H
 
 #include "types.h"
 
@@ -26,15 +26,9 @@
 
 #ifdef BNN_ARCHITECTURE_CPU
 #define BNN_LAMBDA_REFERENCE
-#endif
-
-#ifdef BNN_ARCHITECTURE_CUDA
+#elif defined BNN_ARCHITECTURE_CUDA
 #define BNN_LAMBDA_REFERENCE &
 #endif
-
-//#define debug_print(...) printf(__VA_ARGS__);
-//#define debug_print_1(...) printf(__VA_ARGS__);
-//#define debug_print(...)
 
 #define QUANTITY_OF_BITS_IN_BYTE 8
 #define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
@@ -49,4 +43,4 @@ enum bnn_error_codes
     malloc_fail
 };
 
-#endif // CONFIG_H
+#endif // BNN_CONFIG_H

@@ -31,10 +31,16 @@ brain_tools::brain_tools(u_word quantity_of_neurons_in_power_of_two,
                          u_word input_length,
                          u_word output_length,
                          u_word threads_count_in_power_of_two)
-    : cpu(bnn_settings{.quantity_of_neurons_in_power_of_two = quantity_of_neurons_in_power_of_two,
-          .input_length = input_length,
-          .output_length = output_length,
-          .threads_count_in_power_of_two = threads_count_in_power_of_two})
+    : architecture
+    (
+        bnn_settings
+        {
+            .quantity_of_neurons_in_power_of_two = quantity_of_neurons_in_power_of_two,
+            .input_length = input_length,
+            .output_length = output_length,
+            .threads_count_in_power_of_two = threads_count_in_power_of_two
+        }
+    )
 {
 }
 
@@ -544,6 +550,7 @@ void brain_tools::save_random_csv()
 
 void brain_tools::save_random_csv_line()
 {
+#if(0)
     std::ofstream ofs(fs::current_path() / "random_line.csv", std::ios::binary);
 
     union converter
@@ -638,11 +645,12 @@ void brain_tools::save_random_csv_line()
     }
 
     ofs.close();
+#endif
 }
 
 void brain_tools::stop()
 {
-    cpu::stop();
+    architecture::stop();
 }
 
 } // namespace bnn

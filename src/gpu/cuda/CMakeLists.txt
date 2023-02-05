@@ -9,6 +9,10 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 project(bnn-cuda LANGUAGES CXX CUDA)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include_directories(
     .
     ${CMAKE_CURRENT_SOURCE_DIR}/../..
@@ -17,8 +21,4 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/external
     )
 
-add_library(${PROJECT_NAME} cuda.cu)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CUDA_LIBRARIES})
+add_library(${PROJECT_NAME} STATIC cuda.cu)

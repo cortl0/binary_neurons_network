@@ -42,7 +42,7 @@ public:
     void Y_minus();
     QPixmap& GetPixmap(){ return qPixmapSmall; }
     void PixmapNormalize();
-    void FillBinary(QPixmap&, bnn::cpu&);
+    void FillBinary(QPixmap&, bnn::architecture&);
 };
 
 class DeviceAI
@@ -62,7 +62,7 @@ public:
              QSize qSizeBig,
              QWebEngineView* qwev_);
     SensorPixmap& GetSensorPixmap(){ return *sensorPixmap; }
-    bnn::cpu& GetBrain(){ return *brain_.get(); }
+    bnn::architecture& GetBrain(){ return *brain_.get(); }
 };
 
 #endif // DEVICEAI_H

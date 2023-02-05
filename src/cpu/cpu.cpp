@@ -95,14 +95,18 @@ void cpu::start()
     main_tread = std::thread(bnn_bnn_function, bnn);
     main_tread.detach();
     bnn->parameters_.start = true;
+
+    for(u_word i = 0; i < bnn->threads_.size; ++i)
+        while(!bnn->threads_.data[i].in_work);
 }
 
 void cpu::stop()
 {
     bnn->parameters_.start = false;
     bnn->parameters_.stop = true;
-    // TODO
-    while(bnn->threads_.data[0].in_work);
+
+    for(u_word i = 0; i < bnn->threads_.size; ++i)
+        while(bnn->threads_.data[i].in_work);
 }
 
 void cpu::set_input(u_word i, bool value)
@@ -117,6 +121,7 @@ bool cpu::get_output(u_word i)
 
 bool cpu::is_active()
 {
+    // TODO
     return true;
 }
 

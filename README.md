@@ -14,42 +14,44 @@ It is AI in the original meaning coinciding with the meanings of the following s
 #include <unistd.h>
 #include <iostream>
 
-#include "cpu/cpu.h"
+#include "common/architecture_type.h"
 
 int main()
 {
-    bnn_settings bs;
-    bs.quantity_of_neurons_in_power_of_two = 12; // 2^12=4096
-    bs.threads_count_in_power_of_two = 1; // 2^1=2
-    bs.input_length = 31;
-    bs.output_length = 8;
-
-    char input[bs.input_length + 1];
-    char output[bs.output_length + 1];
-    input[bs.input_length] = '\0';
-    output[bs.output_length] = '\0';
-    bool value;
-
-    bnn::cpu brain_(bs);
-
-    brain_.start();
-
-    while(true)
+    constexpr bnn_settings bs
     {
-        for (u_word i = 0; i < input_length; i++)
+        .quantity_of_neurons_in_power_of_two = 12, // 2^12=4096
+        .input_length = 31,
+        .output_length = 8,
+        .threads_count_in_power_of_two = 1 // 2^1=2
+    };
+
+    bnn::architecture_type bnn(bs);
+    bnn.start();
+    while(!bnn.is_active());
+    bool stop{false};
+    std::thread([&stop](){ sleep(1); stop = true; }).detach();
+
+    while(!stop)
+    {
+        static char input[bs.input_length + 1]{};
+        static char output[bs.output_length + 1]{};
+        static bool value;
+
+        for (u_word i = 0; i < bs.input_length; i++)
         {
             value = rand() % 2;
 
-            // Put data in bnn
-            brain_.set_input(i, value);
+            // Put data in BNN
+            bnn.set_input(i, value);
 
             input[i] = value + 48;
         }
 
-        for (u_word i = 0; i < output_length; i++)
+        for (u_word i = 0; i < bs.output_length; i++)
         {
-            // Get data from bnn
-            value = brain_.get_output(i);
+            // Get data from BNN
+            value = bnn.get_output(i);
 
             output[i] = value + 48;
         }
@@ -58,8 +60,7 @@ int main()
         usleep(100000);
     }
 
-    usleep(100000);
-    brain_.stop();
+    bnn.stop();
 
     return 0;
 }

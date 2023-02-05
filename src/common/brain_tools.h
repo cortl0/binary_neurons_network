@@ -7,22 +7,20 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_BRAIN_TOOLS_H
-#define BNN_BRAIN_TOOLS_H
+#ifndef BNN_COMMON_BNN_TOOLS_H
+#define BNN_COMMON_BNN_TOOLS_H
 
-#include <experimental/filesystem>
 #include <fstream>
 #include <stdexcept>
 
-#include "cpu/cpu.h"
-#include "bnn/bnn.h"
+#include "architecture.h"
 
-namespace fs = std::experimental::filesystem;
+#include "bnn/bnn.h"
 
 namespace bnn
 {
 
-class brain_tools : public cpu
+class brain_tools : public architecture
 {
 public:
     virtual ~brain_tools();
@@ -48,4 +46,4 @@ public:
 
 } // namespace bnn
 
-#endif // BNN_BRAIN_TOOLS_H
+#endif // BNN_COMMON_BNN_TOOLS_H

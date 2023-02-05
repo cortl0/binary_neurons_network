@@ -7,6 +7,9 @@
  *   licensed by GPL v3.0
  */
 
+#ifndef BNN_GPU_CUDA_CUDA_H
+#define BNN_GPU_CUDA_CUDA_H
+
 #include <thread>
 
 #include "bnn/bnn_settings.h"
@@ -39,13 +42,17 @@ public:
     bool is_active();
     static void run(cuda* me);
 
+protected:
+    bnn_bnn* bnn{nullptr};
+
 private:
     bool active{false};
     bnn_bnn* bnn_host{nullptr};
     memory memory_;
     memory debug_memory;
     std::thread thread;
-    int offset;
 };
 
 } // namespace bnn::gpu
+
+#endif // BNN_GPU_CUDA_CUDA_H
