@@ -40,6 +40,7 @@ struct bnn_threads
     u_word size{0};
     u_word size_in_power_of_two{0};
     u_word neurons_per_thread{0};
+    bnn_error_codes bnn_error_code{bnn_error_codes::ok};
 };
 
 #endif // BNN_THREAD_H

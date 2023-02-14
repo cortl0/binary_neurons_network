@@ -23,7 +23,6 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
     me->in_work = true;
     u_word reaction_rate = bnn->threads_.neurons_per_thread;
     u_word j;
-    //logging("thread [" + std::to_string(thread_number) + "] started");
 
     while(!bnn->parameters_.start)
         ;
@@ -34,6 +33,30 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
         {
             reaction_rate = bnn->threads_.neurons_per_thread;
             ++me->iteration;
+
+#ifdef BNN_ARCHITECTURE_CUDA
+            if(!thread_number)
+            {
+                static u_word iteration_new;
+                iteration_new = 0;
+                static u_word quantity_of_initialized_neurons_binary;
+                quantity_of_initialized_neurons_binary = 0;
+
+                for(u_word i = 0; i < bnn->threads_.size; ++i)
+                {
+                    iteration_new += bnn->threads_.data[i].iteration;
+                    quantity_of_initialized_neurons_binary += bnn->threads_.data[i].quantity_of_initialized_neurons_binary;
+                }
+
+                bnn->parameters_.iteration = iteration_new / bnn->threads_.size;
+                bnn->parameters_.quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
+
+                bnn->parameters_.candidate_for_kill = bnn_random_pull(
+                            &bnn->random_,
+                            bnn->storage_.size_in_power_of_two,
+                            &bnn->parameters_.random_config);
+            }
+#endif
 
 #ifdef DEBUG
             u_word debug_average_consensus = 0;

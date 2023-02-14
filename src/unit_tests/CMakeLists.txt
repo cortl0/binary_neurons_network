@@ -7,16 +7,18 @@
 #
 
 cmake_minimum_required(VERSION 3.0)
-project(bnn-cpu LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(..)
+include(CTest)
+enable_testing()
+
 set(SOURCES
-    cpu.cpp
+    bnn_memory_test.cpp
     ../common/logger.cpp
     )
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
-
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+add_executable(bnn_memory_test ${SOURCES})
+add_test(NAME bnn_memory_test COMMAND bnn_memory_test)

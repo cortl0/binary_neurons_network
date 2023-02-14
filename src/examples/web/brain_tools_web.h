@@ -29,11 +29,7 @@ struct brain_tools_web : brain_tools
     std::map<u_word, u_word> graphical_representation();
 
     virtual ~brain_tools_web();
-    brain_tools_web() = delete;
-    brain_tools_web(u_word quantity_of_neurons_in_power_of_two,
-                    u_word input_length,
-                    u_word output_length,
-                    u_word threads_count_in_power_of_two = 0);
+    brain_tools_web(const bnn_settings&);
     void load();
     void resize(u_word brainBits);
     void save();

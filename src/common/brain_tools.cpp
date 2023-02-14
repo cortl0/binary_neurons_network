@@ -27,20 +27,8 @@ brain_tools::~brain_tools()
     logging("");
 }
 
-brain_tools::brain_tools(u_word quantity_of_neurons_in_power_of_two,
-                         u_word input_length,
-                         u_word output_length,
-                         u_word threads_count_in_power_of_two)
-    : architecture
-    (
-        bnn_settings
-        {
-            .quantity_of_neurons_in_power_of_two = quantity_of_neurons_in_power_of_two,
-            .input_length = input_length,
-            .output_length = output_length,
-            .threads_count_in_power_of_two = threads_count_in_power_of_two
-        }
-    )
+brain_tools::brain_tools(const bnn_settings& bs)
+    : architecture(bs)
 {
 }
 
@@ -120,7 +108,7 @@ void brain_tools::get_debug_string(std::string& s)
     debug_average_consensus /= bnn->threads_.size;
 
     debug_average_level_counter = 0;
-
+#if(0)
     auto levels = std::vector<u_word>(50, 0);
     auto life_counters = std::vector<u_word>(100, 0);
 
@@ -176,9 +164,9 @@ void brain_tools::get_debug_string(std::string& s)
         s += " ";
     }
     s += "\n";
-
     if(debug_average_level_counter)
         debug_average_level /= debug_average_level_counter;
+#endif
 #endif
 
     {
@@ -186,6 +174,7 @@ void brain_tools::get_debug_string(std::string& s)
         s += " | initialized " + std::to_string(bnn->parameters_.quantity_of_initialized_neurons_binary);
 
 #ifdef DEBUG
+#if(0)
         s += " = created " + std::to_string(debug_created);
         s += " - killed " + std::to_string(debug_killed);
         s += " | motor_slots_ocupied " + std::to_string(debug_motors_slots_ocupied);
@@ -205,9 +194,9 @@ void brain_tools::get_debug_string(std::string& s)
         s += " | max_binary_num " + std::to_string(debug_max_consensus_binary_num);
         s += " | max_binary_calculation_count " + std::to_string(bnn->storage_.data[debug_max_consensus_binary_num].neuron_.calculation_count);
 
-        //s += "\n";
-        //recursion(debug_max_consensus_binary_num, this, s);
-        //s += "\n";
+        s += "\n";
+        recursion(debug_max_consensus_binary_num, this, s);
+        s += "\n";
 
         s += "\n";
         s += "random    ";
@@ -216,6 +205,7 @@ void brain_tools::get_debug_string(std::string& s)
         s += " | count_put " + std::to_string(debug_count_put);
         s += " | sum_put " + std::to_string(debug_sum_put);
         s += "\n";
+#endif
 #endif
     }
 }

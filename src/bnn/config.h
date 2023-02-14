@@ -38,6 +38,13 @@ enum bnn_error_codes
 {
     ok,
     error,
+    input_size_must_be_greater_than_zero,
+    output_size_must_be_greater_than_zero,
+    motor_binaries_size_per_motor_must_be_greater_than_zero,
+    storage_size_too_small,
+    neurons_per_thread_must_be_greater_than_zero,
+    random_size_in_power_of_two_must_be_less_then_quantity_of_bits_in_word,
+
     invalid_value,
     out_of_range,
     malloc_fail

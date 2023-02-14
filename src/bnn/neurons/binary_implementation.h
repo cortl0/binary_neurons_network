@@ -76,23 +76,29 @@ auto bnn_binary_init = [BNN_LAMBDA_REFERENCE](
 auto bnn_binary_create = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_binary* me,
-        bnn_neuron* first,
-        bnn_neuron* second,
         const u_word me_offset,
         u_word thread_number
         ) -> bool
 {
-    if(me->first_input_address == me->second_input_address)
-        return false;
+    bnn_thread& thread = bnn->threads_.data[thread_number];
+
+    me->first_input_address = thread.start_neuron +
+                bnn_random_pull(&bnn->random_, thread.length_in_us_in_power_of_two, &thread.random_config);
 
     if(me_offset == me->first_input_address)
         return false;
 
+    me->second_input_address = thread.start_neuron +
+                bnn_random_pull(&bnn->random_, thread.length_in_us_in_power_of_two, &thread.random_config);
+
     if(me_offset == me->second_input_address)
         return false;
 
-//    bnn_neuron* first = &bnn->storage_.data[me->first_input_address].neuron_;
-//    bnn_neuron* second = &bnn->storage_.data[me->second_input_address].neuron_;
+    if(me->first_input_address == me->second_input_address)
+        return false;
+
+    bnn_neuron* first = &bnn->storage_.data[me->first_input_address].neuron_;
+    bnn_neuron* second = &bnn->storage_.data[me->second_input_address].neuron_;
 
     if(!((first->type_ == bnn_neuron::type::binary ? reinterpret_cast<bnn_binary*>(first)->in_work : false) ||
           (first->type_ == bnn_neuron::type::motor) ||
@@ -115,7 +121,7 @@ auto bnn_binary_create = [BNN_LAMBDA_REFERENCE](
             thread_number
             );
 
-    ++bnn->parameters_.quantity_of_initialized_neurons_binary;
+    ++bnn->threads_.data[thread_number].quantity_of_initialized_neurons_binary;
 
     return true;
 };
@@ -192,8 +198,10 @@ auto bnn_binary_calculate = [BNN_LAMBDA_REFERENCE](
     {
         if((bnn_random_pull_under(&bnn->random_, bnn->storage_.size - bnn->parameters_.quantity_of_initialized_neurons_binary, random_config)) ||
                 (bnn->parameters_.quantity_of_initialized_neurons_binary * 3 < bnn->storage_.size * 2))
-            if(!bnn_binary_create(bnn, me, first, second, me_offset, thread_number))
+            if(!bnn_binary_create(bnn, me, me_offset, thread_number))
+            {
                 update_output_new_for_random_filling();
+        }
     }
 
     bnn_neuron_push_random(&bnn->random_, &me->neuron_, random_config);

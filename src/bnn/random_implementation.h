@@ -54,7 +54,7 @@ auto bnn_random_set = [BNN_LAMBDA_REFERENCE](
         random->bnn_error_code = bnn_error_codes::invalid_value;
     }
 
-    for(u_word i = 0; i < random->size; ++i)
+    for(u_word i = config->put_offset_start; i < config->put_offset_end; ++i)
         for(u_word j = 0; j < QUANTITY_OF_BITS_IN_WORD; ++j)
             bnn_random_push(random, bnn_m_sequence_next(m_sequence), config);
 };

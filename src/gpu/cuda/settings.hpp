@@ -10,9 +10,6 @@
 #ifndef BNN_GPU_CUDA_SETTINGS_H
 #define BNN_GPU_CUDA_SETTINGS_H
 
-#include <stdio.h>
-#include <unistd.h>
-
 #include "helper_cuda.h"
 
 namespace bnn::gpu
@@ -26,16 +23,14 @@ public:
       if(count < 1)
         throw;
 
-      if(count > cdp.maxThreadsDim[0])
-        count = cdp.maxThreadsDim[0];
+      if(count > cdp.maxThreadsPerMultiProcessor)
+        count = cdp.maxThreadsPerMultiProcessor;
 
       if(count > cdp.maxThreadsPerBlock)
         count = cdp.maxThreadsPerBlock;
 
-      if(count > cdp.maxThreadsPerMultiProcessor)
-        count = cdp.maxThreadsPerMultiProcessor;
-
-      printf("threads_dim.x [%d]\n", count);
+      if(count > cdp.maxThreadsDim[0])
+        count = cdp.maxThreadsDim[0];
 
       return count;
     }
@@ -49,8 +44,6 @@ public:
         count = count / threads.x + 1;
       else
         count /= threads.x;
-
-      printf("blocks_dim.x [%d]\n", count);
 
       return count;
     }

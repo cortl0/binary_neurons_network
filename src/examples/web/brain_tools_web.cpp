@@ -19,14 +19,8 @@ brain_tools_web::~brain_tools_web()
 
 }
 
-brain_tools_web::brain_tools_web(u_word quantity_of_neurons_in_power_of_two,
-                                 u_word input_length,
-                                 u_word output_length,
-                                 u_word threads_count_in_power_of_two)
-    : brain_tools(quantity_of_neurons_in_power_of_two,
-                  input_length,
-                  output_length,
-                  threads_count_in_power_of_two)
+brain_tools_web::brain_tools_web(const bnn_settings& bs)
+    : brain_tools(bs)
 {
 
 }

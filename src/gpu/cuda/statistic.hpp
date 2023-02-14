@@ -37,7 +37,6 @@ public:
       printf("CUDA device maxGridSize [%d]\n", cdp.maxGridSize[0]);
       printf("CUDA device maxGridSize [%d]\n", cdp.maxGridSize[1]);
       printf("CUDA device maxGridSize [%d]\n", cdp.maxGridSize[2]);
-      //printf("CUDA device maxGridSize [%d]\n", cdp.);
     }
 
     static void view_devices_list()
@@ -53,7 +52,7 @@ public:
           printf("Device %d has compute capability %d.%d.\n", device, deviceProp.major, deviceProp.minor);
           print_device_properties(deviceProp);
       }
-      printf("===== Device list -----\n");
+      printf("===== Device list -----\n\n");
     }
 };
 

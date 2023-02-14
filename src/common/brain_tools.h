@@ -24,11 +24,7 @@ class brain_tools : public architecture
 {
 public:
     virtual ~brain_tools();
-    brain_tools() = delete;
-    brain_tools(u_word quantity_of_neurons_in_power_of_two,
-                u_word input_length,
-                u_word output_length,
-                u_word threads_count_in_power_of_two = 0);
+    brain_tools(const bnn_settings&);
     void get_debug_string(std::string&);
     const u_word& get_iteration() const;
     bool load(std::ifstream&);

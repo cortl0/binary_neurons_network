@@ -15,8 +15,8 @@
 struct bnn_random
 {
     u_word* data{nullptr};
-    u_word size{0};
-    u_word size_in_power_of_two{0};
+    u_word size{0}; // words
+    u_word size_in_power_of_two{0}; // bits
     bnn_error_codes bnn_error_code{bnn_error_codes::ok};
     //u_word size_words
 };

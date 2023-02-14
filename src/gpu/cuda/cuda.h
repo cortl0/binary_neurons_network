@@ -12,7 +12,7 @@
 
 #include <thread>
 
-#include "bnn/bnn_settings.h"
+#include "common/settings.h"
 #include "memory.hpp"
 
 #ifndef BNN_ARCHITECTURE_CUDA
@@ -28,24 +28,23 @@ class cuda
 {
 public:
     ~cuda();
-    cuda(const bnn_settings& bs);
-    bool get_output(u_word i);
-    void set_input(u_word i, bool value);
-    void allocate_host_and_device_memory(memory& m);
-    void free_host_and_device_memory();
-    void memory_copy_host_to_device(memory& m);
-    void memory_copy_host_to_device();
-    void memory_copy_device_to_host(memory& m);
-    void memory_copy_device_to_host();
+    cuda(const bnn_settings&);
+    bool get_output(u_word offset);
+    void set_input(u_word offset, bool value);
+    static bool allocate_host_and_device_memory(memory&);
+    static bool free_host_and_device_memory(memory&);
+    bool memory_copy_host_to_device(memory&);
+    bool memory_copy_device_to_host(memory&);
     void start();
     void stop();
     bool is_active();
-    static void run(cuda* me);
+    static void run(cuda*);
 
 protected:
     bnn_bnn* bnn{nullptr};
 
 private:
+    bool test_kernel_result();
     bool active{false};
     bnn_bnn* bnn_host{nullptr};
     memory memory_;

@@ -19,7 +19,9 @@ int main()
         .quantity_of_neurons_in_power_of_two = 12, // 2^12=4096
         .input_length = 31,
         .output_length = 8,
-        .threads_count_in_power_of_two = 1 // 2^1=2
+        .motor_binaries_per_motor = 8,
+        .random_size_in_power_of_two = 22,
+        .quantity_of_threads_in_power_of_two = 1, // 2^1=2
     };
 
     bnn::architecture bnn(bs);

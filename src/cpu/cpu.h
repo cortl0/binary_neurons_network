@@ -13,7 +13,7 @@
 #include <thread>
 #include <vector>
 
-#include "bnn/bnn_settings.h"
+#include "common/settings.h"
 
 #ifndef BNN_ARCHITECTURE_CPU
 #define BNN_ARCHITECTURE_CPU

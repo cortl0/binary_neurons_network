@@ -18,67 +18,57 @@ auto bnn_calculate_alignment = [BNN_LAMBDA_REFERENCE](u_word& size) -> void
     u_word alignment = size % BNN_BYTES_ALIGNMENT;
 
     if(alignment > 0)
-        alignment = BNN_BYTES_ALIGNMENT - alignment;
-
-    size += alignment;
+        size += BNN_BYTES_ALIGNMENT - alignment;
 };
 
 auto bnn_calculate_settings = [BNN_LAMBDA_REFERENCE](
-        bnn_bnn* bnn_settings
-        ) -> void
+        bnn_bnn* bnn
+        ) -> bnn_error_codes
 {
-    bnn_settings->motor_binaries_.size_per_motor = 16;
-    bnn_settings->motor_binaries_.size = bnn_settings->motor_binaries_.size_per_motor * bnn_settings->output_.size;
-    bnn_settings->storage_.size = bnn_math_two_pow_x(bnn_settings->storage_.size_in_power_of_two);
-    bnn_settings->threads_.size = bnn_math_two_pow_x(bnn_settings->threads_.size_in_power_of_two);
-    bnn_settings->storage_.size = bnn_settings->storage_.size
-            - bnn_settings->input_.size - bnn_settings->output_.size;
-    bnn_settings->threads_.neurons_per_thread = bnn_settings->storage_.size / bnn_settings->threads_.size;
+    if(bnn->input_.size == 0)
+        return bnn_error_codes::input_size_must_be_greater_than_zero;
 
-    if(bnn_settings->storage_.size <= bnn_settings->input_.size + bnn_settings->output_.size)
-    {
-        //throw_error("quantity_of_neurons_sensor + quantity_of_neurons_motor >= quantity_of_neurons_end");
-        bnn_settings->bnn_error_code = bnn_error_codes::invalid_value;
-    }
+    if(bnn->output_.size == 0)
+        return bnn_error_codes::output_size_must_be_greater_than_zero;
 
-    auto calculate_random_size_bits = [&]() -> u_word
-    {
-        bnn_error_codes bnn_error_code;
-        const u_word experimental_coefficient = bnn_math_log2_1(&bnn_error_code, QUANTITY_OF_BITS_IN_WORD) + 5;
-        bnn_settings->random_.size_in_power_of_two = bnn_settings->storage_.size_in_power_of_two + experimental_coefficient;
+    if(bnn->motor_binaries_.size_per_motor == 0)
+        return bnn_error_codes::motor_binaries_size_per_motor_must_be_greater_than_zero;
 
-        if(bnn_settings->random_.size_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD)
-        {
-            bnn_settings->random_.size_in_power_of_two = QUANTITY_OF_BITS_IN_WORD - 1;
-            //logging("random_array_length_in_power_of_two does not satisfy of experimental_coefficient");
-        }
+    bnn->motor_binaries_.size = bnn->motor_binaries_.size_per_motor * bnn->output_.size;
+    bnn->storage_.size = bnn_math_two_pow_x(bnn->storage_.size_in_power_of_two);
 
-        if(bnn_settings->random_.size_in_power_of_two > 29)
-        {
-            bnn_settings->random_.size_in_power_of_two = 29;
-            //logging("random_array_length_in_power_of_two hardware limitation");
-        }
+    if(bnn->storage_.size < bnn->input_.size + bnn->output_.size)
+        return bnn_error_codes::storage_size_too_small;
 
-        return (1 << bnn_settings->random_.size_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
-    };
-    bnn_settings->random_.size = calculate_random_size_bits();
-    bnn_settings->parameters_.random_config.put_offset_end = bnn_settings->random_.size;
+    bnn->threads_.size = bnn_math_two_pow_x(bnn->threads_.size_in_power_of_two);
+    bnn->threads_.neurons_per_thread = bnn->storage_.size / bnn->threads_.size;
 
-    bnn_settings->memory_.size = 0;
-    bnn_settings->memory_.size += sizeof(bnn_bnn);
-    bnn_calculate_alignment(bnn_settings->memory_.size);
-    bnn_settings->memory_.size += sizeof(bool) * bnn_settings->input_.size;
-    bnn_calculate_alignment(bnn_settings->memory_.size);
-    bnn_settings->memory_.size += sizeof(bool) * bnn_settings->output_.size;
-    bnn_calculate_alignment(bnn_settings->memory_.size);
-    bnn_settings->memory_.size += sizeof(u_word) * bnn_settings->random_.size;
-    bnn_calculate_alignment(bnn_settings->memory_.size);
-    bnn_settings->memory_.size += sizeof(bnn_storage) * bnn_settings->storage_.size;
-    bnn_calculate_alignment(bnn_settings->memory_.size);
-    bnn_settings->memory_.size += sizeof(bnn_motor::binary) * bnn_settings->motor_binaries_.size;
-    bnn_calculate_alignment(bnn_settings->memory_.size);
-    bnn_settings->memory_.size += sizeof(bnn_thread) * bnn_settings->threads_.size;
-    bnn_calculate_alignment(bnn_settings->memory_.size);
+    if(bnn->threads_.neurons_per_thread == 0)
+        return bnn_error_codes::neurons_per_thread_must_be_greater_than_zero;
+
+    if(bnn->random_.size_in_power_of_two >= QUANTITY_OF_BITS_IN_WORD)
+        return bnn_error_codes::random_size_in_power_of_two_must_be_less_then_quantity_of_bits_in_word;
+
+    bnn->random_.size = (1 << bnn->random_.size_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
+    bnn->parameters_.random_config.put_offset_end = bnn->random_.size;
+
+    bnn->memory_.size = 0;
+    bnn->memory_.size += sizeof(bnn_bnn);
+    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->memory_.size += sizeof(bool) * bnn->input_.size;
+    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->memory_.size += sizeof(bool) * bnn->output_.size;
+    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->memory_.size += sizeof(u_word) * bnn->random_.size;
+    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->memory_.size += sizeof(bnn_storage) * bnn->storage_.size;
+    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->memory_.size += sizeof(bnn_motor::binary) * bnn->motor_binaries_.size;
+    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->memory_.size += sizeof(bnn_thread) * bnn->threads_.size;
+    bnn_calculate_alignment(bnn->memory_.size);
+
+    return bnn_error_codes::ok;
 };
 
 auto bnn_calculate_pointers = [BNN_LAMBDA_REFERENCE](

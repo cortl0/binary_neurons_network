@@ -15,6 +15,8 @@
 #include <thread>
 
 #include "bnn/bnn_implementation.h"
+#include "common/logger.h"
+#include "common/settings_converter.hpp"
 
 namespace bnn
 {
@@ -28,16 +30,18 @@ std::thread t;
 cpu::~cpu()
 {
     free(bnn);
+    logging("cpu::~cpu()");
 }
 
 cpu::cpu(const bnn_settings& bs)
 {
-    bnn_bnn bnn_temp;
-    bnn_temp.storage_.size_in_power_of_two = bs.quantity_of_neurons_in_power_of_two;
-    bnn_temp.input_.size = bs.input_length;
-    bnn_temp.output_.size = bs.output_length;
-    bnn_temp.threads_.size_in_power_of_two = bs.threads_count_in_power_of_two;
-    bnn_calculate_settings(&bnn_temp);
+    bnn_bnn bnn_temp = convert_bnn_settings_to_bnn(bs);
+
+    if(auto result = bnn_calculate_settings(&bnn_temp); bnn_error_codes::ok != result)
+    {
+        logging("bnn_error_code [" + std::to_string(result) + "]");
+        throw static_cast<int>(result);
+    }
 
     auto bnn_memory_allocate = [BNN_LAMBDA_REFERENCE](
             bnn_bnn** bnn,
@@ -78,7 +82,7 @@ cpu::cpu(const bnn_settings& bs)
 
     treads.resize(bnn_temp.threads_.size);
 
-    //printf("002\n");
+    logging("cpu::cpu()");
 }
 
 u_word thread_number = 0;
