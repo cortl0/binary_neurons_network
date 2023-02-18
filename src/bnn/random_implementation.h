@@ -21,8 +21,8 @@ auto bnn_random_push = [BNN_LAMBDA_REFERENCE](
         ) -> void
 {
 #ifdef DEBUG
-    config->debug_sum_put += i * 2 - 1;
-    config->debug_count_put++;
+    config->debug_.random_.sum_put += i * 2 - 1;
+    ++config->debug_.random_.count_put;
 #endif
 
     random->data[config->put_offset] =
@@ -66,7 +66,7 @@ auto bnn_random_pull = [BNN_LAMBDA_REFERENCE](
         ) -> u_word
 {
 #ifdef DEBUG
-    config->debug_count_get += bits;
+    config->debug_.random_.count_get += bits;
 #endif
 
     u_word shift, quantity, data, returnValue = 0;

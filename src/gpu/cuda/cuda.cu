@@ -26,11 +26,14 @@ __global__ void primary_filling(int* bnn_data, int* debug_data)
 #include "../../../bnn/bnn_implementation.h"
 
     int thread_number = blockIdx.x * blockDim.x + threadIdx.x;
-    debug_data[thread_number] = -thread_number;
     bnn_bnn* bnn = (bnn_bnn*)bnn_data;
+
+    for(int i = 0; i < bnn->threads_.size; ++i)
+        debug_data[i] = 0;
+
     bnn_fill_random_of_thread(bnn, thread_number);
     bnn_set_neurons_of_thread(bnn, thread_number);
-    debug_data[thread_number] = thread_number;
+    debug_data[thread_number] += thread_number + 1;
 }
 
 __global__ void start_cycle(int* bnn_data, int* debug_data)
@@ -39,17 +42,9 @@ __global__ void start_cycle(int* bnn_data, int* debug_data)
 #include "../../../bnn/bnn_implementation.h"
 
     int thread_number = blockIdx.x * blockDim.x + threadIdx.x;
-    debug_data[thread_number] = -thread_number;
     bnn_bnn* bnn = (bnn_bnn*)bnn_data;
     bnn_thread_function(bnn, thread_number);
-
-    if(!thread_number)
-    {
-        debug_data[bnn->threads_.size] = bnn->parameters_.quantity_of_initialized_neurons_binary;
-        debug_data[bnn->threads_.size + 1] = bnn->parameters_.iteration;
-    }
-
-    debug_data[thread_number] = thread_number;
+    debug_data[thread_number] += thread_number + 1;
 }
 
 namespace bnn
@@ -225,11 +220,17 @@ bool cuda::is_active()
 
 bool cuda::test_kernel_result()
 {
+    static u_word test[8192]{};
+
     bool return_value{true};
 
     for(u_word thread_number = 0; thread_number < bnn_host->threads_.size; ++thread_number)
-        if(debug_memory.host_data[thread_number] != (int)thread_number)
+    {
+        test[thread_number] += thread_number + 1;
+
+        if(debug_memory.host_data[thread_number] != test[thread_number])
             return_value = false;
+    }
 
     return return_value;
 }
@@ -251,23 +252,16 @@ void cuda::run(cuda* me)
     printf("threads count [%d]\n", threads.x * blocks.x);
 
     me->bnn_host->parameters_.start = true;
-
-    printf(BNN_CUDA_PRINT_PREFIX "001\n");
     bnn_shift_pointers(me->bnn_host, me->memory_.offset);
-    printf(BNN_CUDA_PRINT_PREFIX "002\n");
     me->memory_copy_host_to_device(me->memory_);
-    printf(BNN_CUDA_PRINT_PREFIX "003\n");
     bnn_shift_pointers(me->bnn_host, -me->memory_.offset);
-    printf(BNN_CUDA_PRINT_PREFIX "004\n");
-
-    logging("001 begin");
     primary_filling<<<blocks, threads, 0, 0>>>(me->memory_.device_data, me->debug_memory.device_data);
 
     printf(BNN_CUDA_PRINT_PREFIX "random_.size [%d]\n", me->bnn_host->random_.size);
     printf(BNN_CUDA_PRINT_PREFIX "grandom_.size_in_power_of_two [%d]\n", me->bnn_host->random_.size_in_power_of_two);
 
-    checkCudaErrors(cudaMemcpy(me->debug_memory.host_data, me->debug_memory.device_data,
-               me->debug_memory.size, cudaMemcpyDeviceToHost));
+    if(!me->memory_copy_device_to_host(me->debug_memory))
+        logging("fail: memory_copy_device_to_host(me->debug_memory) out while");
 
     if(!me->test_kernel_result())
     {
@@ -278,9 +272,8 @@ void cuda::run(cuda* me)
         return;
     }
 
-    logging("001 end");
-
     me->active = true;
+
     while(!me->bnn_host->parameters_.stop)
     {
         start_cycle<<<blocks, threads, 0, 0>>>(me->memory_.device_data, me->debug_memory.device_data);
@@ -293,14 +286,26 @@ void cuda::run(cuda* me)
             break;
         }
 
-        me->bnn_host->parameters_.quantity_of_initialized_neurons_binary = me->debug_memory.host_data[me->bnn->threads_.size];
-        me->bnn_host->parameters_.iteration = me->debug_memory.host_data[me->bnn->threads_.size + 1];
-
         checkCudaErrors(cudaMemcpy(me->bnn_host->output_.data, me->bnn_host->output_.data + me->memory_.offset,
                    me->bnn_host->output_.size, cudaMemcpyDeviceToHost));
 
         checkCudaErrors(cudaMemcpy(me->bnn_host->input_.data + me->memory_.offset, me->bnn_host->input_.data,
                    me->bnn_host->input_.size, cudaMemcpyHostToDevice));
+
+        {
+            bnn_bnn bnn_host_temp;
+            checkCudaErrors(cudaMemcpy(&bnn_host_temp, (char*)me->bnn_host + me->memory_.offset,
+                sizeof(bnn_host_temp), cudaMemcpyDeviceToHost));
+
+            bool start_temp = me->bnn_host->parameters_.start;
+            bool start_stop = me->bnn_host->parameters_.stop;
+
+            me->bnn_host->parameters_ = bnn_host_temp.parameters_;
+            me->bnn_host->debug_ = bnn_host_temp.debug_;
+
+            me->bnn_host->parameters_.start = start_temp;
+            me->bnn_host->parameters_.stop = start_stop;
+        }
     }
 
 //    checkCudaErrors(cudaMemcpy(&me->bnn_host->parameters_.stop + me->memory_.offset, &me->bnn_host->parameters_.stop,

@@ -177,17 +177,16 @@ auto bnn_set_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
         ++counter_neuron;
     }
 
+    constexpr bnn_motor::binary bnn_motor_binary;
+
     for(u_word counter_motor = thread_number; counter_motor < bnn->output_.size; counter_motor += bnn->threads_.size)
     {
         bnn->output_.data[counter_motor] = bnn_random_pull(&bnn->random_, 1, &bnn->threads_.data[thread_number].random_config);
         bnn_motor_set(bnn, &bnn->storage_.data[counter_neuron].motor_, counter_motor);
         bnn->storage_.data[counter_neuron].motor_.binaries_offset = counter_motor * bnn->motor_binaries_.size_per_motor;
 
-        bnn_motor::binary b;
         for(u_word j = 0; j < bnn->motor_binaries_.size_per_motor; ++j)
-        {
-            bnn->motor_binaries_.data[counter_motor * bnn->motor_binaries_.size_per_motor + j] = b;
-        }
+            bnn->motor_binaries_.data[counter_motor * bnn->motor_binaries_.size_per_motor + j] = bnn_motor_binary;
 
         ++counter_neuron;
     }

@@ -15,10 +15,12 @@ include_directories(..)
 include(CTest)
 enable_testing()
 
+set(BNN_TEST_BIN_NAME bnn_test)
+
 set(SOURCES
-    bnn_memory_test.cpp
+    ../bnn/${BNN_TEST_BIN_NAME}.cpp
     ../common/logger.cpp
     )
 
-add_executable(bnn_memory_test ${SOURCES})
-add_test(NAME bnn_memory_test COMMAND bnn_memory_test)
+add_executable(${BNN_TEST_BIN_NAME} ${SOURCES})
+add_test(NAME ${BNN_TEST_BIN_NAME} COMMAND ${BNN_TEST_BIN_NAME})

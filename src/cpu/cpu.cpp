@@ -58,7 +58,7 @@ cpu::cpu(const bnn_settings& bs)
 
         if(!memory)
         {
-            bnn_settings->bnn_error_code = bnn_error_codes::malloc_fail;
+            bnn_settings->parameters_.bnn_error_code = bnn_error_codes::malloc_fail;
             return;
         }
 
@@ -68,7 +68,7 @@ cpu::cpu(const bnn_settings& bs)
     };
     bnn_memory_allocate(&bnn, &bnn_temp);
 
-    if(bnn_temp.bnn_error_code != bnn_error_codes::ok)
+    if(bnn_temp.parameters_.bnn_error_code != bnn_error_codes::ok)
         return;
 
     bnn_calculate_pointers(bnn);

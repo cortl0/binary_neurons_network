@@ -20,6 +20,7 @@ struct bnn_parameters
     bnn_random_config random_config;
     bool start{false};
     bool stop{false};
+    bnn_error_codes bnn_error_code{bnn_error_codes::ok};
 };
 
 #endif // BNN_PARAMETERS_H

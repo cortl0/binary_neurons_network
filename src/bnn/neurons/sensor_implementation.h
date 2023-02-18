@@ -29,16 +29,14 @@ auto bnn_sensor_set = [BNN_LAMBDA_REFERENCE](
 };
 
 auto bnn_sensor_calculate = [BNN_LAMBDA_REFERENCE](
+        bnn_bnn* bnn,
         bnn_sensor* me,
-        bnn_world* input,
-        bnn_random* random,
         bnn_random_config* random_config
         ) ->void
 {
-    bnn_neuron_calculate(&me->neuron_);
     me->neuron_.output_old = me->neuron_.output_new;
-    me->neuron_.output_new = input->data[me->world_input_address];
-    bnn_neuron_push_random(random, &me->neuron_, random_config);
+    me->neuron_.output_new = bnn->input_.data[me->world_input_address];
+    bnn_neuron_push_random(&bnn->random_, &me->neuron_, random_config);
 };
 
 #endif // BNN_NEURONS_SENSOR_IMPLEMENTATION_H

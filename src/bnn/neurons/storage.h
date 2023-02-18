@@ -7,8 +7,8 @@
  *   licensed by GPL v3.0
  */
 
-#ifndef BNN_STORAGE_H
-#define BNN_STORAGE_H
+#ifndef BNN_NEURONS_STORAGE_H
+#define BNN_NEURONS_STORAGE_H
 
 #include "neuron.h"
 #include "sensor.h"
@@ -38,4 +38,4 @@ struct bnn_storage_array
     u_word size_in_power_of_two{0};
 };
 
-#endif // BNN_STORAGE_H
+#endif // BNN_NEURONS_STORAGE_H

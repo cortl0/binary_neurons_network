@@ -32,12 +32,12 @@
 
 #define QUANTITY_OF_BITS_IN_BYTE 8
 #define QUANTITY_OF_BITS_IN_WORD (sizeof(u_word) * QUANTITY_OF_BITS_IN_BYTE)
-#define BNN_BYTES_ALIGNMENT 8
+#define BNN_BYTES_ALIGNMENT sizeof(u_word)
 
 enum bnn_error_codes
 {
     ok,
-    error,
+    error = 2,
     input_size_must_be_greater_than_zero,
     output_size_must_be_greater_than_zero,
     motor_binaries_size_per_motor_must_be_greater_than_zero,
@@ -49,5 +49,37 @@ enum bnn_error_codes
     out_of_range,
     malloc_fail
 };
+
+#ifdef DEBUG
+struct debug
+{
+    struct consensus
+    {
+        u_word average{0};
+        s_word max{0};
+        u_word max_binary_num{~u_word(0)};
+    };
+
+    struct neuron
+    {
+        u_word calculation_count_min{~u_word(0)};
+        u_word calculation_count_max{0};
+    };
+
+    struct random
+    {
+        unsigned long long int count_get{0};
+        unsigned long long int count_put{0};
+        long long int sum_put{0};
+    };
+
+    unsigned long long int created{0};
+    unsigned long long int killed{0};
+    consensus consensus_;
+    u_word max_consensus_motor_num{~u_word(0)};
+    neuron neuron_;
+    random random_;
+};
+#endif
 
 #endif // BNN_CONFIG_H

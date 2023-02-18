@@ -17,6 +17,7 @@
 #define log_string(msg) std::string().append(get_time_def).append(" | ").append(msg).append(" | at: ").append(place_string)
 #define throw_error(msg) throw std::runtime_error(log_string(msg))
 #define logging(msg) std::cout << log_string(msg) << std::endl
+#define logging_test(msg) std::cout << msg << std::endl
 
 namespace bnn
 {

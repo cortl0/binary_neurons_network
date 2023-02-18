@@ -40,9 +40,11 @@ auto bnn_binary_calculate_body = [BNN_LAMBDA_REFERENCE](
         }
     };
 
+    me->neuron_.output_old = me->neuron_.output_new;
+
     me->neuron_.output_new = calculation_table
-            [me->first_input_memory]
-            [me->second_input_memory]
+            [me->first.memory]
+            [me->second.memory]
             [first->output_new]
             [second->output_new];
 };
@@ -55,21 +57,16 @@ auto bnn_binary_init = [BNN_LAMBDA_REFERENCE](
         u_word thread_number
         ) -> void
 {
-    me->first_input_memory = first->output_new;
-    me->second_input_memory = second->output_new;
-    bnn_binary_calculate_body(me, first, second);
+    me->first.life_counter = first->life_counter;
+    me->second.life_counter = second->life_counter;
+    me->first.memory = first->output_new;
+    me->second.memory = second->output_new;
     me->neuron_.output_old = me->neuron_.output_new;
-
-    me->neuron_.level =
-            first->level > second->level ?
-                first->level + 1 : second->level + 1;
-
-    me->first_input_life_counter = first->life_counter;
-    me->second_input_life_counter = second->life_counter;
+    me->neuron_.level = first->level > second->level ? first->level + 1 : second->level + 1;
     me->in_work = true;
 
 #ifdef DEBUG
-    ++bnn->threads_.data[thread_number].debug_created;
+    ++bnn->threads_.data[thread_number].debug_.created;
 #endif
 };
 
@@ -82,23 +79,21 @@ auto bnn_binary_create = [BNN_LAMBDA_REFERENCE](
 {
     bnn_thread& thread = bnn->threads_.data[thread_number];
 
-    me->first_input_address = thread.start_neuron +
-                bnn_random_pull(&bnn->random_, thread.length_in_us_in_power_of_two, &thread.random_config);
+    me->first.address = bnn_random_pull(&bnn->random_, bnn->storage_.size_in_power_of_two, &thread.random_config);
 
-    if(me_offset == me->first_input_address)
+    if(me_offset == me->first.address)
         return false;
 
-    me->second_input_address = thread.start_neuron +
-                bnn_random_pull(&bnn->random_, thread.length_in_us_in_power_of_two, &thread.random_config);
+    me->second.address = bnn_random_pull(&bnn->random_, bnn->storage_.size_in_power_of_two, &thread.random_config);
 
-    if(me_offset == me->second_input_address)
+    if(me_offset == me->second.address)
         return false;
 
-    if(me->first_input_address == me->second_input_address)
+    if(me->first.address == me->second.address)
         return false;
 
-    bnn_neuron* first = &bnn->storage_.data[me->first_input_address].neuron_;
-    bnn_neuron* second = &bnn->storage_.data[me->second_input_address].neuron_;
+    bnn_neuron* first = &bnn->storage_.data[me->first.address].neuron_;
+    bnn_neuron* second = &bnn->storage_.data[me->second.address].neuron_;
 
     if(!((first->type_ == bnn_neuron::type::binary ? reinterpret_cast<bnn_binary*>(first)->in_work : false) ||
           (first->type_ == bnn_neuron::type::motor) ||
@@ -137,7 +132,7 @@ auto bnn_binary_kill = [BNN_LAMBDA_REFERENCE](
     --bnn->threads_.data[thread_number].quantity_of_initialized_neurons_binary;
 
 #ifdef DEBUG
-    ++bnn->threads_.data[thread_number].debug_killed;
+    ++bnn->threads_.data[thread_number].debug_.killed;
 #endif
 };
 
@@ -149,61 +144,36 @@ auto bnn_binary_calculate = [BNN_LAMBDA_REFERENCE](
         u_word thread_number
         ) -> void
 {
-    bnn_neuron_calculate(&me->neuron_);
-
-    //bnn_binary* me = &bnn->storage_.data[me_offset].binary_;
-
-    auto update_output_new_for_random_filling = [&]() -> void
+    if(!me->in_work)
     {
-        me->neuron_.output_old = me->neuron_.output_new;
-        me->neuron_.output_new = bnn_random_pull(&bnn->random_, 1, random_config);
-    };
-
-    bnn_neuron* first = &bnn->storage_.data[me->first_input_address].neuron_;
-    bnn_neuron* second = &bnn->storage_.data[me->second_input_address].neuron_;
-
-    if(me->in_work)
-    {
-        bool need_to_kill = false;
-
-        if(bnn_neuron::type::binary == first->type_)
-            if(first->life_counter != me->first_input_life_counter)
-                need_to_kill = true;
-
-        if(bnn_neuron::type::binary == second->type_)
-            if(second->life_counter != me->second_input_life_counter)
-                need_to_kill = true;
-
-        if(need_to_kill)
-        {
-            bnn_binary_kill(bnn, me, thread_number);
-            update_output_new_for_random_filling();
-        }
-        else
-        {
-            if((me_offset == bnn->parameters_.candidate_for_kill) &&
-                (bnn->parameters_.quantity_of_initialized_neurons_binary * 3 > bnn->storage_.size * 2))
-            {
-                bnn_binary_kill(bnn, me, thread_number);
-                update_output_new_for_random_filling();
-            }
-            else
-            {
-                me->neuron_.output_old = me->neuron_.output_new;
-                bnn_binary_calculate_body(me, first, second);
-            }
-        }
-    }
-    else
-    {
-        if((bnn_random_pull_under(&bnn->random_, bnn->storage_.size - bnn->parameters_.quantity_of_initialized_neurons_binary, random_config)) ||
-                (bnn->parameters_.quantity_of_initialized_neurons_binary * 3 < bnn->storage_.size * 2))
-            if(!bnn_binary_create(bnn, me, me_offset, thread_number))
-            {
-                update_output_new_for_random_filling();
-        }
+        bnn_binary_create(bnn, me, me_offset, thread_number);
+        return;
     }
 
+    bnn_neuron* first = &bnn->storage_.data[me->first.address].neuron_;
+    bnn_neuron* second = &bnn->storage_.data[me->second.address].neuron_;
+
+    bool need_to_kill = false;
+
+    if(bnn_neuron::type::binary == first->type_)
+        if(first->life_counter != me->first.life_counter)
+            need_to_kill = true;
+
+    if(bnn_neuron::type::binary == second->type_)
+        if(second->life_counter != me->second.life_counter)
+            need_to_kill = true;
+
+    if((me_offset == bnn->parameters_.candidate_for_kill) &&
+        (bnn->parameters_.quantity_of_initialized_neurons_binary > (bnn->storage_.size >> 1)))
+        need_to_kill = true;
+
+    if(need_to_kill)
+    {
+        bnn_binary_kill(bnn, me, thread_number);
+        return;
+    }
+
+    bnn_binary_calculate_body(me, first, second);
     bnn_neuron_push_random(&bnn->random_, &me->neuron_, random_config);
 };
 

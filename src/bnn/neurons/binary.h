@@ -14,22 +14,16 @@
 
 struct bnn_binary
 {
-//    struct input_neuron
-//    {
-//        u_word address;
-//        u_word life_counter;
-//        bool memory;
-//    };
+    struct input_neuron
+    {
+        u_word address;
+        u_word life_counter;
+        bool memory;
+    };
 
     bnn_neuron neuron_;
-//    input_neuron first;
-//    input_neuron second;
-    u_word first_input_address;
-    u_word second_input_address;
-    u_word first_input_life_counter;
-    u_word second_input_life_counter;
-    bool first_input_memory;
-    bool second_input_memory;
+    input_neuron first;
+    input_neuron second;
     bool in_work{false};
 };
 

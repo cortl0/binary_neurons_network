@@ -1,17 +1,9 @@
 #include <stdlib.h>
 #include <cstdio>
+#include <string_view>
 
-#define BNN_ARCHITECTURE_CPU
-
+#include "unit_tests/common.h"
 #include "bnn/bnn_implementation.h"
-#include "common/logger.h"
-
-#define ASSERT_EQ(x, y)\
-if((x) != (y))\
-{\
-    logging("error: expected ["s + std::to_string(x) + "], actual ["s + std::to_string(y) + "]"s);\
-    return EXIT_FAILURE;\
-}
 
 using namespace std::literals;
 
@@ -50,77 +42,29 @@ int bnn_calculate_alignment_test()
     {
         u_word size{5};
         bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT, size);
+        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
     }
 
     {
         u_word size{6};
         bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT, size);
+        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
     }
 
     {
         u_word size{7};
         bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT, size);
+        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
     }
 
     {
         u_word size{8};
         bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT, size);
+        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
     }
 
     {
         u_word size{9};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{10};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{11};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{12};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{13};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{14};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{15};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{16};
-        bnn_calculate_alignment(size);
-        ASSERT_EQ(BNN_BYTES_ALIGNMENT * 2, size);
-    }
-
-    {
-        u_word size{17};
         bnn_calculate_alignment(size);
         ASSERT_EQ(BNN_BYTES_ALIGNMENT * 3, size);
     }
@@ -226,17 +170,107 @@ int bnn_calculate_settings_test()
     return EXIT_SUCCESS;
 }
 
-int main()
+//TODO
+int bnn_set_neurons_of_thread_test()
 {
-    logging("bnn_calculate_alignment_test() begin"s);
-    if(bnn_calculate_alignment_test())
-        return EXIT_FAILURE;
-    logging("bnn_calculate_alignment_test() success"s);
+    constexpr bnn_bnn good_bnn
+    {
+        .input_
+        {
+            .size = 3
+        },
+        .output_
+        {
+            .size = 7
+        },
+        .random_
+        {
+            .size_in_power_of_two = 8
+        },
+        .storage_
+        {
+            .size_in_power_of_two = 4
+        },
+        .motor_binaries_
+        {
+            .size_per_motor = 2
+        },
+        .threads_
+        {
+            .size_in_power_of_two = 1
+        }
+    };
 
-    logging("bnn_calculate_settings_test() begin"s);
-    if(bnn_calculate_settings_test())
-        return EXIT_FAILURE;
-    logging("bnn_calculate_settings_test() success"s);
+    {
+        bnn_bnn bnn_temp = good_bnn;
+        ASSERT_EQ(bnn_error_codes::ok, bnn_calculate_settings(&bnn_temp));
+        bnn_temp.memory_.data = malloc(bnn_temp.memory_.size);
+        bnn_bnn* bnn = static_cast<bnn_bnn*>(bnn_temp.memory_.data);
+        *bnn = bnn_temp;
+        bnn_calculate_pointers(bnn);
+        free(bnn);
+    }
+
+    auto prepare = [&]() -> bnn_bnn*
+    {
+        bnn_bnn bnn_temp = good_bnn;
+        bnn_calculate_settings(&bnn_temp);
+        bnn_temp.memory_.data = malloc(bnn_temp.memory_.size);
+        bnn_bnn* bnn = static_cast<bnn_bnn*>(bnn_temp.memory_.data);
+        *bnn = bnn_temp;
+        bnn_calculate_pointers(bnn);
+        return bnn;
+    };
+
+    {
+        bnn_bnn* bnn = prepare();
+        u_word size = 0;
+        ASSERT_EQ((int64_t)bnn, (int64_t)bnn->memory_.data);
+        bnn_calculate_alignment(size += sizeof(*bnn));
+        ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->input_.data - size));
+        bnn_calculate_alignment(size += bnn->input_.size);
+        ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->output_.data - size));
+        bnn_calculate_alignment(size += bnn->output_.size);
+        ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->random_.data - size));
+        bnn_calculate_alignment(size += bnn->random_.size * sizeof(*bnn->random_.data));
+        ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->storage_.data - size));
+        bnn_calculate_alignment(size += bnn->storage_.size * sizeof(*bnn->storage_.data));
+        ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->motor_binaries_.data - size));
+        bnn_calculate_alignment(size += bnn->motor_binaries_.size * sizeof(*bnn->motor_binaries_.data));
+        ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->threads_.data - size));
+        free(bnn);
+    }
+
+    {
+        bnn_bnn* bnn = prepare();
+        u_word size = 0;
+
+
+
+        bnn_fill_threads(bnn);
+        u_word thread_number = 0;
+        bnn_set_neurons_of_thread(bnn, thread_number);
+        thread_number = 1;
+        bnn_set_neurons_of_thread(bnn, thread_number);
+
+
+        ///*ASSERT_EQ(bnn_error_codes::ok,*/ bnn_set_neurons_of_thread(bnn, thread_number);//);
+
+
+        free(bnn);
+    }
 
     return EXIT_SUCCESS;
+}
+
+int main(int argc, char* argv[])
+{
+    const std::initializer_list<std::pair<int (*)(), std::string_view>> tests =
+    {
+        {bnn_calculate_alignment_test, "bnn_calculate_alignment_test"sv},
+        {bnn_calculate_settings_test, "bnn_calculate_settings_test"sv},
+        {bnn_set_neurons_of_thread_test, "bnn_set_neurons_of_thread_test"sv},
+    };
+
+    return bnn::unit_tests::launch_tests(tests);
 }

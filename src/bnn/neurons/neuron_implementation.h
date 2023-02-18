@@ -41,13 +41,4 @@ auto bnn_neuron_push_random = [BNN_LAMBDA_REFERENCE](
         bnn_random_push(random, me->output_new, random_config);
 };
 
-auto bnn_neuron_calculate = [BNN_LAMBDA_REFERENCE](
-        bnn_neuron* me
-        ) -> void
-{
-#ifdef DEBUG
-    me->calculation_count++;
-#endif
-};
-
 #endif // BNN_NEURONS_NEURON_IMPLEMENTATION_H

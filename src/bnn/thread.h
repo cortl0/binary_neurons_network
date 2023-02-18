@@ -24,14 +24,8 @@ struct bnn_thread
     bool in_work{false};
 
 #ifdef DEBUG
-    unsigned long long int debug_created{0};
-    unsigned long long int debug_killed{0};
-    u_word debug_average_consensus{0};
-    s_word debug_max_consensus{0};
-    u_word debug_max_consensus_binary_num{0};
-    u_word debug_max_consensus_motor_num{0};
+    debug debug_;
 #endif
-
 };
 
 struct bnn_threads

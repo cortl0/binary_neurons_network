@@ -30,7 +30,10 @@ struct bnn_bnn
     bnn_storage_array storage_;
     bnn_motor::binaries motor_binaries_;
     bnn_threads threads_;
-    bnn_error_codes bnn_error_code{bnn_error_codes::ok};
+
+#ifdef DEBUG
+    debug debug_;
+#endif
 };
 
 #endif // BNN_BNN_H

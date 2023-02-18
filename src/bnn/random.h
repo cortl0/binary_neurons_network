@@ -31,9 +31,7 @@ struct bnn_random_config
     u_word put_offset_in_word{0};
 
 #ifdef DEBUG
-    unsigned long long int debug_count_get{0};
-    unsigned long long int debug_count_put{0};
-    long long int debug_sum_put{0};
+    debug debug_;
 #endif
 };
 

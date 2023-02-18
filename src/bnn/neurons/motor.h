@@ -33,9 +33,10 @@ struct bnn_motor
     u_word world_output_address{~u_word{0}};
     s_word accumulator{0};
     u_word binaries_offset{~u_word{0}};
-    //std::map<u_word, binary_neuron> binary_neurons;
+    u_word binaries_filled_size{0};
 
 #ifdef DEBUG
+    u_word debug_max_consensus{0};
     u_word debug_average_consensus{0};
 #endif
 };
