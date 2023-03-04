@@ -15,14 +15,16 @@
 auto bnn_motor_set = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         bnn_motor* me,
+        bool output_new,
+        bool output_old,
         u_word world_output_address
         ) -> void
 {
     bnn_neuron_set(
             &me->neuron_,
             bnn_neuron::type::motor,
-            bnn->output_.data[world_output_address],
-            bnn->output_.data[world_output_address]
+            output_new,
+            output_old
             );
 
     me->world_output_address = world_output_address;
@@ -43,46 +45,42 @@ auto bnn_motor_calculate = [BNN_LAMBDA_REFERENCE](
     me->debug_max_consensus = 0;
 #endif
 
-    u_word ii;
-
-    for(u_word i = 0; i < bnn->motor_binaries_.size_per_motor; ++i)
+    for(u_word i = me->world_output_address * bnn->motor_binaries_.size_per_motor;
+        i < (me->world_output_address + 1) * bnn->motor_binaries_.size_per_motor; ++i)
     {
-        ii = me->world_output_address * bnn->motor_binaries_.size_per_motor + i;
-
-        if(bnn->motor_binaries_.data[ii].present)
-            if(bnn->motor_binaries_.data[ii].life_counter !=
-                    bnn->storage_.data[bnn->motor_binaries_.data[ii].address].neuron_.life_counter)
+        if(bnn->motor_binaries_.data[i].present)
+            if(bnn->motor_binaries_.data[i].life_counter !=
+                    bnn->storage_.data[bnn->motor_binaries_.data[i].address].neuron_.life_counter)
             {
-                bnn->motor_binaries_.data[ii].present = false;
+                bnn->motor_binaries_.data[i].present = false;
                 --me->binaries_filled_size;
             }
 
-        if(!bnn->motor_binaries_.data[ii].present)
+        if(!bnn->motor_binaries_.data[i].present)
             continue;
 
-        me->accumulator += (bnn->storage_.data[bnn->motor_binaries_.data[ii].address].neuron_.output_new * 2 - 1) *
-            bnn_math_sign0(bnn->motor_binaries_.data[ii].consensus);
+        me->accumulator += (bnn->storage_.data[bnn->motor_binaries_.data[i].address].neuron_.output_new * 2 - 1) *
+            bnn_math_sign0(bnn->motor_binaries_.data[i].consensus);
 
-        if((bnn->storage_.data[bnn->motor_binaries_.data[ii].address].neuron_.output_new ^
-            bnn->storage_.data[bnn->motor_binaries_.data[ii].address].neuron_.output_old) &
+        if((bnn->storage_.data[bnn->motor_binaries_.data[i].address].neuron_.output_new ^
+            bnn->storage_.data[bnn->motor_binaries_.data[i].address].neuron_.output_old) &
                 (me->neuron_.output_new ^ me->neuron_.output_old))
-            bnn->motor_binaries_.data[ii].consensus -=
-                ((bnn->storage_.data[bnn->motor_binaries_.data[ii].address].neuron_.output_new ^
+            bnn->motor_binaries_.data[i].consensus -=
+                ((bnn->storage_.data[bnn->motor_binaries_.data[i].address].neuron_.output_new ^
                  me->neuron_.output_new) * 2 - 1);
 
 #ifdef DEBUG
-        if(bnn->threads_.data[thread_number].debug_.consensus_.max < bnn_math_abs(bnn->motor_binaries_.data[ii].consensus))
+        if(bnn->threads_.data[thread_number].debug_.consensus_.max < bnn_math_abs(bnn->motor_binaries_.data[i].consensus))
         {
-            bnn->threads_.data[thread_number].debug_.consensus_.max = bnn_math_abs(bnn->motor_binaries_.data[ii].consensus);
-            bnn->threads_.data[thread_number].debug_.consensus_.max_binary_num = bnn->motor_binaries_.data[ii].address;
+            bnn->threads_.data[thread_number].debug_.consensus_.max = bnn_math_abs(bnn->motor_binaries_.data[i].consensus);
+            bnn->threads_.data[thread_number].debug_.consensus_.max_binary_num = bnn->motor_binaries_.data[i].address;
             bnn->threads_.data[thread_number].debug_.max_consensus_motor_num = me_offset;
         }
 
-        if(me->debug_max_consensus < bnn_math_abs(bnn->motor_binaries_.data[ii].consensus))
-            me->debug_max_consensus = bnn_math_abs(bnn->motor_binaries_.data[ii].consensus);
+        if(me->debug_max_consensus < bnn_math_abs(bnn->motor_binaries_.data[i].consensus))
+            me->debug_max_consensus = bnn_math_abs(bnn->motor_binaries_.data[i].consensus);
 
-        me->debug_average_consensus += bnn->motor_binaries_.data[ii].consensus;
-        bnn->threads_.data[thread_number].debug_.consensus_.average += bnn_math_abs(bnn->motor_binaries_.data[ii].consensus);
+        me->debug_average_consensus += bnn->motor_binaries_.data[i].consensus;
         debug_count++;
 #endif
     }
@@ -111,16 +109,15 @@ auto bnn_motor_calculate = [BNN_LAMBDA_REFERENCE](
         if(((bnn->storage_.data[k].neuron_.output_new ^ bnn->storage_.data[k].neuron_.output_old)
              & (me->neuron_.output_new ^ me->neuron_.output_old)))
         {
-            for(u_word i = 0; i < bnn->motor_binaries_.size_per_motor; ++i)
+            for(u_word i = me->world_output_address * bnn->motor_binaries_.size_per_motor;
+                i < (me->world_output_address + 1) * bnn->motor_binaries_.size_per_motor; ++i)
             {
-                ii = me->world_output_address * bnn->motor_binaries_.size_per_motor + i;
-
-                if(!bnn->motor_binaries_.data[ii].present)
+                if(!bnn->motor_binaries_.data[i].present)
                 {
-                    bnn->motor_binaries_.data[ii].address = k;
-                    bnn->motor_binaries_.data[ii].life_counter = bnn->storage_.data[k].neuron_.life_counter;
-                    bnn->motor_binaries_.data[ii].consensus = 0;
-                    bnn->motor_binaries_.data[ii].present = true;
+                    bnn->motor_binaries_.data[i].address = k;
+                    bnn->motor_binaries_.data[i].life_counter = bnn->storage_.data[k].neuron_.life_counter;
+                    bnn->motor_binaries_.data[i].consensus = 0;
+                    bnn->motor_binaries_.data[i].present = true;
                     ++me->binaries_filled_size;
                     break;
                 }

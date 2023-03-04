@@ -32,7 +32,15 @@ __global__ void primary_filling(int* bnn_data, int* debug_data)
         debug_data[i] = 0;
 
     bnn_fill_random_of_thread(bnn, thread_number);
+
+//    bnn_random_corret_sum(
+//            &bnn->random_,
+//            bnn->threads_.data[thread_number].random_config.debug_.random_.sum_put,
+//            &bnn->threads_.data[thread_number].random_config);
+
     bnn_set_neurons_of_thread(bnn, thread_number);
+    bnn_create_fake_binary_neurons_of_thread(bnn, thread_number);
+
     debug_data[thread_number] += thread_number + 1;
 }
 

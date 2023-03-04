@@ -151,7 +151,7 @@ auto bnn_fill_random_of_thread = [BNN_LAMBDA_REFERENCE](
         ) -> void
 {
     bnn_m_sequence m_sequence;
-    u_word m_sequence_seed = u_word(1) + (u_word(1) << thread_number % bnn->random_.size_in_power_of_two);
+    u_word m_sequence_seed = thread_number + bnn->threads_.size;
     m_sequence.triggers = m_sequence_seed;
     bnn_m_sequence_set(&m_sequence, bnn->random_.size_in_power_of_two);
 
@@ -169,11 +169,13 @@ auto bnn_set_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
         ) -> void
 {
     u_word counter_neuron{thread_number * bnn->threads_.neurons_per_thread};
+    bool ft{false};
 
     for(u_word counter_sensor = thread_number; counter_sensor < bnn->input_.size; counter_sensor += bnn->threads_.size)
     {
-        bnn->input_.data[counter_sensor] = bnn_random_pull(&bnn->random_, 1, &bnn->threads_.data[thread_number].random_config);
-        bnn_sensor_set(&bnn->storage_.data[counter_neuron].sensor_, bnn->input_.data, counter_sensor);
+        ft = !ft;
+        bnn->input_.data[counter_sensor] = ft;//bnn_random_pull(&bnn->random_, 1, &bnn->threads_.data[thread_number].random_config);
+        bnn_sensor_set(&bnn->storage_.data[counter_neuron].sensor_, bnn->input_.data, ft, ft, counter_sensor);
         ++counter_neuron;
     }
 
@@ -181,8 +183,9 @@ auto bnn_set_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
 
     for(u_word counter_motor = thread_number; counter_motor < bnn->output_.size; counter_motor += bnn->threads_.size)
     {
-        bnn->output_.data[counter_motor] = bnn_random_pull(&bnn->random_, 1, &bnn->threads_.data[thread_number].random_config);
-        bnn_motor_set(bnn, &bnn->storage_.data[counter_neuron].motor_, counter_motor);
+        ft = !ft;
+        bnn->output_.data[counter_motor] = ft;//bnn_random_pull(&bnn->random_, 1, &bnn->threads_.data[thread_number].random_config);
+        bnn_motor_set(bnn, &bnn->storage_.data[counter_neuron].motor_, ft, ft, counter_motor);
         bnn->storage_.data[counter_neuron].motor_.binaries_offset = counter_motor * bnn->motor_binaries_.size_per_motor;
 
         for(u_word j = 0; j < bnn->motor_binaries_.size_per_motor; ++j)
@@ -193,61 +196,53 @@ auto bnn_set_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
 
     for(; counter_neuron < (thread_number + 1) * bnn->threads_.neurons_per_thread; ++counter_neuron)
     {
-        bnn_binary_set(&bnn->storage_.data[counter_neuron].binary_);
+        ft = !ft;
+        bnn_binary_set(&bnn->storage_.data[counter_neuron].binary_, ft, ft);
     }
 };
-#if(0) // old
-auto bnn_set_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
+
+auto bnn_create_fake_binary_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         u_word thread_number
         ) -> void
 {
-//    u_word counter_sensor = bnn->input_.size / bnn->threads_.size;
-//    u_word counter_motor = bnn->output_.size / bnn->threads_.size;
-//    u_word counter_neuron{0};
+    u_word sensor_offset = bnn->threads_.data[thread_number].start_neuron;
 
-    u_word n = 0;
-
-    auto increment_n = [BNN_LAMBDA_REFERENCE](
-            struct bnn_bnn* bnn,
-            u_word* n
-            )
+    for(u_word binary_offset = bnn->threads_.data[thread_number].start_neuron;
+        binary_offset < bnn->threads_.data[thread_number].start_neuron + bnn->threads_.neurons_per_thread;
+        binary_offset += 1)
     {
-        *n += bnn->threads_.neurons_per_thread;
+        if(bnn_neuron::type::binary != bnn->storage_.data[binary_offset].neuron_.type_)
+            continue;
 
-        if(*n >= bnn->storage_.size)
-            *n = *n - bnn->storage_.size + 1;
-    };
-
-    for(u_word i = 0; i < bnn->input_.size; ++i)
-    {
-        bnn->input_.data[i] = bnn_random_pull(&bnn->random_, 1, &bnn->parameters_.random_config);
-        bnn_sensor_set(&bnn->storage_.data[n].sensor_, bnn->input_.data, i);
-        increment_n(bnn, &n);
-    }
-
-    for(u_word i = 0; i < bnn->output_.size; ++i)
-    {
-        bnn->output_.data[i] = bnn_random_pull(&bnn->random_, 1, &bnn->parameters_.random_config);
-        bnn_motor_set(bnn, &bnn->storage_.data[n].motor_, i);
-        bnn->storage_.data[n].motor_.binaries_offset = i * bnn->motor_binaries_.size_per_motor;
-
-        bnn_motor::binary b;
-        for(u_word j = 0; j < bnn->motor_binaries_.size_per_motor; ++j)
+        while(true)
         {
-            bnn->motor_binaries_.data[i * bnn->motor_binaries_.size_per_motor + j] = b;
+            if(sensor_offset >= bnn->threads_.data[thread_number].start_neuron + bnn->threads_.neurons_per_thread)
+            {
+                sensor_offset = bnn->threads_.data[thread_number].start_neuron;
+                continue;
+            }
+
+            if(bnn_neuron::type::sensor != bnn->storage_.data[sensor_offset].neuron_.type_)
+            {
+                ++sensor_offset;
+                continue;
+            }
+
+            bnn_binary_create_primary_fake(
+                    bnn,
+                    binary_offset,
+                    sensor_offset,
+                    thread_number
+                    );
+
+            ++sensor_offset;
+
+            break;
         }
-
-        increment_n(bnn, &n);
-    }
-
-    for(u_word i = 0; i < bnn->storage_.size; i++)
-    {
-        bnn_binary_set(&bnn->storage_.data[n].binary_);
-        increment_n(bnn, &n);
     }
 };
-#endif
+
 auto bnn_get_output = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
         u_word offset
@@ -308,7 +303,6 @@ auto bnn_bnn_function = [BNN_LAMBDA_REFERENCE](
         break;
     }
 
-//    logging("brain stopped");
 //    in_work = false;
 };
 

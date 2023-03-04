@@ -12,11 +12,17 @@
 
 #include "neuron_implementation.h"
 
-auto bnn_binary_set = [BNN_LAMBDA_REFERENCE](bnn_binary* me) -> void
+auto bnn_binary_set = [BNN_LAMBDA_REFERENCE](
+        bnn_binary* me,
+        bool output_new,
+        bool output_old
+        ) -> void
 {
     bnn_neuron_set(
             &me->neuron_,
-            bnn_neuron::type::binary
+            bnn_neuron::type::binary,
+            output_new,
+            output_old
             );
 
     me->in_work = false;
@@ -64,6 +70,7 @@ auto bnn_binary_init = [BNN_LAMBDA_REFERENCE](
     me->neuron_.output_old = me->neuron_.output_new;
     me->neuron_.level = first->level > second->level ? first->level + 1 : second->level + 1;
     me->in_work = true;
+    ++bnn->threads_.data[thread_number].quantity_of_initialized_neurons_binary;
 
 #ifdef DEBUG
     ++bnn->threads_.data[thread_number].debug_.created;
@@ -116,9 +123,29 @@ auto bnn_binary_create = [BNN_LAMBDA_REFERENCE](
             thread_number
             );
 
-    ++bnn->threads_.data[thread_number].quantity_of_initialized_neurons_binary;
-
     return true;
+};
+
+auto bnn_binary_create_primary_fake = [BNN_LAMBDA_REFERENCE](
+        bnn_bnn* bnn,
+        const u_word me_offset,
+        const u_word input_offset,
+        const u_word thread_number
+        ) -> void
+{
+    bnn->storage_.data[me_offset].binary_.first.address = input_offset;
+    bnn->storage_.data[me_offset].binary_.second.address = input_offset;
+
+    bnn_neuron* first = &bnn->storage_.data[input_offset].neuron_;
+    bnn_neuron* second = &bnn->storage_.data[input_offset].neuron_;
+
+    bnn_binary_init(
+            bnn,
+            &bnn->storage_.data[me_offset].binary_,
+            first,
+            second,
+            thread_number
+            );
 };
 
 auto bnn_binary_kill = [BNN_LAMBDA_REFERENCE](

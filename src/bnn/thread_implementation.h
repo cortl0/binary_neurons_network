@@ -21,8 +21,6 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
     bnn_thread* const me = &bnn->threads_.data[thread_number];
 
 #ifdef DEBUG
-    //me->debug_.created = 0;
-    //me->debug_.killed = 0;
     me->debug_.consensus_.average = 0;
     me->debug_.consensus_.max = 0;
     me->debug_.consensus_.max_binary_num = ~u_word(0);
@@ -71,24 +69,44 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
                 bnn->debug_.random_.count_put = 0;
                 bnn->debug_.random_.sum_put = 0;
 
+                bnn->debug_.consensus_.average = 0;
+                bnn->debug_.consensus_.max = 0;
+                bnn->debug_.consensus_.max_binary_num = ~u_word{0};
+                bnn->debug_.max_consensus_motor_num = ~u_word{0};
+
                 for(u_word i = 0; i < bnn->threads_.size; ++i)
                 {
-                    iteration_new += bnn->threads_.data[i].iteration;
-                    quantity_of_initialized_neurons_binary += bnn->threads_.data[i].quantity_of_initialized_neurons_binary;
+                    const auto& t = bnn->threads_.data[i];
+                    iteration_new += t.iteration;
+                    quantity_of_initialized_neurons_binary += t.quantity_of_initialized_neurons_binary;
 
-                    if(bnn->debug_.neuron_.calculation_count_max < bnn->threads_.data[i].debug_.neuron_.calculation_count_max)
-                        bnn->debug_.neuron_.calculation_count_max = bnn->threads_.data[i].debug_.neuron_.calculation_count_max;
+                    if(bnn->debug_.neuron_.calculation_count_max < t.debug_.neuron_.calculation_count_max)
+                        bnn->debug_.neuron_.calculation_count_max = t.debug_.neuron_.calculation_count_max;
 
-                    if(bnn->debug_.neuron_.calculation_count_min > bnn->threads_.data[i].debug_.neuron_.calculation_count_min)
-                        bnn->debug_.neuron_.calculation_count_min = bnn->threads_.data[i].debug_.neuron_.calculation_count_min;
+                    if(bnn->debug_.neuron_.calculation_count_min > t.debug_.neuron_.calculation_count_min)
+                        bnn->debug_.neuron_.calculation_count_min = t.debug_.neuron_.calculation_count_min;
 
-                    bnn->debug_.created += bnn->threads_.data[i].debug_.created;
-                    bnn->debug_.killed += bnn->threads_.data[i].debug_.killed;
+                    bnn->debug_.created += t.debug_.created;
+                    bnn->debug_.killed += t.debug_.killed;
 
-                    bnn->debug_.random_.count_get += bnn->threads_.data[i].random_config.debug_.random_.count_get;
-                    bnn->debug_.random_.count_put += bnn->threads_.data[i].random_config.debug_.random_.count_put;
-                    bnn->debug_.random_.sum_put += bnn->threads_.data[i].random_config.debug_.random_.sum_put;
+                    bnn->debug_.random_.count_get += t.random_config.debug_.random_.count_get;
+                    bnn->debug_.random_.count_put += t.random_config.debug_.random_.count_put;
+                    bnn->debug_.random_.sum_put += t.random_config.debug_.random_.sum_put;
+
+#ifdef DEBUG
+                    bnn->debug_.consensus_.average += t.debug_.consensus_.average;
+
+                    if(bnn->debug_.consensus_.max < t.debug_.consensus_.max)
+                    {
+                        bnn->debug_.consensus_.max = t.debug_.consensus_.max;
+                        bnn->debug_.consensus_.max_binary_num = t.debug_.consensus_.max_binary_num;
+                        bnn->debug_.max_consensus_motor_num = t.debug_.max_consensus_motor_num;
+                    }
+#endif
                 }
+#ifdef DEBUG
+                bnn->debug_.consensus_.average /= bnn->threads_.size;
+#endif
 
                 bnn->parameters_.iteration = iteration_new / bnn->threads_.size;
                 bnn->parameters_.quantity_of_initialized_neurons_binary = quantity_of_initialized_neurons_binary;
@@ -101,7 +119,7 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
 #endif
 
 #ifdef DEBUG
-            u_word debug_average_consensus = 0;
+            //u_word debug_average_consensus = 0;
             u_word debug_count = 0;
 
             for(u_word i = me->start_neuron; i < me->start_neuron + bnn->threads_.neurons_per_thread; ++i)
@@ -115,7 +133,7 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
                 }
 
             if(debug_count > 0)
-                me->debug_.consensus_.average = debug_average_consensus / debug_count;
+                me->debug_.consensus_.average /= debug_count;
 
             if(me->debug_.consensus_.max > 0)
                 me->debug_.consensus_.max--;

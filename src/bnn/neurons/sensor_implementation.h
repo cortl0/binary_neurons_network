@@ -15,14 +15,16 @@
 auto bnn_sensor_set = [BNN_LAMBDA_REFERENCE](
         bnn_sensor* me,
         bool* world_input,
+        bool output_new,
+        bool output_old,
         u_word world_input_address
         ) -> void
 {
     bnn_neuron_set(
             &me->neuron_,
             bnn_neuron::type::sensor,
-            world_input[world_input_address],
-            world_input[world_input_address]
+            output_new,
+            output_old
             );
 
     me->world_input_address = world_input_address;

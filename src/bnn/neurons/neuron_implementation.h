@@ -16,8 +16,8 @@
 auto bnn_neuron_set = [BNN_LAMBDA_REFERENCE](
         bnn_neuron* me,
         bnn_neuron::type type,
-        bool output_new = true,
-        bool output_old = false
+        bool output_new,
+        bool output_old
         ) -> void
 {
     me->type_ = type;

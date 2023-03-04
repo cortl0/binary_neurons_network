@@ -111,4 +111,46 @@ auto bnn_random_pull_under = [BNN_LAMBDA_REFERENCE](
     return bnn_random_pull(random, count, config);
 };
 
+auto bnn_random_corret_sum = [BNN_LAMBDA_REFERENCE](
+        bnn_random* random,
+        s_word correct_value,
+        bnn_random_config* config
+        ) -> bool
+{
+    bool value{true};
+
+    if(correct_value < 0)
+    {
+        value = false;
+        correct_value = -correct_value;
+    }
+
+    for(u_word w = config->put_offset_start; w < config->put_offset_end; ++w)
+    {
+        for(u_word b = 0; b < QUANTITY_OF_BITS_IN_WORD; ++b)
+        {
+            if((random->data[w] & (1 << b)) == value)
+            {
+                --correct_value;
+                config->debug_.random_.sum_put -= value * 2 - 1;
+
+                if(value)
+                {
+                    random->data[w] &= ~(1 << b);
+                }
+                else
+                {
+                    random->data[w] |= (1 << b);
+                }
+            }
+            if(!correct_value)
+                break;
+        }
+        if(!correct_value)
+            break;
+    }
+
+    return !correct_value;
+};
+
 #endif // BNN_RANDOM_IMPLEMENTATION_H
