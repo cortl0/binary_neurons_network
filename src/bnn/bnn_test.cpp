@@ -128,7 +128,7 @@ int bnn_calculate_settings_test()
         bnn_calculate_alignment(size);
         size += sizeof(bnn_thread) * bnn.threads_.size;
         bnn_calculate_alignment(size);
-        ASSERT_EQ(size, bnn.memory_.size);
+        ASSERT_EQ(size, bnn.parameters_.size);
     }
 
     {
@@ -204,8 +204,8 @@ int bnn_set_neurons_of_thread_test()
     {
         bnn_bnn bnn_temp = good_bnn;
         ASSERT_EQ(bnn_error_codes::ok, bnn_calculate_settings(&bnn_temp));
-        bnn_temp.memory_.data = malloc(bnn_temp.memory_.size);
-        bnn_bnn* bnn = static_cast<bnn_bnn*>(bnn_temp.memory_.data);
+        void* p = malloc(bnn_temp.parameters_.size);
+        bnn_bnn* bnn = static_cast<bnn_bnn*>(p);
         *bnn = bnn_temp;
         bnn_calculate_pointers(bnn);
         free(bnn);
@@ -215,8 +215,8 @@ int bnn_set_neurons_of_thread_test()
     {
         bnn_bnn bnn_temp = good_bnn;
         bnn_calculate_settings(&bnn_temp);
-        bnn_temp.memory_.data = malloc(bnn_temp.memory_.size);
-        bnn_bnn* bnn = static_cast<bnn_bnn*>(bnn_temp.memory_.data);
+        void* p = malloc(bnn_temp.parameters_.size);
+        bnn_bnn* bnn = static_cast<bnn_bnn*>(p);
         *bnn = bnn_temp;
         bnn_calculate_pointers(bnn);
         return bnn;
@@ -225,7 +225,6 @@ int bnn_set_neurons_of_thread_test()
     {
         bnn_bnn* bnn = prepare();
         u_word size = 0;
-        ASSERT_EQ((int64_t)bnn, (int64_t)bnn->memory_.data);
         bnn_calculate_alignment(size += sizeof(*bnn));
         ASSERT_EQ((int64_t)bnn, (int64_t)((char*)bnn->input_.data - size));
         bnn_calculate_alignment(size += bnn->input_.size);

@@ -45,6 +45,12 @@ auto bnn_motor_calculate = [BNN_LAMBDA_REFERENCE](
     me->debug_max_consensus = 0;
 #endif
 
+    if(bnn->parameters_.training)
+    {
+        me->neuron_.output_old = me->neuron_.output_new;
+        me->neuron_.output_new = bnn->output_.data[me->world_output_address];
+    }
+
     for(u_word i = me->world_output_address * bnn->motor_binaries_.size_per_motor;
         i < (me->world_output_address + 1) * bnn->motor_binaries_.size_per_motor; ++i)
     {
@@ -81,7 +87,7 @@ auto bnn_motor_calculate = [BNN_LAMBDA_REFERENCE](
             me->debug_max_consensus = bnn_math_abs(bnn->motor_binaries_.data[i].consensus);
 
         me->debug_average_consensus += bnn->motor_binaries_.data[i].consensus;
-        debug_count++;
+        ++debug_count;
 #endif
     }
 
@@ -90,15 +96,19 @@ auto bnn_motor_calculate = [BNN_LAMBDA_REFERENCE](
         me->debug_average_consensus /= debug_count;
 #endif
 
-    me->neuron_.output_old = me->neuron_.output_new;
+    if(!bnn->parameters_.training)
+    {
+        me->neuron_.output_old = me->neuron_.output_new;
 
-    if(me->accumulator < 0)
-        me->neuron_.output_new = false;
-    else if(me->accumulator > 0)
-        me->neuron_.output_new = true;
+        if(me->accumulator < 0)
+            me->neuron_.output_new = false;
+        else if(me->accumulator > 0)
+            me->neuron_.output_new = true;
 
-    bnn_neuron_push_random(&bnn->random_, &me->neuron_, random_config);
-    bnn->output_.data[me->world_output_address] = me->neuron_.output_new;
+        bnn_neuron_push_random(&bnn->random_, &me->neuron_, random_config);
+        bnn->output_.data[me->world_output_address] = me->neuron_.output_new;
+    }
+
     me->accumulator >>= 1;
     me->accumulator += (bnn_random_pull(&bnn->random_, 1, random_config) << 1) - 1;
     u_word k = bnn_random_pull(&bnn->random_, bnn->storage_.size_in_power_of_two, random_config);

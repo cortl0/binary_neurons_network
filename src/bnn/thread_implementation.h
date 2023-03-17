@@ -129,14 +129,14 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
                         me->debug_.consensus_.max = bnn->storage_.data[i].motor_.debug_max_consensus;
 
                     me->debug_.consensus_.average += bnn->storage_.data[i].motor_.debug_average_consensus;
-                    debug_count++;
+                    ++debug_count;
                 }
 
             if(debug_count > 0)
                 me->debug_.consensus_.average /= debug_count;
 
             if(me->debug_.consensus_.max > 0)
-                me->debug_.consensus_.max--;
+                --me->debug_.consensus_.max;
 #endif
 
 #ifdef BNN_ARCHITECTURE_CUDA

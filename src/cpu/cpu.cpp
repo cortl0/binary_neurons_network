@@ -54,7 +54,7 @@ cpu::cpu(const bnn_settings& bs)
             return;
         }
 
-        void* memory = malloc(bnn_settings->memory_.size);
+        void* memory = malloc(bnn_settings->parameters_.size);
 
         if(!memory)
         {

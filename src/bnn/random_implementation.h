@@ -29,12 +29,12 @@ auto bnn_random_push = [BNN_LAMBDA_REFERENCE](
             (random->data[config->put_offset] & (~(1 << config->put_offset_in_word)))
             | (static_cast<u_word>(i) << config->put_offset_in_word);
 
-    config->put_offset_in_word++;
+    ++config->put_offset_in_word;
 
     if(config->put_offset_in_word >= QUANTITY_OF_BITS_IN_WORD)
     {
         config->put_offset_in_word = 0;
-        config->put_offset++;
+        ++config->put_offset;
 
         if(config->put_offset >= config->put_offset_end)
             config->put_offset = 0;
@@ -87,7 +87,7 @@ auto bnn_random_pull = [BNN_LAMBDA_REFERENCE](
         if(config->get_offset_in_word >= QUANTITY_OF_BITS_IN_WORD)
         {
             config->get_offset_in_word -= QUANTITY_OF_BITS_IN_WORD;
-            config->get_offset++;
+            ++config->get_offset;
 
             if(config->get_offset >= random->size)
                 config->get_offset = 0;
@@ -106,7 +106,7 @@ auto bnn_random_pull_under = [BNN_LAMBDA_REFERENCE](
     u_word count = 0;
 
     while(to >>= 1)
-        count++;
+        ++count;
 
     return bnn_random_pull(random, count, config);
 };

@@ -17,12 +17,6 @@
 
 struct bnn_bnn
 {
-    struct memory
-    {
-        void* data{nullptr};
-        u_word size{0};
-    } memory_;
-
     bnn_parameters parameters_;
     bnn_world input_;
     bnn_world output_;

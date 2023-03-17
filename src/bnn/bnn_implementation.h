@@ -52,21 +52,21 @@ auto bnn_calculate_settings = [BNN_LAMBDA_REFERENCE](
     bnn->random_.size = (1 << bnn->random_.size_in_power_of_two) / QUANTITY_OF_BITS_IN_WORD;
     bnn->parameters_.random_config.put_offset_end = bnn->random_.size;
 
-    bnn->memory_.size = 0;
-    bnn->memory_.size += sizeof(bnn_bnn);
-    bnn_calculate_alignment(bnn->memory_.size);
-    bnn->memory_.size += sizeof(bool) * bnn->input_.size;
-    bnn_calculate_alignment(bnn->memory_.size);
-    bnn->memory_.size += sizeof(bool) * bnn->output_.size;
-    bnn_calculate_alignment(bnn->memory_.size);
-    bnn->memory_.size += sizeof(u_word) * bnn->random_.size;
-    bnn_calculate_alignment(bnn->memory_.size);
-    bnn->memory_.size += sizeof(bnn_storage) * bnn->storage_.size;
-    bnn_calculate_alignment(bnn->memory_.size);
-    bnn->memory_.size += sizeof(bnn_motor::binary) * bnn->motor_binaries_.size;
-    bnn_calculate_alignment(bnn->memory_.size);
-    bnn->memory_.size += sizeof(bnn_thread) * bnn->threads_.size;
-    bnn_calculate_alignment(bnn->memory_.size);
+    bnn->parameters_.size = 0;
+    bnn->parameters_.size += sizeof(bnn_bnn);
+    bnn_calculate_alignment(bnn->parameters_.size);
+    bnn->parameters_.size += sizeof(bool) * bnn->input_.size;
+    bnn_calculate_alignment(bnn->parameters_.size);
+    bnn->parameters_.size += sizeof(bool) * bnn->output_.size;
+    bnn_calculate_alignment(bnn->parameters_.size);
+    bnn->parameters_.size += sizeof(u_word) * bnn->random_.size;
+    bnn_calculate_alignment(bnn->parameters_.size);
+    bnn->parameters_.size += sizeof(bnn_storage) * bnn->storage_.size;
+    bnn_calculate_alignment(bnn->parameters_.size);
+    bnn->parameters_.size += sizeof(bnn_motor::binary) * bnn->motor_binaries_.size;
+    bnn_calculate_alignment(bnn->parameters_.size);
+    bnn->parameters_.size += sizeof(bnn_thread) * bnn->threads_.size;
+    bnn_calculate_alignment(bnn->parameters_.size);
 
     return bnn_error_codes::ok;
 };
@@ -76,7 +76,6 @@ auto bnn_calculate_pointers = [BNN_LAMBDA_REFERENCE](
         ) -> void
 {
     u_word size = 0;
-    bnn->memory_.data = reinterpret_cast<void*>(bnn);
 
     size += sizeof(bnn_bnn);
     bnn_calculate_alignment(size);
@@ -112,7 +111,6 @@ auto bnn_shift_pointers = [BNN_LAMBDA_REFERENCE](
         int offset
         ) -> void
 {
-    bnn->memory_.data = reinterpret_cast<void*>(reinterpret_cast<char*>(bnn->memory_.data) + offset);
     bnn->input_.data = reinterpret_cast<bool*>(reinterpret_cast<char*>(bnn->input_.data) + offset);
     bnn->output_.data = reinterpret_cast<bool*>(reinterpret_cast<char*>(bnn->output_.data) + offset);
     bnn->random_.data = reinterpret_cast<u_word*>(reinterpret_cast<char*>(bnn->random_.data) + offset);
@@ -203,43 +201,52 @@ auto bnn_set_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
 
 auto bnn_create_fake_binary_neurons_of_thread = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
-        u_word thread_number
+        u_word thread_number,
+        u_word fake_quantity
         ) -> void
 {
-    u_word sensor_offset = bnn->threads_.data[thread_number].start_neuron;
+    u_word inputs_quantity = 0;
+
+    for(u_word offset = 0;
+        offset < bnn->storage_.size;
+        ++offset)
+        if(bnn_neuron::type::binary != bnn->storage_.data[offset].neuron_.type_)
+            ++inputs_quantity;
+
+    if(!inputs_quantity)
+        return;
+
+    const u_word counter_max = (bnn->threads_.neurons_per_thread - inputs_quantity) / inputs_quantity;
+    u_word input_offset = 0;
+    u_word counter = counter_max;
 
     for(u_word binary_offset = bnn->threads_.data[thread_number].start_neuron;
         binary_offset < bnn->threads_.data[thread_number].start_neuron + bnn->threads_.neurons_per_thread;
-        binary_offset += 1)
+        ++binary_offset)
     {
+        if(!fake_quantity--)
+            break;
+
         if(bnn_neuron::type::binary != bnn->storage_.data[binary_offset].neuron_.type_)
             continue;
 
-        while(true)
+        if(!counter)
         {
-            if(sensor_offset >= bnn->threads_.data[thread_number].start_neuron + bnn->threads_.neurons_per_thread)
-            {
-                sensor_offset = bnn->threads_.data[thread_number].start_neuron;
-                continue;
-            }
-
-            if(bnn_neuron::type::sensor != bnn->storage_.data[sensor_offset].neuron_.type_)
-            {
-                ++sensor_offset;
-                continue;
-            }
-
-            bnn_binary_create_primary_fake(
-                    bnn,
-                    binary_offset,
-                    sensor_offset,
-                    thread_number
-                    );
-
-            ++sensor_offset;
-
-            break;
+            counter = counter_max;
+            ++input_offset;
         }
+
+        while(bnn_neuron::type::binary == bnn->storage_.data[input_offset].neuron_.type_)
+            ++input_offset;
+
+        bnn_binary_create_primary_fake(
+                bnn,
+                binary_offset,
+                input_offset,
+                thread_number
+                );
+
+        --counter;
     }
 };
 
@@ -249,6 +256,15 @@ auto bnn_get_output = [BNN_LAMBDA_REFERENCE](
         ) -> bool
 {
     return bnn->output_.data[offset];
+};
+
+auto bnn_set_output = [BNN_LAMBDA_REFERENCE](
+        bnn_bnn* bnn,
+        u_word offset,
+        bool value
+        ) -> void
+{
+    bnn->output_.data[offset] = value;
 };
 
 auto bnn_set_input = [BNN_LAMBDA_REFERENCE](

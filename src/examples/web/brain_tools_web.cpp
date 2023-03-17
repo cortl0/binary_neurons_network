@@ -20,7 +20,7 @@ brain_tools_web::~brain_tools_web()
 }
 
 brain_tools_web::brain_tools_web(const bnn_settings& bs)
-    : brain_tools(bs)
+    : bnn_tools(bs)
 {
 
 }
@@ -75,7 +75,7 @@ QString brain_tools_web::brain_get_representation()
                     if (brain_.storage_[i].binary_.motor_connect)
                     {
                         consensus += bnn_math_abs(brain_.storage_[i].binary_.motor_consensus);
-                        count++;
+                        ++count;
                     }
     }
     */
@@ -99,7 +99,7 @@ std::map<u_word, u_word> brain_tools_web::graphical_representation()
             if (it == m.end())
                 m.insert(std::make_pair(bnn->storage_.data[i].neuron_.level, 1));
             else
-                it->second++;
+                ++it->second;
         }
 
     return m;
@@ -116,7 +116,7 @@ void brain_tools_web::load()
     {
         std::ifstream in(fs::path(fileName.toStdString()), std::ios::binary);
 
-        brain_tools::load(in);
+        bnn_tools::load(in);
     }
 }
 
@@ -155,7 +155,7 @@ void brain_tools_web::save()
 
         std::ofstream out(fs::path(fileName.toStdString()), std::ios::binary);
 
-        brain_tools::save(out);
+        bnn_tools::save(out);
     }
 }
 

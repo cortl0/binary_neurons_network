@@ -16,12 +16,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "common/brain_tools.h"
+#include "common/bnn_tools.h"
 
 namespace bnn
 {
 
-struct brain_tools_web : brain_tools
+struct brain_tools_web : bnn_tools
 {
     QString brain_get_representation();
     QString brain_get_state();

@@ -20,11 +20,11 @@
 namespace bnn
 {
 
-class brain_tools : public architecture
+class bnn_tools : public architecture
 {
 public:
-    virtual ~brain_tools();
-    brain_tools(const bnn_settings&);
+    virtual ~bnn_tools();
+    bnn_tools(const bnn_settings&);
     void get_debug_string(std::string&);
     const u_word& get_iteration() const;
     bool load(std::ifstream&);

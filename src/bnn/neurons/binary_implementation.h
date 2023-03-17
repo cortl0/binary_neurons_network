@@ -155,7 +155,7 @@ auto bnn_binary_kill = [BNN_LAMBDA_REFERENCE](
         ) -> void
 {
     me->in_work = false;
-    me->neuron_.life_counter++;
+    ++me->neuron_.life_counter;
     --bnn->threads_.data[thread_number].quantity_of_initialized_neurons_binary;
 
 #ifdef DEBUG

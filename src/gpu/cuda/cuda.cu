@@ -39,7 +39,8 @@ __global__ void primary_filling(int* bnn_data, int* debug_data)
 //            &bnn->threads_.data[thread_number].random_config);
 
     bnn_set_neurons_of_thread(bnn, thread_number);
-    bnn_create_fake_binary_neurons_of_thread(bnn, thread_number);
+    u_word fake_quantity = bnn->threads_.neurons_per_thread;
+    bnn_create_fake_binary_neurons_of_thread(bnn, thread_number, fake_quantity);
 
     debug_data[thread_number] += thread_number + 1;
 }
@@ -111,7 +112,7 @@ cuda::cuda(const bnn_settings& bs)
             throw EXIT_FAILURE;
         }
 
-        memory_.size = bnn_settings->memory_.size;
+        memory_.size = bnn_settings->parameters_.size;
 
         if(!allocate_host_and_device_memory(memory_))
         {
