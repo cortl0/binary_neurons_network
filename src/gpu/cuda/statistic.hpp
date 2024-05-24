@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "helper_cuda.h"
+#include "external/helper_cuda.h"
 
 namespace bnn::gpu
 {

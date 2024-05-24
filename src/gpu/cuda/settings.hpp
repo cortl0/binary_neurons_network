@@ -10,7 +10,7 @@
 #ifndef BNN_GPU_CUDA_SETTINGS_H
 #define BNN_GPU_CUDA_SETTINGS_H
 
-#include "helper_cuda.h"
+#include "external/helper_cuda.h"
 
 namespace bnn::gpu
 {

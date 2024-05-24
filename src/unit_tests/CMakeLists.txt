@@ -6,21 +6,20 @@
 #   licensed by GPL v3.0
 #
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.17)
+
+project(bnn_test LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(..)
 include(CTest)
 enable_testing()
 
-set(BNN_TEST_BIN_NAME bnn_test)
-
 set(SOURCES
-    ../bnn/${BNN_TEST_BIN_NAME}.cpp
+    ../bnn/${PROJECT_NAME}.cpp
     ../common/logger.cpp
-    )
+)
 
-add_executable(${BNN_TEST_BIN_NAME} ${SOURCES})
-add_test(NAME ${BNN_TEST_BIN_NAME} COMMAND ${BNN_TEST_BIN_NAME})
+add_executable(${PROJECT_NAME} ${SOURCES})
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -70,11 +70,6 @@ int main()
 
 ## CMake build
 
-Build and run the minimal example with helper
-```
-run.sh
-```
-
 ## Example projects for BNN
 - [./src/examples/minimal/](../master/src/examples/minimal/) - Contains minimal project  
 - [./src/examples/web/](../master/src/examples/web/) - The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain. QT Creator is required  
@@ -83,7 +78,7 @@ run.sh
 
 ## Author
 Ilya Shishkin  
-mailto:cortl@8iter.ru
+e-mail: cortl@8iter.ru
 
 ## Achievements
 - The first mention of BNN in the literature:  

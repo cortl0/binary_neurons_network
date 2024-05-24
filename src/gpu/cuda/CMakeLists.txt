@@ -6,7 +6,10 @@
 #   licensed by GPL v3.0
 #
 
-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.17)
+
+set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
+
 project(bnn-cuda LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -18,8 +21,3 @@ set(SOURCES
     )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../..
-    ${CMAKE_CURRENT_SOURCE_DIR}/external
-    )

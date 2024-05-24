@@ -23,7 +23,7 @@
 __global__ void primary_filling(int* bnn_data, int* debug_data)
 {
 #include "undef_implementations.h"
-#include "../../../bnn/bnn_implementation.h"
+#include "bnn/bnn_implementation.h"
 
     int thread_number = blockIdx.x * blockDim.x + threadIdx.x;
     bnn_bnn* bnn = (bnn_bnn*)bnn_data;
@@ -48,7 +48,7 @@ __global__ void primary_filling(int* bnn_data, int* debug_data)
 __global__ void start_cycle(int* bnn_data, int* debug_data)
 {
 #include "undef_implementations.h"
-#include "../../../bnn/bnn_implementation.h"
+#include "bnn/bnn_implementation.h"
 
     int thread_number = blockIdx.x * blockDim.x + threadIdx.x;
     bnn_bnn* bnn = (bnn_bnn*)bnn_data;
