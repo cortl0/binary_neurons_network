@@ -282,10 +282,10 @@ auto bnn_bnn_function = [BNN_LAMBDA_REFERENCE](
 {
     u_word iteration_old = 0, iteration_new = 0, quantity_of_initialized_neurons_binary_temp;
 
-    while(!bnn->parameters_.start)
+    while(bnn->parameters_.state != bnn_state::started)
         ;
 
-    while(!bnn->parameters_.stop)
+    while(bnn->parameters_.state == bnn_state::started)
     {
         if(iteration_old < iteration_new)
         {
@@ -319,23 +319,7 @@ auto bnn_bnn_function = [BNN_LAMBDA_REFERENCE](
         break;
     }
 
-//    in_work = false;
-};
-
-auto bnn_bnn_start = [BNN_LAMBDA_REFERENCE](
-        bnn_bnn* bnn
-        ) -> void
-{
-    bnn->parameters_.stop = false;
-    bnn->parameters_.start = true;
-};
-
-auto bnn_bnn_stop = [BNN_LAMBDA_REFERENCE](
-        bnn_bnn* bnn
-        ) -> void
-{
-    bnn->parameters_.start = false;
-    bnn->parameters_.stop = true;
+    //bnn->parameters_.state = bnn_state::stopped;
 };
 
 #endif // BNN_BNN_IMPLEMENTATION_H

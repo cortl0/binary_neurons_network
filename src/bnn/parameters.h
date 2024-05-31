@@ -12,6 +12,14 @@
 
 #include "random.h"
 
+enum class bnn_state : int
+{
+    start = 1,
+    started,
+    stop,
+    stopped
+};
+
 struct bnn_parameters
 {
     u_word iteration{0};
@@ -19,8 +27,7 @@ struct bnn_parameters
     u_word candidate_for_kill{~u_word{0}};
     u_word size{0};
     bnn_random_config random_config;
-    bool start{false};
-    bool stop{false};
+    bnn_state state{bnn_state::stopped};
     bool training{false};
     bnn_error_codes bnn_error_code{bnn_error_codes::ok};
 };

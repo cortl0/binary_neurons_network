@@ -20,12 +20,8 @@
 
 namespace bnn
 {
-std::thread t;
+
 //bnn_error_codes bnn_error_code = bnn_error_codes::ok;
-//thread::thread()
-//{
-////    logging("");
-//}
 
 cpu::~cpu()
 {
@@ -86,9 +82,13 @@ cpu::cpu(const bnn_settings& bs)
 }
 
 u_word thread_number = 0;
+
 void cpu::start()
 {
-    bnn->parameters_.stop = false;
+    if(bnn->parameters_.state != bnn_state::stopped)
+        return;
+
+    bnn->parameters_.state = bnn_state::start;
 
     for(u_word thread_number = 0; thread_number < bnn->threads_.size; ++thread_number)
     {
@@ -98,7 +98,7 @@ void cpu::start()
 
     main_tread = std::thread(bnn_bnn_function, bnn);
     main_tread.detach();
-    bnn->parameters_.start = true;
+    bnn->parameters_.state = bnn_state::started;
 
     for(u_word i = 0; i < bnn->threads_.size; ++i)
         while(!bnn->threads_.data[i].in_work);
@@ -106,8 +106,7 @@ void cpu::start()
 
 void cpu::stop()
 {
-    bnn->parameters_.start = false;
-    bnn->parameters_.stop = true;
+    bnn->parameters_.state = bnn_state::stop;
 
     for(u_word i = 0; i < bnn->threads_.size; ++i)
         while(bnn->threads_.data[i].in_work);

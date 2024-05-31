@@ -7,7 +7,6 @@
  *   licensed by GPL v3.0
  */
 
-#include <unistd.h>
 #include <iostream>
 
 #include "common/architecture.h"
@@ -25,10 +24,17 @@ int main()
     };
 
     bnn::architecture bnn(bs);
+    bnn.initialize();
     bnn.start();
-    while(!bnn.is_active());
+    do {} while(!bnn.is_active());
     bool stop{false};
-    std::thread([&stop](){ sleep(1); stop = true; }).detach();
+
+    auto manager_thread = std::thread([&stop]()
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        stop = true;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    });
 
     while(!stop)
     {
@@ -55,10 +61,11 @@ int main()
         }
 
         std::cout << "input=" << input << " output=" << output << std::endl;
-        usleep(100000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     bnn.stop();
+    manager_thread.join();
 
     return 0;
 }

@@ -34,10 +34,10 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
     u_word reaction_rate = bnn->threads_.neurons_per_thread;
     u_word current_neuron_offset;
 
-    while(!bnn->parameters_.start)
+    while(bnn->parameters_.state != bnn_state::started)
         ;
 
-    while(!bnn->parameters_.stop)
+    while(bnn->parameters_.state == bnn_state::started)
     {
         if(!reaction_rate--)
         {

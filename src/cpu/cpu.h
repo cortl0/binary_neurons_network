@@ -33,6 +33,7 @@ public:
     void stop();
     void set_input(u_word i, bool value);
     bool get_output(u_word i);
+    void initialize() {}
     bool is_active();
 
 protected:
