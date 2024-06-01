@@ -19,8 +19,6 @@ struct bnn_m_sequence
     bnn_error_codes bnn_error_code{bnn_error_codes::ok};
 };
 
-bool next();
-
 auto bnn_m_sequence_set = [BNN_LAMBDA_REFERENCE](
         bnn_m_sequence* me,
         u_word length

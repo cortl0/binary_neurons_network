@@ -8,6 +8,7 @@
  */
 
 #include <iostream>
+#include <thread>
 
 #include "common/architecture.h"
 

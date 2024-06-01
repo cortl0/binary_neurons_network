@@ -12,6 +12,7 @@ It is AI in the original meaning coinciding with the meanings of the following s
 ## Usage
 ```
 #include <iostream>
+#include <thread>
 
 #include "common/architecture.h"
 

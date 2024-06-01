@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <cstdio>
 #include <string_view>
 
 #include "unit_tests/common.h"

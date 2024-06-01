@@ -10,8 +10,6 @@
 #ifndef BNN_GPU_CUDA_CUDA_H
 #define BNN_GPU_CUDA_CUDA_H
 
-#include <thread>
-
 #include "common/settings.h"
 #include "memory.hpp"
 
@@ -29,6 +27,7 @@ class cuda
 public:
     ~cuda();
     cuda(const bnn_settings&);
+    void calculate_pointers();
     bool get_output(u_word offset);
     void set_input(u_word offset, bool value);
     static bool allocate_host_and_device_memory(memory&);
@@ -44,7 +43,7 @@ protected:
     bnn_bnn* bnn{nullptr};
 
 private:
-    static void run(cuda*);
+    void run();
     bool test_kernel_result();
     bnn_bnn* bnn_host{nullptr};
     memory memory_;

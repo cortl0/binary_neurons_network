@@ -9,12 +9,8 @@
 
 #include "bnn_tools.h"
 
-#include <unistd.h>
 #include <algorithm>
-#include <cstring>
-#include <iostream>
 #include <map>
-#include <set>
 #include <vector>
 
 #include "common/logger.h"
@@ -202,7 +198,9 @@ bool bnn_tools::load(std::ifstream& ifs)
     if(!ifs.is_open())
         return false;
 
+    ifs.read(reinterpret_cast<char*>(&bnn->parameters_.size), sizeof(bnn->parameters_.size));
     ifs.read(reinterpret_cast<char*>(bnn), bnn->parameters_.size);
+    calculate_pointers();
 
     return true;
 }
@@ -240,6 +238,7 @@ bool bnn_tools::save(std::ofstream& ofs)
     if(!ofs.is_open())
         return false;
 
+    ofs.write(reinterpret_cast<char*>(&bnn->parameters_.size), sizeof(bnn->parameters_.size));
     ofs.write(reinterpret_cast<char*>(bnn), bnn->parameters_.size);
 
     return true;

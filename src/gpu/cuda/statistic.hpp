@@ -11,7 +11,6 @@
 #define BNN_GPU_CUDA_STATISTIC_H
 
 #include <stdio.h>
-#include <unistd.h>
 
 #include "external/helper_cuda.h"
 

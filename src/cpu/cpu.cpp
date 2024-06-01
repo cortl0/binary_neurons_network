@@ -9,10 +9,6 @@
 
 #include "cpu.h"
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <iostream>
-#include <thread>
 
 #include "bnn/bnn_implementation.h"
 #include "common/logger.h"
@@ -62,6 +58,7 @@ cpu::cpu(const bnn_settings& bs)
 
         **bnn = *bnn_settings;
     };
+
     bnn_memory_allocate(&bnn, &bnn_temp);
 
     if(bnn_temp.parameters_.bnn_error_code != bnn_error_codes::ok)
@@ -79,6 +76,11 @@ cpu::cpu(const bnn_settings& bs)
     treads.resize(bnn_temp.threads_.size);
 
     logging("cpu::cpu()");
+}
+
+void cpu::calculate_pointers()
+{
+    bnn_calculate_pointers(bnn);
 }
 
 u_word thread_number = 0;

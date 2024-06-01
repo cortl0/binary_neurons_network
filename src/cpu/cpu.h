@@ -29,6 +29,7 @@ class cpu
 public:
     ~cpu();
     cpu(const bnn_settings&);
+    void calculate_pointers();
     void start();
     void stop();
     void set_input(u_word i, bool value);

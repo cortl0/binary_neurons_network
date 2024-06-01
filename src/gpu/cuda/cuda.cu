@@ -10,8 +10,9 @@
 #include "cuda.h"
 
 #include <inttypes.h>
-#include <stdlib.h>
-#include <stdio.h>
+
+#include <chrono>
+#include <thread>
 
 #include "common/logger.h"
 #include "settings.hpp"
@@ -62,6 +63,8 @@ namespace bnn
 namespace gpu
 {
 
+using namespace std::chrono_literals;
+
 cuda::~cuda()
 {
     stop();
@@ -69,7 +72,7 @@ cuda::~cuda()
     one_time_trigger = false;
 
     while(!one_time_trigger_stop)
-        usleep(1000);
+        std::this_thread::sleep_for(1ms);
 
     if(cudaError::cudaSuccess != free_host_and_device_memory(memory_))
         logging("fail: freeing memory_");
@@ -83,7 +86,7 @@ cuda::~cuda()
 cuda::cuda(const bnn_settings& bs)
 {
 #include "undef_implementations.h"
-#include "../../bnn/bnn_implementation.h"
+#include "bnn/bnn_implementation.h"
 
     debug_memory.size = 8192;
 
@@ -130,6 +133,13 @@ cuda::cuda(const bnn_settings& bs)
     bnn_calculate_pointers(bnn_host);
     bnn_fill_threads(bnn_host);
     logging("Success: cuda::cuda()");
+}
+
+void cuda::calculate_pointers()
+{
+#include "undef_implementations.h"
+#include "bnn/bnn_implementation.h"
+    bnn_calculate_pointers(bnn_host);
 }
 
 bool cuda::get_output(u_word i)
@@ -188,7 +198,7 @@ bool cuda::free_host_and_device_memory(memory& m)
 
 void cuda::initialize()
 {
-    std::thread(cuda::run, this).detach();
+    std::thread(&cuda::run, this).detach();
 }
 
 bool cuda::memory_copy_host_to_device(memory& m)
@@ -219,7 +229,7 @@ void cuda::start()
     state = bnn_state::start;
 
     while(state == bnn_state::start)
-        usleep(1000);
+        std::this_thread::sleep_for(1ms);
 
     printf(BNN_CUDA_PRINT_PREFIX "start(end)==\n");
 }
@@ -234,7 +244,7 @@ void cuda::stop()
     state = bnn_state::stop;
 
     while(state == bnn_state::stop)
-        usleep(1000);
+        std::this_thread::sleep_for(1ms);
 
     printf(BNN_CUDA_PRINT_PREFIX "stop(end)\n");
 }
@@ -261,94 +271,94 @@ bool cuda::test_kernel_result()
     return return_value;
 }
 
-void cuda::run(cuda* me)
+void cuda::run()
 {
     #include "undef_implementations.h"
-    #include "../../bnn/bnn_implementation.h"
+    #include "bnn/bnn_implementation.h"
     const char** argv = nullptr;
     int devID = findCudaDevice(0, (const char **)argv);
     cudaDeviceProp cdp;
     checkCudaErrors(cudaGetDeviceProperties(&cdp, devID));
     statistic::view_devices_list();
-    dim3 threads = dim3(settings::calculate_thread_dim_x(cdp, me->bnn_host->threads_.size));
-    dim3 blocks = dim3(settings::calculate_block_dim_x(cdp, me->bnn_host->threads_.size, threads));
+    dim3 threads = dim3(settings::calculate_thread_dim_x(cdp, bnn_host->threads_.size));
+    dim3 blocks = dim3(settings::calculate_block_dim_x(cdp, bnn_host->threads_.size, threads));
     printf("dim3 threads = %d\n", threads.x);
     printf("dim3 blocks = %d\n", blocks.x);
     printf("threads count [%d]\n", threads.x * blocks.x);
-    me->bnn_host->parameters_.state = bnn_state::started;
-    bnn_shift_pointers(me->bnn_host, me->memory_.offset);
-    me->memory_copy_host_to_device(me->memory_);
-    bnn_shift_pointers(me->bnn_host, -me->memory_.offset);
-    primary_filling<<<blocks, threads, 0, 0>>>(me->memory_.device_data, me->debug_memory.device_data);
-    printf(BNN_CUDA_PRINT_PREFIX "random_.size [%d]\n", me->bnn_host->random_.size);
-    printf(BNN_CUDA_PRINT_PREFIX "random_.size_in_power_of_two [%d]\n", me->bnn_host->random_.size_in_power_of_two);
+    bnn_host->parameters_.state = bnn_state::started;
+    bnn_shift_pointers(bnn_host, memory_.offset);
+    memory_copy_host_to_device(memory_);
+    bnn_shift_pointers(bnn_host, -memory_.offset);
+    primary_filling<<<blocks, threads, 0, 0>>>(memory_.device_data, debug_memory.device_data);
+    printf(BNN_CUDA_PRINT_PREFIX "random_.size [%d]\n", bnn_host->random_.size);
+    printf(BNN_CUDA_PRINT_PREFIX "random_.size_in_power_of_two [%d]\n", bnn_host->random_.size_in_power_of_two);
 
-    if(!me->memory_copy_device_to_host(me->debug_memory))
-        logging("fail: memory_copy_device_to_host(me->debug_memory) out while");
+    if(!memory_copy_device_to_host(debug_memory))
+        logging("fail: memory_copy_device_to_host(debug_memory) out while");
 
-    if(!me->test_kernel_result())
+    if(!test_kernel_result())
     {
         printf(BNN_CUDA_PRINT_PREFIX "primary_filling is no good\n");
-        me->state = bnn_state::started;
-        sleep(2);
-        me->state = bnn_state::stopped;
+        state = bnn_state::started;
+        std::this_thread::sleep_for(2s);
+        state = bnn_state::stopped;
         return;
     }
 
-    me->state = bnn_state::started;
+    state = bnn_state::started;
 
-    while(me->one_time_trigger)
+    while(one_time_trigger)
     {
-        if(me->state == bnn_state::stop)
-            me->state = bnn_state::stopped;
+        if(state == bnn_state::stop)
+            state = bnn_state::stopped;
 
-        if(me->state == bnn_state::start)
-            me->state = bnn_state::started;
+        if(state == bnn_state::start)
+            state = bnn_state::started;
 
-        if(bnn_state::started != me->state)
+        if(bnn_state::started != state)
         {
-            usleep(1000);
+            std::this_thread::sleep_for(1ms);
             continue;
         }
 
-        start_cycle<<<blocks, threads, 0, 0>>>(me->memory_.device_data, me->debug_memory.device_data);
-        if(!me->memory_copy_device_to_host(me->debug_memory))
-            logging("fail: memory_copy_device_to_host(me->debug_memory) in while");
+        start_cycle<<<blocks, threads, 0, 0>>>(memory_.device_data, debug_memory.device_data);
+        if(!memory_copy_device_to_host(debug_memory))
+            logging("fail: memory_copy_device_to_host(debug_memory) in while");
 
-        if(!me->test_kernel_result())
+        if(!test_kernel_result())
         {
             printf(BNN_CUDA_PRINT_PREFIX "start_cycle is no good\n");
             break;
         }
 
-        checkCudaErrors(cudaMemcpy(me->bnn_host->output_.data, me->bnn_host->output_.data + me->memory_.offset,
-                   me->bnn_host->output_.size, cudaMemcpyDeviceToHost));
+        checkCudaErrors(cudaMemcpy(bnn_host->output_.data, bnn_host->output_.data + memory_.offset,
+                   bnn_host->output_.size, cudaMemcpyDeviceToHost));
 
-        checkCudaErrors(cudaMemcpy(me->bnn_host->input_.data + me->memory_.offset, me->bnn_host->input_.data,
-                   me->bnn_host->input_.size, cudaMemcpyHostToDevice));
+        checkCudaErrors(cudaMemcpy(bnn_host->input_.data + memory_.offset, bnn_host->input_.data,
+                   bnn_host->input_.size, cudaMemcpyHostToDevice));
 
         {
             bnn_bnn bnn_host_temp;
-            checkCudaErrors(cudaMemcpy(&bnn_host_temp, (char*)me->bnn_host + me->memory_.offset,
+            checkCudaErrors(cudaMemcpy(&bnn_host_temp, (char*)bnn_host + memory_.offset,
                 sizeof(bnn_host_temp), cudaMemcpyDeviceToHost));
 
-            me->bnn_host->parameters_ = bnn_host_temp.parameters_;
-            me->bnn_host->debug_ = bnn_host_temp.debug_;
+            bnn_host->parameters_ = bnn_host_temp.parameters_;
+            bnn_host->debug_ = bnn_host_temp.debug_;
         }
     }
 
-    me->bnn_host->parameters_.state = bnn_state::stop;
-    checkCudaErrors(cudaMemcpy((char*)&me->bnn_host->parameters_.state + me->memory_.offset, &me->bnn_host->parameters_.state,
-            sizeof(me->bnn_host->parameters_.state), cudaMemcpyHostToDevice));
+    bnn_host->parameters_.state = bnn_state::stop;
+    checkCudaErrors(cudaMemcpy((char*)&bnn_host->parameters_.state + memory_.offset, &bnn_host->parameters_.state,
+            sizeof(bnn_host->parameters_.state), cudaMemcpyHostToDevice));
 
     while(true)
     {
         bnn_bnn bnn_host_temp;
 
-        checkCudaErrors(cudaMemcpy(&bnn_host_temp, (char*)me->bnn_host + me->memory_.offset,
+        checkCudaErrors(cudaMemcpy(&bnn_host_temp, (char*)bnn_host + memory_.offset,
             sizeof(bnn_host_temp), cudaMemcpyDeviceToHost));
 
-        bnn_shift_pointers(&bnn_host_temp, -me->memory_.offset);
+        bnn_shift_pointers(&bnn_host_temp, -memory_.offset);
         bool result{};
 
         for(u_word i = 0; i < bnn_host_temp.threads_.size; ++i)
@@ -359,9 +369,9 @@ void cuda::run(cuda* me)
             break;
     }
 
-    me->bnn_host->parameters_.state = bnn_state::stopped;
-    me->state = bnn_state::stopped;
-    me->one_time_trigger_stop = true;
+    bnn_host->parameters_.state = bnn_state::stopped;
+    state = bnn_state::stopped;
+    one_time_trigger_stop = true;
 }
 
 } // namespace gpu
