@@ -71,6 +71,7 @@ cpu::cpu(const bnn_settings& bs)
     {
         bnn_fill_random_of_thread(bnn, thread_number);
         bnn_set_neurons_of_thread(bnn, thread_number);
+        bnn_create_fake_binary_neurons_of_thread(bnn, thread_number);
     }
 
     treads.resize(bnn_temp.threads_.size);
@@ -98,8 +99,8 @@ void cpu::start()
         treads[thread_number].detach();
     }
 
-    main_tread = std::thread(bnn_bnn_function, bnn);
-    main_tread.detach();
+    main_thread = std::thread(bnn_bnn_function, bnn);
+    main_thread.detach();
     bnn->parameters_.state = bnn_state::started;
 
     for(u_word i = 0; i < bnn->threads_.size; ++i)
@@ -108,10 +109,15 @@ void cpu::start()
 
 void cpu::stop()
 {
+    if(bnn->parameters_.state != bnn_state::started)
+        return;
+
     bnn->parameters_.state = bnn_state::stop;
 
     for(u_word i = 0; i < bnn->threads_.size; ++i)
         while(bnn->threads_.data[i].in_work);
+
+    bnn->parameters_.state = bnn_state::stopped;
 }
 
 void cpu::set_input(u_word i, bool value)

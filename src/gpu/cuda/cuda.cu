@@ -40,8 +40,7 @@ __global__ void primary_filling(int* bnn_data, int* debug_data)
 //            &bnn->threads_.data[thread_number].random_config);
 
     bnn_set_neurons_of_thread(bnn, thread_number);
-    u_word fake_quantity = bnn->threads_.neurons_per_thread;
-    bnn_create_fake_binary_neurons_of_thread(bnn, thread_number, fake_quantity);
+    bnn_create_fake_binary_neurons_of_thread(bnn, thread_number);
 
     debug_data[thread_number] += thread_number + 1;
 }
@@ -372,6 +371,23 @@ void cuda::run()
     bnn_host->parameters_.state = bnn_state::stopped;
     state = bnn_state::stopped;
     one_time_trigger_stop = true;
+}
+
+void cuda::upload()
+{
+    #include "undef_implementations.h"
+    #include "bnn/bnn_implementation.h"
+    bnn_shift_pointers(bnn_host, memory_.offset);
+    memory_copy_host_to_device(memory_);
+    bnn_shift_pointers(bnn_host, -memory_.offset);
+}
+
+void cuda::download()
+{
+    #include "undef_implementations.h"
+    #include "bnn/bnn_implementation.h"
+    memory_copy_device_to_host(memory_);
+    bnn_shift_pointers(bnn_host, -memory_.offset);
 }
 
 } // namespace gpu

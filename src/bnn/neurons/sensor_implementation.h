@@ -14,7 +14,6 @@
 
 auto bnn_sensor_set = [BNN_LAMBDA_REFERENCE](
         bnn_sensor* me,
-        bool* world_input,
         bool output_new,
         bool output_old,
         u_word world_input_address

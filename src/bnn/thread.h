@@ -21,6 +21,7 @@ struct bnn_thread
     u_word start_neuron{0};
     u_word length_in_us_in_power_of_two{0};
     u_word thread_number{0};
+    u_word max_io_index{0};
     bool in_work{false};
 
 #ifdef DEBUG

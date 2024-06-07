@@ -40,6 +40,9 @@ public:
     bool is_active();
 
 protected:
+    void upload();
+    void download();
+
     bnn_bnn* bnn{nullptr};
 
 private:

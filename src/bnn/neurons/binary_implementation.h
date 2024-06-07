@@ -128,20 +128,20 @@ auto bnn_binary_create = [BNN_LAMBDA_REFERENCE](
 
 auto bnn_binary_create_primary_fake = [BNN_LAMBDA_REFERENCE](
         bnn_bnn* bnn,
-        const u_word me_offset,
+        bnn_binary* me,
         const u_word input_offset,
         const u_word thread_number
         ) -> void
 {
-    bnn->storage_.data[me_offset].binary_.first.address = input_offset;
-    bnn->storage_.data[me_offset].binary_.second.address = input_offset;
+    me->first.address = input_offset;
+    me->second.address = input_offset;
 
     bnn_neuron* first = &bnn->storage_.data[input_offset].neuron_;
     bnn_neuron* second = &bnn->storage_.data[input_offset].neuron_;
 
     bnn_binary_init(
             bnn,
-            &bnn->storage_.data[me_offset].binary_,
+            me,
             first,
             second,
             thread_number

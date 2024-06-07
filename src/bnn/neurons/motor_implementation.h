@@ -13,7 +13,6 @@
 #include "neuron_implementation.h"
 
 auto bnn_motor_set = [BNN_LAMBDA_REFERENCE](
-        bnn_bnn* bnn,
         bnn_motor* me,
         bool output_new,
         bool output_old,

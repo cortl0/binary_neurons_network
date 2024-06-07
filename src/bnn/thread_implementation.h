@@ -30,12 +30,13 @@ auto bnn_thread_function = [BNN_LAMBDA_REFERENCE](
 #endif
 
     bnn_random_config* thread_random_config = &bnn->threads_.data[thread_number].random_config;
-    me->in_work = true;
     u_word reaction_rate = bnn->threads_.neurons_per_thread;
     u_word current_neuron_offset;
 
     while(bnn->parameters_.state != bnn_state::started)
         ;
+
+    me->in_work = true;
 
     while(bnn->parameters_.state == bnn_state::started)
     {

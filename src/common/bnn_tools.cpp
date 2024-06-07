@@ -201,6 +201,7 @@ bool bnn_tools::load(std::ifstream& ifs)
     ifs.read(reinterpret_cast<char*>(&bnn->parameters_.size), sizeof(bnn->parameters_.size));
     ifs.read(reinterpret_cast<char*>(bnn), bnn->parameters_.size);
     calculate_pointers();
+    upload();
 
     return true;
 }
@@ -238,6 +239,7 @@ bool bnn_tools::save(std::ofstream& ofs)
     if(!ofs.is_open())
         return false;
 
+    download();
     ofs.write(reinterpret_cast<char*>(&bnn->parameters_.size), sizeof(bnn->parameters_.size));
     ofs.write(reinterpret_cast<char*>(bnn), bnn->parameters_.size);
 

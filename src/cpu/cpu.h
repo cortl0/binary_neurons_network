@@ -38,10 +38,13 @@ public:
     bool is_active();
 
 protected:
+    void upload() {}
+    void download() {}
+
     bnn_bnn* bnn{nullptr};
 
 private:
-    std::thread main_tread;
+    std::thread main_thread;
     std::vector<std::thread> treads;
 };
 
