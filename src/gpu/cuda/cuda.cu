@@ -1,7 +1,7 @@
 /*
  *   Binary Neurons Network
  *   created by Ilya Shishkin
- *   cortl@8iter.ru
+ *   cortl@yandex.ru
  *   http://8iter.ru/ai.html
  *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
@@ -248,9 +248,9 @@ void cuda::stop()
     printf(BNN_CUDA_PRINT_PREFIX "stop(end)\n");
 }
 
-bool cuda::is_active()
+bnn_state cuda::get_state()
 {
-    return state == bnn_state::started;
+    return state;
 }
 
 bool cuda::test_kernel_result()

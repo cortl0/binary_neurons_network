@@ -1,7 +1,7 @@
 /*
  *   Binary Neurons Network
  *   created by Ilya Shishkin
- *   cortl@8iter.ru
+ *   cortl@yandex.ru
  *   http://8iter.ru/ai.html
  *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
@@ -130,10 +130,9 @@ bool cpu::get_output(u_word i)
     return bnn->output_.data[i];
 }
 
-bool cpu::is_active()
+bnn_state cpu::get_state()
 {
-    // TODO
-    return true;
+    return bnn->parameters_.state;
 }
 
 } // namespace bnn

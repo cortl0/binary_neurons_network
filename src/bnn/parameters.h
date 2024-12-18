@@ -1,7 +1,7 @@
 /*
  *   Binary Neurons Network
  *   created by Ilya Shishkin
- *   cortl@8iter.ru
+ *   cortl@yandex.ru
  *   http://8iter.ru/ai.html
  *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
@@ -11,14 +11,7 @@
 #define BNN_PARAMETERS_H
 
 #include "random.h"
-
-enum class bnn_state : int
-{
-    start = 1,
-    started,
-    stop,
-    stopped
-};
+#include "state.h"
 
 struct bnn_parameters
 {

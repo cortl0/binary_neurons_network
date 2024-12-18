@@ -1,7 +1,7 @@
 /*
  *   Binary Neurons Network
  *   created by Ilya Shishkin
- *   cortl@8iter.ru
+ *   cortl@yandex.ru
  *   http://8iter.ru/ai.html
  *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
@@ -10,6 +10,7 @@
 #ifndef BNN_GPU_CUDA_CUDA_H
 #define BNN_GPU_CUDA_CUDA_H
 
+#include "bnn/state.h"
 #include "common/settings.h"
 #include "memory.hpp"
 
@@ -17,7 +18,7 @@
 #define BNN_ARCHITECTURE_CUDA
 #endif
 
-#include "bnn/bnn.h"
+struct bnn_bnn;
 
 namespace bnn::gpu
 {
@@ -29,6 +30,7 @@ public:
     cuda(const bnn_settings&);
     void calculate_pointers();
     bool get_output(u_word offset);
+    bnn_state get_state();
     void set_input(u_word offset, bool value);
     static bool allocate_host_and_device_memory(memory&);
     static bool free_host_and_device_memory(memory&);
@@ -37,7 +39,6 @@ public:
     bool memory_copy_device_to_host(memory&);
     void start();
     void stop();
-    bool is_active();
 
 protected:
     void upload();

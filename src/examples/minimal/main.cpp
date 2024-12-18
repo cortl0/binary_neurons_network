@@ -1,7 +1,7 @@
 /*
  *   Binary Neurons Network
  *   created by Ilya Shishkin
- *   cortl@8iter.ru
+ *   cortl@yandex.ru
  *   http://8iter.ru/ai.html
  *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
@@ -27,7 +27,7 @@ int main()
     bnn::architecture bnn(bs);
     bnn.initialize();
     bnn.start();
-    do {} while(!bnn.is_active());
+    do {} while(bnn.get_state() != bnn_state::started);
     bool stop{false};
 
     auto manager_thread = std::thread([&stop]()

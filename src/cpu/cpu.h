@@ -1,7 +1,7 @@
 /*
  *   Binary Neurons Network
  *   created by Ilya Shishkin
- *   cortl@8iter.ru
+ *   cortl@yandex.ru
  *   http://8iter.ru/ai.html
  *   https://github.com/cortl0/binary_neurons_network
  *   licensed by GPL v3.0
@@ -13,6 +13,7 @@
 #include <thread>
 #include <vector>
 
+#include "bnn/state.h"
 #include "common/settings.h"
 
 #ifndef BNN_ARCHITECTURE_CPU
@@ -34,8 +35,8 @@ public:
     void stop();
     void set_input(u_word i, bool value);
     bool get_output(u_word i);
+    bnn_state get_state();
     void initialize() {}
-    bool is_active();
 
 protected:
     void upload() {}

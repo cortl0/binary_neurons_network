@@ -31,7 +31,7 @@ int main()
     bnn::architecture bnn(bs);
     bnn.initialize();
     bnn.start();
-    do {} while(!bnn.is_active());
+    do {} while(bnn.get_state() != bnn_state::started);
     bool stop{false};
 
     auto manager_thread = std::thread([&stop]()
@@ -81,13 +81,13 @@ CMake
 
 ## Example projects for BNN
 - [./src/examples/minimal/](../master/src/examples/minimal/) - Contains minimal project  
-- [./src/examples/web/](../master/src/examples/web/) - The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain. QT Creator is required  
+- [./src/examples/web/](../master/src/examples/web/) - (support is suspended) The input to the brain is a picture from the browser, and the output is the movement of the gaze of the brain. QT Creator is required  
 - https://github.com/cortl0/device - The practical implementation of a physical device with the binary neurons  
 - https://github.com/cortl0/device_3d - Testing the BNN in 3d world
 
 ## Author
 Ilya Shishkin  
-e-mail: cortl@8iter.ru
+e-mail: cortl@yandex.ru
 
 ## Achievements
 - The first mention of BNN in the literature:  
